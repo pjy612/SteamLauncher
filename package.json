@@ -1,7 +1,7 @@
 {
   "name": "steamlauncher",
   "productName": "SteamLauncher",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "SteamLauncher optimizes the setup process of each game in a simple and automatic way.",
   "keywords": [],
   "homepage": "https://github.com/Sak32009/SteamLauncher/",
@@ -18,7 +18,7 @@
     "url": "https://github.com/Sak32009/SteamLauncher.git"
   },
   "engines": {
-    "node": ">=v16.14.0"
+    "node": ">=v16.14.2"
   },
   "os": [
     "win32"
