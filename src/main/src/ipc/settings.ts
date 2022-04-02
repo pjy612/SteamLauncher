@@ -1,16 +1,13 @@
 import {
   ipcMain as ipc,
 } from 'electron';
-import {
-  hiddenModalChannel,
-} from '../config';
 import notify from '../functions/notify';
 import storage from '../storage';
 
 ipc.on('settings-edit', (event, inputs: StoreSettingsType) => {
   storage.set('settings', inputs);
   notify('Settings edited successfully!');
-  event.sender.send(hiddenModalChannel);
+  event.sender.send('modal-hide');
 });
 
 ipc.on('settings-set-network', (_event, data: boolean) => {

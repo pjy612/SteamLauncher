@@ -73,14 +73,14 @@
             <span class="mdi mdi-account-question mdi-18px"></span>
             <span class="ml-1">Overlay</span>
           </div>
-          <select class="form-control" name="overlay" required>
+          <select class="form-select" name="overlay" required>
             <option value="true" {{#data.overlay}}selected{{/data.overlay}}>Activated</option>
             <option value="false" {{^data.overlay}}selected{{/data.overlay}}>Deactivated</option>
           </select>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-block btn-success">Save</button>
+        <button type="submit" class="btn btn-block btn-green">Save</button>
       </div>
     </form>
   </div>

@@ -1,10 +1,9 @@
-import './styles/main.css';
-import './styles/scss/bootstrap.scss';
+import './styles/components.css';
 
 import 'bootstrap/js/dist/modal';
-import 'bootstrap/js/dist/toast';
 import './plugins/file-drop';
 import './plugins/chose-directory-file';
+import './functions/prevent-drag-drop';
 
 import './ipc/_ipc';
 import './events/_events';

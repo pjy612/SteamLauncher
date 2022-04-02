@@ -2,8 +2,7 @@ import mustache from 'mustache';
 import {
   allowedLanguages,
 } from '../../config';
-// eslint-disable-next-line canonical/id-match
-import objs2list from '../../functions/mustache-objs2list';
+import mustacheObjsWithKeys from '../../functions/mustache-objs-with-keys';
 
 class AccountView {
   private dom: JQuery | undefined;
@@ -33,7 +32,7 @@ class AccountView {
       default: html,
     } = await import('./account.html?raw');
     const view = {
-      inputLanguages: objs2list(allowedLanguages),
+      inputLanguages: mustacheObjsWithKeys(allowedLanguages),
       isEditMode: this.isEditMode,
     };
     if (this.isEditMode) {

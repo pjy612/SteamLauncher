@@ -1,386 +1,432 @@
-import type {
-  Buffer,
-} from 'node:buffer';
 import {
-  spawn,
-} from 'node:child_process';
+  createWriteStream,
+} from 'node:fs';
 import {
-  writeFile,
-  unlink,
+  stat,
+  readFile,
 } from 'node:fs/promises';
 import {
   join,
-  parse,
 } from 'node:path';
+import axios from 'axios';
 import {
   webContents,
 } from 'electron';
 import log from 'electron-log';
-import fg from 'fast-glob';
+import glob from 'fast-glob';
 import {
-  pathExists,
-  writeJson,
-  readJson,
   ensureDir,
-  copy,
+  pathExists,
+  writeFile,
+  writeJson,
 } from 'fs-extra';
-import signVerify from '../bin/signtool';
-import steamApiInterfaces from '../bin/steam-api-interfaces';
-import {
-  paths,
-} from '../config';
-import generateAppIdPaths from '../functions/generate-appid-paths';
+import signVerify from '../bin/sign-verify';
+import gamePathsByAppId from '../functions/game-paths-by-appid';
+import notify from '../functions/notify';
 import storage from '../storage';
 
-const environments = import.meta.env;
-
-const globSteamApis = (runPath: string) => {
-  return fg.sync([
-    '**/steam_api.dll',
-    '**/steam_api64.dll',
-  ], {
-    absolute: true,
-    cwd: runPath,
-    onlyFiles: true,
-  });
-};
-
 class SteamRetriever {
-  private readonly steamWebApiKey: string = storage.get('account.steamWebApiKey');
+  private accountSteamWebApiKey: string = storage.get('account.steamWebApiKey');
 
-  private readonly language: string = storage.get('account.language');
+  private accountLanguage: string = storage.get('account.language');
 
-  private readonly event = webContents.getFocusedWebContents();
+  private ipcEvent = webContents.getFocusedWebContents();
 
-  private readonly appId: string;
+  private gameData: Record<string, string> = {};
 
-  private readonly paths: Record<string, string>;
+  private readonly gameAppId: string;
 
-  private readonly inputs: StoreGameDataType;
+  private readonly gamePaths;
+
+  private readonly gameInputs;
 
   public constructor (inputs: StoreGameDataType) {
-    this.inputs = inputs;
-    this.appId = inputs.appId;
-    this.paths = generateAppIdPaths(inputs.appId, this.language);
+    this.gameInputs = inputs;
+    this.gameAppId = inputs.appId;
+    this.gamePaths = gamePathsByAppId(inputs.appId);
   }
 
-  public console (content: string) {
+  private console (content: string, space = false) {
     log.info(content);
-    this.event.send('add-to-console', content);
+    this.ipcEvent.send('console-add', content, space);
   }
 
-  public consoleHide () {
-    this.event.send('hide-console');
+  private consoleHide (isOk = false) {
+    this.ipcEvent.send('console-hide', isOk);
   }
 
-  public consoleShow () {
-    this.event.send('show-console');
+  private consoleShow () {
+    this.ipcEvent.send('console-show');
+  }
+
+  private async getAppType () {
+    this.console(`Trying to get type of ${this.gameAppId}...`);
+
+    const url = `https://store.steampowered.com/api/appdetails/?appids=${this.gameAppId}&filters=basic`;
+    const response = await axios.get(url);
+
+    if (response.statusText === 'OK') {
+      const data = response.data[this.gameAppId];
+      if (data.success === true) {
+        if (data.data.type === 'game') {
+          this.console('The appid is the "game" type, keep on...', true);
+
+          // await ensureDir(this.paths.appIdDataPath);
+          await ensureDir(this.gamePaths.appIdAchievementsPath);
+        } else {
+          throw new Error('The appid is not a game.');
+        }
+      } else {
+        throw new Error('The appid was not found.');
+      }
+    } else {
+      throw new Error(`${url}; response: ${response.statusText}`);
+    }
+  }
+
+  private async checkSteamApiDlls () {
+    this.console('Check if the steam_api(64).dll are signed...');
+
+    const searchDlls = await glob([
+      '**/steam_api.dll',
+      '**/steam_api64.dll',
+    ], {
+      absolute: true,
+      cwd: this.gameInputs.runPath,
+      onlyFiles: true,
+    });
+    if (searchDlls.length > 0) {
+      for (const dll of searchDlls) {
+        const isSigned = await signVerify(dll);
+
+        if (isSigned) {
+          this.console(`${dll} is signed, keep on...`, true);
+        } else {
+          throw new Error(`${dll} is not signed, please use signed steam_api(64).dll only!`);
+        }
+      }
+
+      const dllStats = await stat(searchDlls[0]);
+      const dllBirthtime = dllStats.birthtime.getTime();
+      const msMay2016 = Date.parse('01/05/2016');
+
+      if (dllBirthtime >= msMay2016) {
+        this.console('The creation date of the dll is higher than May 2016, i don\'t create steam_interfaces.txt.', true);
+      } else {
+        this.console('The creation date of the dll is less than May 2016, i create steam_interfaces.txt.', true);
+        await this.writeSteamApiInterfaces(searchDlls[0]);
+      }
+    } else {
+      throw new Error('The game does not contain any steam_api(64).dll, please select the correct run path!');
+    }
+  }
+
+  private async getAppInfo () {
+    this.console(`Trying to get infos on ${this.gameAppId}...`);
+
+    const url = `https://store.steampowered.com/api/dlcforapp/?appid=${this.gameAppId}`;
+    const response = await axios.get(url);
+
+    if (response.statusText === 'OK') {
+      if (response.data.status === 1) {
+        this.gameData.name = response.data.name;
+
+        this.console(`NAME: ${this.gameData.name}; DLCS: ${response.data.dlc.length}`, true);
+
+        if (response.data.dlc.length > 0) {
+          const resultDlcs = [];
+          for (const appDlcData of response.data.dlc) {
+            const appDlcAppId = appDlcData.id;
+            const appDlcMame = appDlcData.name;
+            this.console(`DLC AppID: ${appDlcAppId}; DLC Name: ${appDlcMame}`, true);
+            resultDlcs.push(`${appDlcAppId}=${appDlcMame}`);
+          }
+
+          await writeFile(this.gamePaths.appIdDlcsInfoPath, resultDlcs.join('\r\n')).then(() => {
+            this.console(
+              `${this.gamePaths.appIdDlcsInfoPath} was written successfully!`,
+              true,
+            );
+          });
+        } else {
+          this.console('The game does not contain dlcs.', true);
+        }
+      } else {
+        throw new Error('The appid was not found.');
+      }
+    } else {
+      throw new Error(`${url}; response: ${response.statusText}`);
+    }
+  }
+
+  private async downloadAppHeader () {
+    const url = `https://cdn.akamai.steamstatic.com/steam/apps/${this.gameAppId}/header.jpg?t=1581535048`;
+    // eslint-disable-next-line no-negated-condition
+    if (!(await pathExists(this.gamePaths.appIdHeaderPath))) {
+      await this.imageDownloader(url, this.gamePaths.appIdHeaderPath).then(() => {
+        this.console(`${url} was downloaded successfully!`);
+      });
+    } else {
+      this.console(`${this.gamePaths.appIdHeaderPath} already exists, skip...`);
+    }
+  }
+
+  private async getAppAchievements () {
+    this.console(`Trying to get achievements and stats on ${this.gameAppId}...`);
+
+    const url = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?l=${this.accountLanguage}&key=${this.accountSteamWebApiKey}&appid=${this.gameAppId}`;
+    const response = await axios.get(url);
+
+    if (response.statusText === 'OK') {
+      const achievementsData = response.data.game.availableGameStats.achievements;
+      if (typeof achievementsData !== 'undefined' && achievementsData.length > 0) {
+        const resultAchievements = [];
+        for (const achievement of achievementsData) {
+          const iconUrl = achievement.icon;
+          const iconGrayUrl = achievement.icongray;
+
+          const iconName = `${achievement.name}.jpg`;
+          const iconGrayName = `${achievement.name}_locked.jpg`;
+
+          const iconNamePath = join(this.gamePaths.appIdAchievementsPath, iconName);
+          const iconGrayNamePath = join(this.gamePaths.appIdAchievementsPath, iconGrayName);
+
+          achievement.icon = `achievements/${iconName}`;
+          achievement.icongray = `achievements/${iconGrayName}`;
+
+          resultAchievements.push(achievement);
+
+          // eslint-disable-next-line no-negated-condition
+          if (!(await pathExists(iconNamePath))) {
+            await this.imageDownloader(iconUrl, iconNamePath).then(() => {
+              this.console(`${iconName} was downloaded successfully!`, true);
+            });
+          } else {
+            this.console(`${iconName} already exists, skip...`, true);
+          }
+
+          // eslint-disable-next-line no-negated-condition
+          if (!(await pathExists(iconGrayNamePath))) {
+            await this.imageDownloader(iconGrayUrl, iconGrayNamePath).then(() => {
+              this.console(`${iconGrayName} was downloaded successfully!`, true);
+            });
+          } else {
+            this.console(`${iconGrayName} already exists, skip...`, true);
+          }
+        }
+
+        await writeJson(this.gamePaths.appIdAchievementsInfoPath, resultAchievements, {
+          spaces: 2,
+        }).then(() => {
+          this.console(
+            `${this.gamePaths.appIdAchievementsInfoPath} was written successfully!`,
+            true,
+          );
+        });
+      } else {
+        this.console('The game has no achievements.', true);
+      }
+
+      const statsData = response.data.game.availableGameStats.stats;
+      if (typeof statsData !== 'undefined' && statsData.length > 0) {
+        const resultStats = [];
+        // eslint-disable-next-line @typescript-eslint/naming-convention, canonical/id-match
+        for (const _stat of statsData) {
+          // eslint-disable-next-line @typescript-eslint/naming-convention, canonical/id-match
+          const name = _stat.name;
+          // NOTE: ..., float, avgrate but where can I find this data?
+          const typeValue = 'int';
+          // eslint-disable-next-line @typescript-eslint/naming-convention, canonical/id-match
+          const defaultValue = _stat.defaultvalue;
+
+          resultStats.push(`${name}=${typeValue}=${defaultValue}`);
+        }
+
+        await writeFile(this.gamePaths.appIdStatsInfoPath, resultStats.join('\r\n')).then(() => {
+          this.console(`${this.gamePaths.appIdStatsInfoPath} was written successfully!`, true);
+        });
+      } else {
+        this.console('The game has no stats.', true);
+      }
+    } else {
+      throw new Error(`${url}; response: ${response.statusText}`);
+    }
+  }
+
+  private async getAppItems () {
+    this.console(`Trying to get items on ${this.gameAppId}...`);
+
+    let url = `https://api.steampowered.com/IInventoryService/GetItemDefMeta/v1/?key=${this.accountSteamWebApiKey}&appid=${this.gameAppId}`;
+    let response = await axios.get(url);
+
+    if (response.statusText === 'OK') {
+      const digest = response.data.response.digest;
+      // eslint-disable-next-line no-negated-condition
+      if (typeof digest !== 'undefined') {
+        url = `https://api.steampowered.com/IGameInventory/GetItemDefArchive/v1/?digest=${digest}&appid=${this.gameAppId}`;
+        response = await axios.get(url);
+        if (response.statusText === 'OK') {
+          // NOTE: the last character is a finger in the ass
+          response.data = JSON.parse(response.data.slice(0, -1));
+
+          const resultItems: Record<string, string> = {};
+          const resultDefaultItems: Record<string, number> = {};
+
+          for (const item of response.data) {
+            const itemdefid = item.itemdefid;
+            resultItems[itemdefid] = item;
+            resultDefaultItems[itemdefid] = 1;
+          }
+
+          await writeJson(this.gamePaths.appIdItemsInfoPath, resultItems, {
+            spaces: 2,
+          }).then(() => {
+            this.console(`${this.gamePaths.appIdItemsInfoPath} was written successfully!`, true);
+          });
+
+          await writeJson(this.gamePaths.appIdDefaultItemsInfoPath, resultDefaultItems, {
+            spaces: 2,
+          }).then(() => {
+            this.console(`${this.gamePaths.appIdDefaultItemsInfoPath} was written successfully!`, true);
+          });
+        } else {
+          throw new Error(`${url}; response: ${response.statusText}`);
+        }
+      } else {
+        this.console('The game has no items.', true);
+      }
+    } else {
+      throw new Error(`${url}; response: ${response.statusText}`);
+    }
+  }
+
+  private async addGame () {
+    const inputs: StoreGameDataType = {
+      ...this.gameInputs,
+      ...this.gameData,
+    };
+
+    if (storage.has(`games.${inputs.appId}`)) {
+      notify('Game rebased successfully!');
+    } else {
+      notify('Game created successfully!');
+    }
+
+    storage.set(`games.${inputs.appId}`, inputs);
+
+    this.ipcEvent.send('index-reload-games-list');
+
+    this.consoleHide(true);
   }
 
   public async run () {
     this.consoleShow();
-    this.console('Launch steamRetriever for ' + this.appId + '...');
-
-    const findSteamApis = globSteamApis(this.inputs.runPath);
-    if (findSteamApis.length > 0) {
-      let index = 1;
-      for (const oo of findSteamApis) {
-        const signed = signVerify(oo);
-
-        if (!signed) {
-          this.console(oo + ' isn\'t signed! Please use original steam_api(64).dll only!');
-          return;
-        }
-
-        if (index === findSteamApis.length) {
-          const steamRetrieverSpawn = this.spawn();
-
-          if (typeof steamRetrieverSpawn !== 'undefined') {
-            const output = (chunk: Buffer) => {
-              this.console(chunk.toString('utf8').trim());
-            };
-
-            steamRetrieverSpawn.stdout.on('data', output);
-            steamRetrieverSpawn.stderr.on('data', output);
-
-            steamRetrieverSpawn.on('close', async (code, signal) => {
-              this.console(`steamRetriever exited with: [code ${code}][signal ${signal}]`);
-
-              await ensureDir(this.paths.appIdDataPath);
-
-              const data: Record<string, string> = {};
-
-              if (await pathExists(this.paths.steamRetrieverAppIdInfoPath)) {
-                const steamRetrieverAppIdInfoParse = (await readJson(
-                  this.paths.steamRetrieverAppIdInfoPath,
-                )) as SteamRetrieverAppId;
-                data.name = steamRetrieverAppIdInfoParse.Name;
-                data.header = this.paths.steamRetrieverBackgroundPath;
-
-                if (typeof steamRetrieverAppIdInfoParse.Type !== 'undefined') {
-                  this.console(data.name + ' isn\'t a game!');
-                  this.consoleHide();
-                  return;
-                }
-
-                this.console(`${data.name} > name`);
-                this.console(`${data.header} > header`);
-
-                const outDlcs = [];
-                let iii = 0;
-                const dlcs = steamRetrieverAppIdInfoParse.Dlcs;
-                if (Object.keys(dlcs).length > 0) {
-                  for (const dlcKey in dlcs) {
-                    if (Object.prototype.hasOwnProperty.call(dlcs, dlcKey)) {
-                      const dlc = dlcs[dlcKey];
-                      const dlcName = dlc.Name;
-
-                      outDlcs.push(dlcKey + '=' + dlcName);
-
-                      if (Object.keys(dlcs).length - 1 === iii) {
-                        writeFile(this.paths.appIdDlcsInfoPath, outDlcs.join('\n'))
-                          .then(() => {
-                            this.console(
-                              this.paths.appIdDlcsInfoPath + ' was written successfully!',
-                            );
-                          })
-                          .catch((error) => {
-                            this.console(error.message);
-                          });
-                      }
-
-                      iii++;
-                    }
-                  }
-                } else {
-                  this.console('The game has no dlcs!');
-                }
-
-                if (this.steamWebApiKey.length > 0) {
-                  await this.writeAchievements();
-                  await this.writeStats();
-                  await this.writeItems();
-                }
-
-                await this.writeSteamApiInterfaces(oo);
-                await this.addGame(data);
-              } else {
-                this.console(`${this.paths.steamRetrieverAppIdInfoPath} was not found!`);
-              }
-            });
-          }
-        }
-
-        index++;
-      }
-    } else {
-      this.console(
-        'The game does not contain any steam_api(64).dll! Please select the correct run path!',
-      );
-    }
-  }
-
-  private async addGame (data: Record<string, string>) {
-    const inputs: StoreGameDataType = {
-      ...this.inputs,
-      ...data,
-    };
-    storage.set('games.' + inputs.appId, inputs);
-    this.consoleHide();
-  }
-
-  private async writeSteamApiInterfaces (dll: string) {
-    if (await pathExists(this.paths.appIdSteamInterfacesPath)) {
-      this.console('Skip, steam_interfaces.txt already exists!');
-      return;
-    }
-
-    const steamApiDll = join(paths.steamApiInterfacesPath, parse(dll).base);
-    const steamInterfacesTxt = join(paths.steamApiInterfacesPath, 'steam_interfaces.txt');
-    copy(dll, steamApiDll)
-      .then(() => {
-        this.console('The steam_api(64).dll have been successfully moved to ' + steamApiDll);
-        const generateSteamApiInterfaces = steamApiInterfaces(dll);
-        if (generateSteamApiInterfaces) {
-          copy(steamInterfacesTxt, this.paths.appIdSteamInterfacesPath)
-            .then(async () => {
-              this.console(
-                'The steam_interfaces have been successfully moved to ' +
-                  this.paths.appIdSteamInterfacesPath,
-              );
-              await unlink(steamApiDll);
-              await unlink(steamInterfacesTxt);
-            })
-            .catch((error) => {
-              this.console(error.message);
-            });
-        } else {
-          this.console('Unknown error with generating the steam_api(64).dll interfaces!');
-        }
-      })
-      .catch((error) => {
-        this.console(error.message);
-      });
-  }
-
-  private async writeStats () {
-    readJson(this.paths.steamRetrieverStatsPath)
-      .then(async (statsInfoParse: SteamRetrieverStats) => {
-        const out = [];
-        for (const oo in statsInfoParse) {
-          if (Object.prototype.hasOwnProperty.call(statsInfoParse, oo)) {
-            const stat = statsInfoParse[oo];
-            const {
-              name,
-            } = stat;
-            // NOTE: ..., float, avgrate but where can I find this data?
-            const typeValue = 'int';
-            const defaultValue = stat.defaultvalue;
-
-            out.push(name + '=' + typeValue + '=' + defaultValue.toString());
-
-            if ((Object.keys(statsInfoParse).length - 1).toString() === oo) {
-              writeFile(this.paths.appIdStatsInfoPath, out.join('\n'))
-                .then(() => {
-                  this.console(this.paths.appIdStatsInfoPath + ' was written successfully!');
-                })
-                .catch((error) => {
-                  this.console(error.message);
-                });
-            }
-          }
-        }
-      })
-      .catch((error) => {
-        this.console(error.message);
-      });
-  }
-
-  private async writeItems () {
-    readJson(this.paths.steamRetrieverItemsPath)
-      .then(async (itemsInfoParse: SteamRetrieverItems) => {
-        const out: SteamRetrieverItems = {};
-        const outArray = [];
-        for (const oo in itemsInfoParse) {
-          if (Object.prototype.hasOwnProperty.call(itemsInfoParse, oo)) {
-            const stat = itemsInfoParse[oo];
-            const appId = stat.appid;
-            out[appId] = stat;
-
-            outArray.push(out);
-
-            if ((Object.keys(itemsInfoParse).length - 1).toString() === oo) {
-              writeJson(this.paths.appIdItemsInfoPath, outArray, {
-                spaces: 2,
-              })
-                .then(() => {
-                  this.console(this.paths.appIdItemsInfoPath + ' was written successfully!');
-                })
-                .catch((error) => {
-                  this.console(error.message);
-                });
-            }
-          }
-        }
-      })
-      .catch((error) => {
-        this.console(error.message);
-      });
-  }
-
-  private async writeAchievements () {
-    let achievementsInfoPath = '';
-
-    if (await pathExists(this.paths.steamRetrieverAchievementsInfoPath)) {
-      achievementsInfoPath = this.paths.steamRetrieverAchievementsInfoPath;
-    } else {
-      this.console(`${this.paths.steamRetrieverAchievementsInfoPath} was not found!`);
-
-      if (await pathExists(this.paths.steamRetrieverAchievementsInfoDefaultPath)) {
-        achievementsInfoPath = this.paths.steamRetrieverAchievementsInfoDefaultPath;
-      } else {
-        this.console(`${this.paths.steamRetrieverAchievementsInfoDefaultPath} was not found!`);
-      }
-    }
-
-    if (achievementsInfoPath.length > 0) {
-      readJson(achievementsInfoPath)
-        .then(async (achievementsInfoParse: SteamRetrieverAchievements) => {
-          await ensureDir(this.paths.appIdAchievementsPath);
-
-          for (const oo in achievementsInfoParse) {
-            if (Object.prototype.hasOwnProperty.call(achievementsInfoParse, oo)) {
-              const achievement = achievementsInfoParse[oo];
-              achievement.icon = 'achievements/' + achievement.name + '.jpg';
-              achievement.icongray = 'achievements/' + achievement.name + '_gray.jpg';
-
-              achievementsInfoParse[oo] = achievement;
-
-              if ((Object.keys(achievementsInfoParse).length - 1).toString() === oo) {
-                writeJson(this.paths.appIdAchievementsInfoPath, achievementsInfoParse, {
-                  spaces: 2,
-                })
-                  .then(() => {
-                    this.console(
-                      this.paths.appIdAchievementsInfoPath + ' was written successfully!',
-                    );
-                  })
-                  .catch((error) => {
-                    this.console(error.message);
-                  });
-                copy(
-                  this.paths.steamRetrieverAchievementsImagesPath,
-                  this.paths.appIdAchievementsPath,
-                )
-                  .then(() => {
-                    this.console(
-                      'The achievement images have been successfully moved to ' +
-                        this.paths.appIdAchievementsPath,
-                    );
-                  })
-                  .catch((error) => {
-                    this.console(error.message);
-                  });
-              }
-            }
-          }
-        })
-        .catch((error) => {
-          this.console(error.message);
-        });
-    }
-  }
-
-  private spawn () {
-    const filePath = paths.steamRetrieverBin;
-    const args = [
-      // SteamApi web key
-      '-k',
-      this.steamWebApiKey,
-      // OutputPath
-      '-o',
-      this.paths.steamRetrieverPath,
-      // Language
-      '-l',
-      this.language,
-      // Download images
-      '-i',
-    ];
-
-    // Force only in production mode
-    if (environments.PROD) {
-      args.push('-f');
-    }
-
-    args.push(this.appId);
 
     try {
-      return spawn(filePath, args);
-    } catch (error: unknown) {
-      this.console(error as string);
+      await this.getAppType();
+      await this.checkSteamApiDlls();
+      await this.getAppInfo();
+      await this.downloadAppHeader();
+
+      if (this.accountSteamWebApiKey.length > 0) {
+        await this.getAppAchievements();
+        await this.getAppItems();
+      } else {
+        this.console('The WebApi key is missing, i skip the achievements, stats and items.');
+      }
+
+      await this.addGame();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      this.console(error.message, true);
+      this.consoleHide();
+    }
+  }
+
+  private async imageDownloader (url: string, saveTo: string) {
+    const response = await axios({
+      method: 'GET',
+      responseType: 'stream',
+      url,
+    });
+    return await new Promise((resolve, reject) => {
+      response.data.pipe(createWriteStream(saveTo))
+        .on('error', reject)
+        .once('close', () => {
+          resolve(saveTo);
+        });
+    });
+  }
+
+  // BASED ON generate_interfaces_file.cpp BY Mr. GoldBerg
+  private async writeSteamApiInterfaces (dll: string) {
+    const interfaces = await this.findSteamApiInterfaces(dll);
+    await writeFile(this.gamePaths.appIdSteamInterfacesPath, interfaces.join('\r\n')).then(() => {
+      this.console(
+        `${this.gamePaths.appIdSteamInterfacesPath} was written successfully!`,
+        true,
+      );
+    });
+  }
+
+  private async findSteamApiInterface (content: string, regexp: string) {
+    const result: string[] = [];
+    const re = new RegExp(regexp, 'gmu');
+    const matches = content.match(re);
+
+    if (matches !== null) {
+      for (const match of matches) {
+        result.push(match);
+      }
     }
 
-    return false;
+    return result;
+  }
+
+  private async findSteamApiInterfaces (dll: string) {
+    const interfaces = [
+      'SteamClient',
+      'SteamGameServer',
+      'SteamGameServerStats',
+      'SteamUser',
+      'SteamFriends',
+      'SteamUtils',
+      'SteamMatchMaking',
+      'SteamMatchMakingServers',
+      'STEAMUSERSTATS_INTERFACE_VERSION',
+      'STEAMAPPS_INTERFACE_VERSION',
+      'SteamNetworking',
+      'STEAMREMOTESTORAGE_INTERFACE_VERSION',
+      'STEAMSCREENSHOTS_INTERFACE_VERSION',
+      'STEAMHTTP_INTERFACE_VERSION',
+      'STEAMUNIFIEDMESSAGES_INTERFACE_VERSION',
+      'STEAMUGC_INTERFACE_VERSION',
+      'STEAMAPPLIST_INTERFACE_VERSION',
+      'STEAMMUSIC_INTERFACE_VERSION',
+      'STEAMMUSICREMOTE_INTERFACE_VERSION',
+      'STEAMHTMLSURFACE_INTERFACE_VERSION_',
+      'STEAMINVENTORY_INTERFACE_V',
+      'SteamController',
+      'SteamMasterServerUpdater',
+      'STEAMVIDEO_INTERFACE_V',
+    ];
+    const content = await readFile(dll, {
+      encoding: 'utf8',
+    });
+    let result: string[] = [];
+
+    // eslint-disable-next-line @typescript-eslint/naming-convention, canonical/id-match
+    for (const _interface of interfaces) {
+      const matches = await this.findSteamApiInterface(content, `${_interface}\\d{3}`);
+      result = result.concat(matches);
+    }
+
+    if ((await this.findSteamApiInterface(content, 'STEAMCONTROLLER_INTERFACE_VERSION\\d{3}')).length === 0) {
+      const matches = await this.findSteamApiInterface(content, 'STEAMCONTROLLER_INTERFACE_VERSION');
+      result = result.concat(matches);
+    }
+
+    return result;
   }
 }
 

@@ -20,21 +20,17 @@ import gameLauncher from './functions/game-launcher';
 import storage from './storage';
 import './ipc/app';
 import './ipc/window';
-import './ipc/contextmenu';
 import './ipc/account';
 import './ipc/settings';
 import './ipc/game';
 
 log.info('App starting...');
 
-// ENV
-const environments = import.meta.env;
-
 // SET LOG TO AUTOUPDATER
 autoUpdater.logger = log;
 
 // COMMANDS LINE
-const commandsLine = argv.slice(environments.DEV ? 2 : 1);
+const commandsLine = argv.slice(app.isPackaged ? 1 : 2);
 
 // REQUEST SINGLE INSTANCE
 if (!app.requestSingleInstanceLock() && commandsLine.length === 0) {
@@ -54,7 +50,7 @@ app.on('web-contents-created', (_event, contents) => {
   contents.on('will-navigate', (event, url) => {
     const parsedUrl = new URL(url);
     if (!config.allowedWillNavigateUrls.has(parsedUrl.origin)) {
-      log.error('will-navigate: ' + parsedUrl.href + ' isn\'t allowed');
+      log.error(`will-navigate: ${parsedUrl.href} isn't allowed`);
       event.preventDefault();
     }
 
@@ -83,19 +79,19 @@ app
     // SECURITY: https://www.electronjs.org/docs/latest/tutorial/security/#5-handle-session-permission-requests-from-remote-content
     session.defaultSession.setPermissionRequestHandler((_webContents, permission, callback) => {
       const pass = false;
-      log.debug(permission + ' permission is not granted');
+      log.debug(`${permission} permission is not granted.`);
       callback(pass);
     });
   })
   .then(async () => {
     if (commandsLine.length > 0) {
       const argumentAppId = commandsLine[0];
-      const has = storage.has('games.' + argumentAppId);
+      const has = storage.has(`games.${argumentAppId}`);
       if (has) {
-        const data: StoreGameDataType = storage.get('games.' + argumentAppId);
-        gameLauncher(data);
+        const data: StoreGameDataType = storage.get(`games.${argumentAppId}`);
+        await gameLauncher(data);
       } else {
-        dialog.showErrorBox('Error', argumentAppId + ' does not exist!');
+        dialog.showErrorBox('Error', `${argumentAppId} does not exist!`);
       }
 
       app.exit();
@@ -104,7 +100,7 @@ app
         log.error(error.message);
       });
 
-      browser.createWindow();
+      await browser.createWindow();
     }
   })
   .catch((error) => {

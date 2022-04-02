@@ -1,6 +1,6 @@
 @layer components {
   .navbar {
-    @apply flex justify-between bg-secondary app-region-drag shadow-md;
+    @apply flex justify-between bg-secondary shadow-md app-region-drag;
 
     & .navbar-brand {
       @apply flex items-center mx-1;
@@ -11,16 +11,67 @@
     }
 
     & .navbar-nav {
-      @apply flex app-region-drag;
+      @apply flex;
 
       & .nav-link {
-        @apply flex text-white p-2 app-region-no-drag border-b border-b-transparent;
+        @apply flex p-2 border-b border-b-transparent;
         @apply hover:bg-gray-200 hover:bg-opacity-10;
 
-        &[data-navigo]:hover {
-          @apply border-b-white;
+        &[data-navigo] {
+          @apply hover:border-b-white;
         }
       }
+    }
+  }
+
+  /* EXTRA */
+  .navbar-brand {
+    & > span {
+      @apply font-oswald uppercase;
+    }
+  }
+
+  .nav-link {
+    & .text {
+      @apply ml-1 hidden lg:inline-block;
+    }
+
+    &[data-sk="titlebar"] {
+      @apply z-40 relative;
+    }
+
+    &[data-sk="titlebar"][data-sk-attr="close"] {
+      @apply hover:bg-red-600;
+    }
+
+    &[data-sk="titlebar"][data-sk-attr="restore"] {
+      @apply hidden;
+    }
+
+    &[data-sk="set-network"][data-sk-to="offline"] {
+      @apply text-green-600;
+
+      & > .mdi:last-child {
+        @apply hidden;
+      }
+    }
+
+    &[data-sk="set-network"][data-sk-to="online"] {
+      @apply text-red-600;
+
+      & > .mdi:first-child {
+        @apply hidden;
+      }
+    }
+  }
+
+  .window-is-maximized .nav-link {
+    &[data-sk="titlebar"][data-sk-attr="maximize"] {
+      @apply hidden;
+    }
+
+    &[data-sk="titlebar"][data-sk-attr="restore"] {
+      @apply flex;
     }
   }
 }

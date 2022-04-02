@@ -1,6 +1,6 @@
 @layer components {
-  #container {
-    @apply overflow-y-auto px-3;
+  main {
+    @apply overflow-y-auto px-2;
 
     & > .container {
       @apply mx-auto;

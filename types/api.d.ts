@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import type {
   IpcRendererEvent,
+  OpenDialogReturnValue,
 } from 'electron';
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Window {
     api: {
       account: {
@@ -12,9 +13,9 @@ declare global {
         getRandomSteamId: () => Promise<string>,
       },
       app: {
-        choseDirectory: () => Promise<string[] | undefined>,
-        choseFile: () => Promise<string[] | undefined>,
-        filePathParse: (path: string) => Promise<Record<string, string>>,
+        choseDirectory: () => Promise<OpenDialogReturnValue>,
+        choseFile: () => Promise<OpenDialogReturnValue>,
+        filePathParse: (path: string) => Promise<FilePathParse>,
         getCopyright: () => Promise<string>,
         getDescription: () => Promise<string>,
         getName: () => Promise<string>,
@@ -23,6 +24,8 @@ declare global {
       },
       game: {
         getData: (appId: string) => Promise<StoreGameDataType | undefined>,
+        // TODO: add interface
+        getPaths: (appId: string) => Promise<Record<string, string>>,
         openContextMenu: (appId: string) => void,
       },
       games: {

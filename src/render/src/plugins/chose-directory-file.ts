@@ -1,9 +1,14 @@
+import type {
+  OpenDialogReturnValue,
+} from 'electron';
+
 (($) => {
-  const fill = (dom: JQuery, value: string[] | undefined) => {
-    if (typeof value !== 'undefined') {
+  const fill = (dom: JQuery, values: OpenDialogReturnValue) => {
+    if (typeof values.filePaths !== 'undefined') {
+      const filePaths = values.filePaths;
       const inputGroup = dom.closest('.input-group');
       const input = inputGroup.find('.form-control');
-      input.val(value[0]);
+      input.val(filePaths[0]);
     }
   };
 
@@ -19,7 +24,7 @@
     event.preventDefault();
     const dom = $(event.currentTarget);
     const what = dom.attr('data-sk-what');
-    let chosed: string[] | undefined;
+    let chosed;
 
     switch (what) {
       case 'dir': {

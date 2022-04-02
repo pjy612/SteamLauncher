@@ -1,54 +1,54 @@
-import {
-  execFile,
-} from 'node:child_process';
-import {
-  existsSync,
-  writeFileSync,
-} from 'node:fs';
+import childProcess from 'node:child_process';
 import {
   join,
 } from 'node:path';
 import {
-  emptyDirSync,
-  copySync,
+  promisify,
+} from 'node:util';
+import {
+  pathExists,
+  emptyDir,
+  copy,
+  writeFile,
 } from 'fs-extra';
 import ini from 'ini';
 import storage from '../storage';
-import generateAppIdPaths from './generate-appid-paths';
+import gamePathsByAppId from './game-paths-by-appid';
 import notify from './notify';
 
-const gameLauncher = (dataGame: StoreGameDataType, normally = false) => {
+const execFile = promisify(childProcess.execFile);
+
+const gameLauncher = async (dataGame: StoreGameDataType, withoutEmu = false) => {
   const dataAccount = storage.get('account')!;
   const dataSettings = storage.get('settings');
 
-  const paths = generateAppIdPaths(dataGame.appId, dataAccount.language);
+  const paths = gamePathsByAppId(dataGame.appId);
 
   const dataGamePath = dataGame.path;
   const dataGameRunPath = dataGame.runPath;
   const dataGameCommandLine = dataGame.commandLine;
 
-  if (normally) {
-    execFile(dataGamePath, dataGameCommandLine.split(' '));
+  if (withoutEmu) {
+    await execFile(dataGamePath, dataGameCommandLine.split(' '));
     notify(`Launch normally ${dataGame.name}`);
     return;
   }
 
   const emulatorPath = dataSettings.steamClientPath!;
-
   const emulatorLoaderPath = join(emulatorPath, 'steamclient_loader.exe');
 
-  if (!existsSync(emulatorLoaderPath)) {
+  if (!(await pathExists(emulatorLoaderPath))) {
     notify('Assign the correct folder of the experimental client in the settings!');
     return;
   }
 
   const emulatorSteamSettingsPath = join(emulatorPath, 'steam_settings');
 
-  if (existsSync(emulatorSteamSettingsPath)) {
-    emptyDirSync(emulatorSteamSettingsPath);
+  if (!(await pathExists(emulatorSteamSettingsPath))) {
+    await emptyDir(emulatorSteamSettingsPath);
   }
 
-  copySync(paths.appIdDataPath, emulatorSteamSettingsPath);
+  await copy(paths.appIdDataPath, emulatorSteamSettingsPath);
 
   const emulatorSettingsForceAccountName = join(
     emulatorSteamSettingsPath,
@@ -57,17 +57,17 @@ const gameLauncher = (dataGame: StoreGameDataType, normally = false) => {
   const emulatorSettingsForceLanguage = join(emulatorSteamSettingsPath, 'force_language.txt');
   const emulatorSettingsForceSteamId = join(emulatorSteamSettingsPath, 'force_steamid.txt');
 
-  writeFileSync(emulatorSettingsForceAccountName, dataAccount.name);
-  writeFileSync(emulatorSettingsForceLanguage, dataAccount.language);
-  writeFileSync(emulatorSettingsForceSteamId, dataAccount.steamId);
+  await writeFile(emulatorSettingsForceAccountName, dataAccount.name);
+  await writeFile(emulatorSettingsForceLanguage, dataAccount.language);
+  await writeFile(emulatorSettingsForceSteamId, dataAccount.steamId);
 
   const emulatorSettingsForceListenPort = join(emulatorSteamSettingsPath, 'force_listen_port.txt');
   const emulatorSettingsOverlay = join(emulatorSteamSettingsPath, 'disable_overlay.txt');
 
-  writeFileSync(emulatorSettingsForceListenPort, dataGame.listenPort);
+  await writeFile(emulatorSettingsForceListenPort, dataGame.listenPort);
 
   if (!dataGame.overlay) {
-    writeFileSync(emulatorSettingsOverlay, '');
+    await writeFile(emulatorSettingsOverlay, '');
   }
 
   const emulatorSettingsDisableNetworking = join(
@@ -77,8 +77,8 @@ const gameLauncher = (dataGame: StoreGameDataType, normally = false) => {
   const emulatorSettingsOffline = join(emulatorSteamSettingsPath, 'offline.txt');
 
   if (!dataSettings.network) {
-    writeFileSync(emulatorSettingsDisableNetworking, '');
-    writeFileSync(emulatorSettingsOffline, '');
+    await writeFile(emulatorSettingsDisableNetworking, '');
+    await writeFile(emulatorSettingsOffline, '');
   }
 
   const emulatorLoaderConfigPath = join(emulatorPath, 'ColdClientLoader.ini');
@@ -94,9 +94,9 @@ const gameLauncher = (dataGame: StoreGameDataType, normally = false) => {
     },
   };
 
-  writeFileSync(emulatorLoaderConfigPath, ini.stringify(loaderConfig));
+  await writeFile(emulatorLoaderConfigPath, ini.stringify(loaderConfig));
 
-  execFile(emulatorLoaderPath);
+  await execFile(emulatorLoaderPath);
 
   notify(`Launch ${dataGame.name}`);
 };

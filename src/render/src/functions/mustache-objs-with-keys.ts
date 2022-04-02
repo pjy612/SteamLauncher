@@ -1,5 +1,4 @@
-// eslint-disable-next-line canonical/id-match
-const objs2list = (pp: Record<string, unknown>) => {
+const mustacheObjsWithKeys = (pp: Record<string, unknown>) => {
   const rr = [];
   for (const kk in pp) {
     if (Object.prototype.hasOwnProperty.call(pp, kk)) {
@@ -13,4 +12,4 @@ const objs2list = (pp: Record<string, unknown>) => {
   return rr;
 };
 
-export default objs2list;
+export default mustacheObjsWithKeys;

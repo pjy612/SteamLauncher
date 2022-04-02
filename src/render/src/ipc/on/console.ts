@@ -1,35 +1,45 @@
-const addToConsole = (txt: string) => {
-  const a = $('#console .modal-body');
-  $('<p>').text(txt).appendTo(a);
-  a.scrollTop(a.prop('scrollHeight') - a.height()!);
-};
+(async () => {
+  const modalConsole = $('#console');
+  const modalTextarea = modalConsole.find('textarea');
 
-window.api.on('show-console', async () => {
-  const {
-    default: html,
-  } = await import('./console.html?raw');
-  $(html).appendTo('body').modal('show');
-});
+  const addToConsole = (txt: string, space = false) => {
+    const newTxt = `> - ${space ? '   ' : ''}${txt}`;
+    const oldValue = modalTextarea.val();
+    const scrollHeight = modalTextarea.prop('scrollHeight');
+    const height = modalTextarea.height()!;
 
-window.api.on('hide-console', () => {
-  window.setTimeout(() => {
-    $('#console').addClass('finished');
+    modalTextarea.val(`${oldValue}${newTxt}\r\n`);
+    modalTextarea.scrollTop(scrollHeight - height);
+  };
+
+  window.api.on('console-show', async () => {
+    modalConsole.modal('show');
+  });
+
+  window.api.on('console-hide', (_event, isOk: boolean) => {
+    modalConsole.addClass(isOk ? 'all' : 'only-console');
     addToConsole('');
     addToConsole('');
-    addToConsole('Press Enter to exit...');
-  }, 1_500);
-});
+    addToConsole('PRESS ENTER TO EXIT...');
+  });
 
-window.api.on('add-to-console', (_event, txt: string) => {
-  addToConsole(txt);
-});
+  window.api.on('console-add', (_event, txt: string, space = false) => {
+    addToConsole(txt, space);
+  });
 
-$(window).on('keyup', (event) => {
-  const console = $('#console');
-  if (event.key === 'Enter' && console.hasClass('finished')) {
-    console.removeClass('finished');
-    $('.modal').modal('hide');
-  }
-});
+  $(window).on('keyup', (event) => {
+    if (event.key === 'Enter') {
+      if (modalConsole.hasClass('all')) {
+        modalConsole.removeClass('all');
+        modalTextarea.val('');
+        $('.modal').modal('hide');
+      } else {
+        modalConsole.removeClass('only-console');
+        modalTextarea.val('');
+        modalConsole.modal('hide');
+      }
+    }
+  });
+})();
 
 export {};

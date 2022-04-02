@@ -10,7 +10,8 @@ const notify = (message: string) => {
     });
     nn.show();
   } else {
-    log.debug('Notifications system isn\'t supported!');
+    log.error('Notifications system isn\'t supported! Message:');
+    log.info(message);
   }
 };
 

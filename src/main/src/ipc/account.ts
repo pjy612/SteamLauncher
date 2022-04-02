@@ -10,22 +10,19 @@ import {
 import {
   fromIndividualAccountID,
 } from 'steamid';
-import {
-  hiddenModalChannel,
-} from '../config';
 import notify from '../functions/notify';
 import storage from '../storage';
 
 const nanoid = customAlphabet('0123456789', 8);
 const functionAccountCreateEdit = (event: IpcMainEvent, inputs: StoreAccountType) => {
   if (!fromIndividualAccountID(inputs.steamId).isValidIndividual()) {
-    notify('Invalid ' + inputs.steamId + ' SteamId!');
+    notify(`Invalid ${inputs.steamId} SteamId!`);
     return;
   }
 
   storage.set('account', inputs);
   notify(storage.has('account') ? 'Account edited successfully!' : 'Account created successfully!');
-  event.sender.send(hiddenModalChannel);
+  event.sender.send('modal-hide');
 };
 
 ipc.on('account-create', functionAccountCreateEdit);

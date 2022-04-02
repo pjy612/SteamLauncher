@@ -15,13 +15,9 @@ export const paths = {
     saves: join(appDataPath, 'Goldberg SteamEmu Saves'),
   },
   iconFilePath: join(appPath, '/build/resources/icon.ico'),
-  preloadFilePath: join(appPath, '/src/preload/dist/index.js'),
+  preloadFilePath: join(appPath, '/src/preload/dist/preload.cjs.js'),
   renderFilePath: join(appPath, '/src/render/dist/index.html'),
   signToolBin: join(binPath, 'signtool/signtool.exe'),
-  steamApiInterfacesBin: join(binPath, 'steam_api_interfaces/steam_api_interfaces.exe'),
-  steamApiInterfacesPath: join(binPath, 'steam_api_interfaces'),
-  steamRetrieverBin: join(binPath, 'steam_retriever/steam_retriever.exe'),
-  steamRetrieverPath: join(binPath, 'steam_retriever'),
 };
 
 export const allowedWillNavigateUrls = new Set([
@@ -36,12 +32,9 @@ export const allowedExternalUrls = new Set([
   'https://steamcommunity.com',
 ]);
 
-export const hiddenModalChannel = 'hidden-modal-channel';
-
 const defaults = {
   allowedExternalUrls,
   allowedWillNavigateUrls,
-  hiddenModalChannel,
   paths,
 };
 

@@ -1,0 +1,14 @@
+@layer components {
+  .form-control {
+    @apply form-input;
+
+    &.disabled {
+      @apply bg-gray-600 text-gray-500;
+    }
+  }
+
+  .form-control,
+  .form-select {
+    @apply border-gray-900 bg-gray-800;
+  }
+}

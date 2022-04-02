@@ -10,6 +10,10 @@ const homeController = new HomeView();
   await homeController.show();
 })();
 
+navigo.on('/', () => {
+  //
+});
+
 const aboutController = new AboutView();
 navigo.on('/about', async () => {
   await aboutController.show();

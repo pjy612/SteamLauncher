@@ -76,6 +76,7 @@ To add a game, simply drag the game executable to the main page of the applicati
 The first item in the list has priority.
 
 - ~~**The SteamLauncher code is sadly worse than a child's drawing of a tree.**~~
+- Automatically download the Mr. GoldBerg emulator.
 - Integrate https://github.com/Sak32009/GetDLCInfoFromSteamDB into the launcher.
 
 ## FAQ

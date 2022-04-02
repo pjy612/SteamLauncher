@@ -1,15 +1,19 @@
 @layer base {
+  * {
+    @apply select-none app-region-no-drag;
+  }
+
   html,
   body {
     @apply h-full;
   }
 
   html {
-    @apply select-none bg-primary;
+    @apply bg-primary;
   }
 
   body {
-    @apply max-h-full flex flex-col;
+    @apply max-h-full flex flex-col text-gray-200;
   }
 
   a.link {

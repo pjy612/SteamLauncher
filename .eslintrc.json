@@ -1,10 +1,12 @@
 {
-  "extends": ["canonical", "canonical/browser", "canonical/node"],
+  "extends": ["canonical", "canonical/node", "canonical/browser"],
+  "root": true,
   "env": {
     "es2022": true,
     "jquery": true
   },
   "rules": {
+    "prefer-template": "error",
     "linebreak-style": ["error", "windows"],
     "canonical/filename-match-exported": "off",
     "import/no-unassigned-import": "off",
@@ -12,7 +14,7 @@
   },
   "overrides": [
     {
-      "extends": ["canonical/typescript"],
+      "extends": ["canonical/module", "canonical/typescript"],
       "files": "*.ts",
       "parserOptions": {
         "project": "./tsconfig.json"
@@ -22,6 +24,5 @@
         "@typescript-eslint/no-misused-promises": "off"
       }
     }
-  ],
-  "root": true
+  ]
 }

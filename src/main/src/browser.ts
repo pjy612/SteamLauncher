@@ -13,7 +13,13 @@ import storage from './storage';
 const environments = import.meta.env;
 const viteServerUrl = 'http://localhost:3000/';
 
-export const createWindow = () => {
+const stateChangeHandler = (win: BrowserWindow) => {
+  storage.set('window.bounds', win.getBounds());
+  storage.set('window.isMaximized', win.isMaximized());
+  storage.set('window.isFullScreen', win.isFullScreen());
+};
+
+export const createWindow = async () => {
   const win = new BrowserWindow({
     backgroundColor: '#161920',
     frame: environments.DEV,
@@ -31,12 +37,6 @@ export const createWindow = () => {
       webSecurity: environments.PROD,
     },
     width: 800,
-  });
-
-  win.on('close', () => {
-    storage.set('window.bounds', win.getBounds());
-    storage.set('window.isMaximized', win.isMaximized());
-    storage.set('window.isFullScreen', win.isFullScreen());
   });
 
   win.on('ready-to-show', () => {
@@ -58,18 +58,32 @@ export const createWindow = () => {
     }
   });
 
-  const windowWhenChangeStateChannel = 'window-when-change-state';
+  const windowStateChangeName = 'window-state-change';
+
+  win.on('resized', () => {
+    stateChangeHandler(win);
+  });
+
+  win.on('moved', () => {
+    stateChangeHandler(win);
+  });
+
+  win.on('close', () => {
+    stateChangeHandler(win);
+  });
 
   win.on('maximize', () => {
-    win.webContents.send(windowWhenChangeStateChannel, true);
+    stateChangeHandler(win);
+    win.webContents.send(windowStateChangeName, true);
   });
 
   win.on('unmaximize', () => {
-    win.webContents.send(windowWhenChangeStateChannel, false);
+    stateChangeHandler(win);
+    win.webContents.send(windowStateChangeName, false);
   });
 
   win.webContents.on('did-finish-load', () => {
-    win.webContents.send(windowWhenChangeStateChannel, win.isMaximized());
+    win.webContents.send(windowStateChangeName, win.isMaximized());
   });
 
   win.webContents.openDevTools({
@@ -78,17 +92,9 @@ export const createWindow = () => {
 
   if (environments.PROD) {
     win.removeMenu();
-    win
-      .loadFile(paths.renderFilePath, {
-        hash: '#/',
-      })
-      .catch((error) => {
-        log.error(error.message);
-      });
+    await win.loadFile(paths.renderFilePath);
   } else {
-    win.loadURL(viteServerUrl).catch((error) => {
-      log.error(error.message);
-    });
+    await win.loadURL(viteServerUrl);
   }
 
   return win;
@@ -97,7 +103,7 @@ export const createWindow = () => {
 export const openUrlExternal = (url: string) => {
   const parsedUrl = new URL(url);
   if (allowedExternalUrls.has(parsedUrl.origin)) {
-    log.debug(url + ' is opened externally');
+    log.debug(`${url} is opened externally.`);
     setImmediate(async () => {
       await shell.openExternal(url);
     });

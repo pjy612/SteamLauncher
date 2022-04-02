@@ -48,9 +48,7 @@ ipc.handle('app-file-path-parse', (_event, filePath: string) => {
 
 ipc.handle('app-chose-directory', (event) => {
   const currentWindow = BrowserWindow.fromId(event.frameId);
-  // TODO: to async
-  // eslint-disable-next-line node/no-sync
-  return dialog.showOpenDialogSync(currentWindow!, {
+  return dialog.showOpenDialog(currentWindow!, {
     properties: [
       'openDirectory',
     ],
@@ -59,9 +57,7 @@ ipc.handle('app-chose-directory', (event) => {
 
 ipc.handle('app-chose-file', (event) => {
   const currentWindow = BrowserWindow.fromId(event.frameId);
-  // TODO: to async
-  // eslint-disable-next-line node/no-sync
-  return dialog.showOpenDialogSync(currentWindow!, {
+  return dialog.showOpenDialog(currentWindow!, {
     properties: [
       'openFile',
     ],

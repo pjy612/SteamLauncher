@@ -31,9 +31,10 @@ class HomeView {
     const gamesData = await window.api.games.getData();
     const gamesList = this.dom?.find('#games-list .card-body').empty();
     if (typeof gamesData !== 'undefined' && Object.keys(gamesData).length > 0) {
-      const gamesGrid = $('<div class=\'games-grid\'></div>');
-      $.each(gamesData, (appId: string, values) => {
-        const header = values.header;
+      const gamesGrid = $('<div class="games-grid"></div>');
+      $.each(gamesData, async (appId: string, values) => {
+        const paths = await window.api.game.getPaths(appId);
+        const header = paths.appIdHeaderPath;
         const name = values.name;
 
         const gameContainer = $(`<div class="game-container" data-appId="${appId}"></div>`).attr(
@@ -68,7 +69,7 @@ class HomeView {
   }
 
   private async appendDom () {
-    $('#container').html(this.dom![0]);
+    $('main').html(this.dom![0]);
   }
 }
 

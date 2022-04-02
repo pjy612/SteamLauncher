@@ -16,17 +16,26 @@
             <span class="mdi mdi-steam mdi-18px"></span>
             <span class="ml-1">SteamClient Path <span class="text-red-500">(*)</span></span>
           </div>
-          <input type="text" class="form-control disabled" name="steamClientPath" value="{{data.steamClientPath}}"
-            placeholder="click on paperclip and chose directory" readonly required>
+          <input
+            type="text"
+            class="form-control disabled"
+            name="steamClientPath"
+            value="{{data.steamClientPath}}"
+            placeholder="click on paperclip and chose directory"
+            readonly
+            required
+          />
           <button type="button" class="btn btn-gray" data-sk="choseDirFile">
             <span class="mdi mdi-paperclip mdi-18px"></span>
           </button>
         </div>
-        <div class="text-xs"><span class="text-red-500">(*)</span> Download Mr. GoldBerg Steam Emulator and select the
-          "experimental_steamclient" folder.</div>
+        <div class="form-text">
+          <span class="text-red-500">(*)</span> Download Mr. GoldBerg Steam Emulator and select the
+          "experimental_steamclient" folder.
+        </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-block btn-success">Save</button>
+        <button type="submit" class="btn btn-block btn-green">Save</button>
       </div>
     </form>
   </div>

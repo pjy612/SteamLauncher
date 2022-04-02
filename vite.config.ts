@@ -19,7 +19,7 @@ import {
 } from './package.json';
 
 const builtinModulesNodeProtocol = builtinModules.map((module) => {
-  return 'node:' + module;
+  return `node:${module}`;
 });
 const externalModules = [
   ...Object.keys(dependencies),
@@ -54,9 +54,7 @@ export default function createConfig (packagePath: string) {
     if (viteDistName === 'main' || viteDistName === 'preload') {
       viteConfig.build!.lib = {
         entry: join(viteRoot, 'index.ts'),
-        fileName: () => {
-          return 'index.js';
-        },
+        fileName: viteDistName,
         formats: [
           'cjs',
         ],

@@ -50,8 +50,11 @@ contextBridge.exposeInMainWorld('api', {
     async getData (appId: string) {
       return await ipc.invoke('game-data', appId);
     },
+    async getPaths (appId: string) {
+      return await ipc.invoke('game-paths-by-appid', appId);
+    },
     openContextMenu (appId: string) {
-      ipc.send('open-contextmenu-game', appId);
+      ipc.send('game-contextmenu', appId);
     },
   },
   games: {

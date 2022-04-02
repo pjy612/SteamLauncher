@@ -7,20 +7,16 @@ import config from '../config';
     return this.each(() => {
       const dom = $(this);
 
-      dom.on('dragenter dragend dragleave dragover drag', (event) => {
+      dom.on('dragenter dragend dragleave dragover dragstart drag', (event) => {
         event.preventDefault();
       });
 
       dom.on('dragover', () => {
-        if (!dom.hasClass(activeClass)) {
-          dom.addClass(activeClass);
-        }
+        dom.addClass(activeClass);
       });
 
       dom.on('dragleave', () => {
-        if (dom.hasClass(activeClass)) {
-          dom.removeClass(activeClass);
-        }
+        dom.removeClass(activeClass);
       });
 
       dom.on('drop', async (event) => {
