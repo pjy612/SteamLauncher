@@ -7,7 +7,7 @@
       @apply p-0;
 
       & textarea {
-        @apply h-full w-full bg-black pb-1 text-sm leading-normal;
+        @apply h-full w-full bg-black pb-1 text-sm leading-normal resize-none;
       }
     }
   }

@@ -11,6 +11,7 @@ import {
   autoUpdater,
 } from 'electron-updater';
 import './process';
+import './https';
 import {
   appId,
 } from '../../../electron-builder.json';
