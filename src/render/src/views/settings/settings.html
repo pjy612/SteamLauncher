@@ -29,9 +29,22 @@
             <span class="mdi mdi-paperclip mdi-18px"></span>
           </button>
         </div>
-        <div class="form-text">
+        <div class="form-text mb-3">
           <span class="text-red-500">(*)</span> Download Mr. GoldBerg Steam Emulator and select the
           "experimental_steamclient" folder.
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-text">
+            <span class="mdi mdi-lock-check mdi-18px"></span>
+            <span class="ml-1">SSL Cert. Valid. <span class="text-red-500">(*)</span></span>
+          </div>
+          <select class="form-select" name="httpsRejectUnauthorized" required>
+            <option value="true" {{#data.httpsRejectUnauthorized}}selected{{/data.httpsRejectUnauthorized}}>Activated</option>
+            <option value="false" {{^data.httpsRejectUnauthorized}}selected{{/data.httpsRejectUnauthorized}}>Deactivated</option>
+          </select>
+        </div>
+        <div class="form-text">
+          <span class="text-red-500">(*)</span> If you encounter the "unable to verify the first certificate" error, try disabling the ssl certificate verification. If this value is changed, restart the app.
         </div>
       </div>
       <div class="modal-footer">

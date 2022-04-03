@@ -19,6 +19,7 @@ type StoreGameDataType = {
 type StoreGamesDataType = Record<string, StoreGameDataType>;
 
 type StoreSettingsType = {
+  httpsRejectUnauthorized: boolean,
   network: boolean,
   steamClientPath?: string,
 };

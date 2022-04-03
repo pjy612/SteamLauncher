@@ -1,4 +1,4 @@
 import https from 'node:https';
-import ca from './ca-bundle/ca_intermediate_root_bundle.pem?raw';
+import storage from './storage';
 
-https.globalAgent.options.ca = ca;
+https.globalAgent.options.rejectUnauthorized = storage.get('settings.httpsRejectUnauthorized');
