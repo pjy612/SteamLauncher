@@ -98,12 +98,12 @@ app
       app.exit();
     } else {
       autoUpdater.checkForUpdatesAndNotify().catch((error) => {
-        log.error(error.message);
+        log.error(error);
       });
 
       await browser.createWindow();
     }
   })
   .catch((error) => {
-    log.error(error.message);
+    log.error(error);
   });

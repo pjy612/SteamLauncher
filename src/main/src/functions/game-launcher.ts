@@ -29,8 +29,8 @@ const gameLauncher = async (dataGame: StoreGameDataType, withoutEmu = false) => 
   const dataGameCommandLine = dataGame.commandLine;
 
   if (withoutEmu) {
-    await execFile(dataGamePath, dataGameCommandLine.split(' '));
     notify(`Launch normally ${dataGame.name}`);
+    await execFile(dataGamePath, dataGameCommandLine.split(' '));
     return;
   }
 
@@ -44,10 +44,7 @@ const gameLauncher = async (dataGame: StoreGameDataType, withoutEmu = false) => 
 
   const emulatorSteamSettingsPath = join(emulatorPath, 'steam_settings');
 
-  if (!(await pathExists(emulatorSteamSettingsPath))) {
-    await emptyDir(emulatorSteamSettingsPath);
-  }
-
+  await emptyDir(emulatorSteamSettingsPath);
   await copy(paths.appIdDataPath, emulatorSteamSettingsPath);
 
   const emulatorSettingsForceAccountName = join(
@@ -96,9 +93,9 @@ const gameLauncher = async (dataGame: StoreGameDataType, withoutEmu = false) => 
 
   await writeFile(emulatorLoaderConfigPath, ini.stringify(loaderConfig));
 
-  await execFile(emulatorLoaderPath);
-
   notify(`Launch ${dataGame.name}`);
+
+  await execFile(emulatorLoaderPath);
 };
 
 export default gameLauncher;
