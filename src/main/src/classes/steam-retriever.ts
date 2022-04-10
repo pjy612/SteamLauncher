@@ -1,28 +1,12 @@
-import {
-  createWriteStream,
-} from 'node:fs';
-import {
-  stat,
-  readFile,
-} from 'node:fs/promises';
-import {
-  join,
-} from 'node:path';
-import type {
-  AxiosError,
-} from 'axios';
+import { createWriteStream } from 'node:fs';
+import { readFile, stat } from 'node:fs/promises';
+import { join } from 'node:path';
+import type { AxiosError } from 'axios';
 import axios from 'axios';
-import {
-  webContents,
-} from 'electron';
+import { webContents } from 'electron';
 import log from 'electron-log';
 import glob from 'fast-glob';
-import {
-  ensureDir,
-  pathExists,
-  writeFile,
-  writeJson,
-} from 'fs-extra';
+import { ensureDir, pathExists, writeFile, writeJson } from 'fs-extra';
 import signVerify from '../bin/sign-verify';
 import gamePathsByAppId from '../functions/game-paths-by-appid';
 import notify from '../functions/notify';
@@ -43,13 +27,13 @@ class SteamRetriever {
 
   private readonly gameInputs;
 
-  public constructor (inputs: StoreGameDataType) {
+  public constructor(inputs: StoreGameDataType) {
     this.gameInputs = inputs;
     this.gameAppId = inputs.appId;
     this.gamePaths = gamePathsByAppId(inputs.appId);
   }
 
-  private console (content: AxiosError | Error | string, space = false) {
+  private console(content: AxiosError | Error | string, space = false) {
     let nContent = content;
     if (typeof nContent === 'string') {
       log.info(nContent);
@@ -73,18 +57,22 @@ class SteamRetriever {
       log.error(nContent);
     }
 
-    this.ipcEvent.send('console-add', typeof nContent === 'string' ? nContent : nContent.message, space);
+    this.ipcEvent.send(
+      'console-add',
+      typeof nContent === 'string' ? nContent : nContent.message,
+      space
+    );
   }
 
-  private consoleHide (isOk = false) {
+  private consoleHide(isOk = false) {
     this.ipcEvent.send('console-hide', isOk);
   }
 
-  private consoleShow () {
+  private consoleShow() {
     this.ipcEvent.send('console-show');
   }
 
-  private async getAppType () {
+  private async getAppType() {
     this.console(`Trying to get type of ${this.gameAppId}...`);
 
     const url = `https://store.steampowered.com/api/appdetails/?appids=${this.gameAppId}&filters=basic`;
@@ -104,13 +92,10 @@ class SteamRetriever {
     }
   }
 
-  private async checkSteamApiDlls () {
+  private async checkSteamApiDlls() {
     this.console('Check if the steam_api(64).dll are signed...');
 
-    const searchDlls = await glob([
-      '**/steam_api.dll',
-      '**/steam_api64.dll',
-    ], {
+    const searchDlls = await glob(['**/steam_api.dll', '**/steam_api64.dll'], {
       absolute: true,
       cwd: this.gameInputs.runPath,
       onlyFiles: true,
@@ -131,17 +116,25 @@ class SteamRetriever {
       const msMay2016 = Date.parse('01/05/2016');
 
       if (dllBirthtime >= msMay2016) {
-        this.console('The creation date of the dll is higher than May 2016, i don\'t create steam_interfaces.txt.', true);
+        this.console(
+          "The creation date of the dll is higher than May 2016, i don't create steam_interfaces.txt.",
+          true
+        );
       } else {
-        this.console('The creation date of the dll is less than May 2016, i create steam_interfaces.txt.', true);
+        this.console(
+          'The creation date of the dll is less than May 2016, i create steam_interfaces.txt.',
+          true
+        );
         await this.writeSteamApiInterfaces(searchDlls[0]);
       }
     } else {
-      throw new Error('The game does not contain any steam_api(64).dll, please select the correct run path!');
+      throw new Error(
+        'The game does not contain any steam_api(64).dll, please select the correct run path!'
+      );
     }
   }
 
-  private async getAppInfo () {
+  private async getAppInfo() {
     this.console(`Trying to get infos on ${this.gameAppId}...`);
 
     const url = `https://store.steampowered.com/api/dlcforapp/?appid=${this.gameAppId}`;
@@ -161,10 +154,7 @@ class SteamRetriever {
         }
 
         await writeFile(this.gamePaths.appIdDlcsInfoPath, resultDlcs.join('\r\n')).then(() => {
-          this.console(
-            `${this.gamePaths.appIdDlcsInfoPath} was written successfully!`,
-            true,
-          );
+          this.console(`${this.gamePaths.appIdDlcsInfoPath} was written successfully!`, true);
         });
       } else {
         this.console('The game does not contain dlcs.', true);
@@ -174,9 +164,9 @@ class SteamRetriever {
     }
   }
 
-  private async downloadAppHeader () {
+  private async downloadAppHeader() {
     const url = `https://cdn.akamai.steamstatic.com/steam/apps/${this.gameAppId}/header.jpg?t=1581535048`;
-    // eslint-disable-next-line no-negated-condition
+
     if (!(await pathExists(this.gamePaths.appIdHeaderPath))) {
       await this.imageDownloader(url, this.gamePaths.appIdHeaderPath).then(() => {
         this.console(`${url} was downloaded successfully!`);
@@ -186,7 +176,8 @@ class SteamRetriever {
     }
   }
 
-  private async getAppAchievements () {
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  private async getAppAchievements() {
     this.console(`Trying to get achievements and stats on ${this.gameAppId}...`);
 
     const url = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=${this.accountSteamWebApiKey}&l=${this.accountLanguage}&appid=${this.gameAppId}`;
@@ -209,7 +200,6 @@ class SteamRetriever {
 
         resultAchievements.push(achievement);
 
-        // eslint-disable-next-line no-negated-condition
         if (!(await pathExists(iconNamePath))) {
           await this.imageDownloader(iconUrl, iconNamePath).then(() => {
             this.console(`${iconName} was downloaded successfully!`, true);
@@ -218,7 +208,6 @@ class SteamRetriever {
           this.console(`${iconName} already exists, skip...`, true);
         }
 
-        // eslint-disable-next-line no-negated-condition
         if (!(await pathExists(iconGrayNamePath))) {
           await this.imageDownloader(iconGrayUrl, iconGrayNamePath).then(() => {
             this.console(`${iconGrayName} was downloaded successfully!`, true);
@@ -231,10 +220,7 @@ class SteamRetriever {
       await writeJson(this.gamePaths.appIdAchievementsInfoPath, resultAchievements, {
         spaces: 2,
       }).then(() => {
-        this.console(
-          `${this.gamePaths.appIdAchievementsInfoPath} was written successfully!`,
-          true,
-        );
+        this.console(`${this.gamePaths.appIdAchievementsInfoPath} was written successfully!`, true);
       });
     } else {
       this.console('The game has no achievements.', true);
@@ -243,14 +229,10 @@ class SteamRetriever {
     const statsData = response.data.game.availableGameStats.stats;
     if (typeof statsData !== 'undefined' && statsData.length > 0) {
       const resultStats = [];
-      // eslint-disable-next-line @typescript-eslint/naming-convention, canonical/id-match
       for (const _stat of statsData) {
-        // eslint-disable-next-line @typescript-eslint/naming-convention, canonical/id-match
-        const name = _stat.name;
+        const { name, defaultValue } = _stat;
         // NOTE: ..., float, avgrate but where can I find this data?
         const typeValue = 'int';
-        // eslint-disable-next-line @typescript-eslint/naming-convention, canonical/id-match
-        const defaultValue = _stat.defaultvalue;
 
         resultStats.push(`${name}=${typeValue}=${defaultValue}`);
       }
@@ -263,13 +245,13 @@ class SteamRetriever {
     }
   }
 
-  private async getAppItems () {
+  private async getAppItems() {
     this.console(`Trying to get items on ${this.gameAppId}...`);
 
     let url = `https://api.steampowered.com/IInventoryService/GetItemDefMeta/v1/?key=${this.accountSteamWebApiKey}&appid=${this.gameAppId}`;
     let response = await axios.get(url);
-    const digest = response.data.response.digest;
-    // eslint-disable-next-line no-negated-condition
+    const { digest } = response.data.response;
+
     if (typeof digest !== 'undefined') {
       url = `https://api.steampowered.com/IGameInventory/GetItemDefArchive/v1/?digest=${digest}&appid=${this.gameAppId}`;
       response = await axios.get(url);
@@ -280,7 +262,7 @@ class SteamRetriever {
       const resultDefaultItems: Record<string, number> = {};
 
       for (const item of response.data) {
-        const itemdefid = item.itemdefid;
+        const { itemdefid } = item;
         resultItems[itemdefid] = item;
         resultDefaultItems[itemdefid] = 1;
       }
@@ -301,7 +283,7 @@ class SteamRetriever {
     }
   }
 
-  private async addGame () {
+  private addGame() {
     const inputs: StoreGameDataType = {
       ...this.gameInputs,
       ...this.gameData,
@@ -324,7 +306,7 @@ class SteamRetriever {
     this.consoleHide(true);
   }
 
-  public async run () {
+  public async run() {
     this.consoleShow();
 
     let stop = false;
@@ -334,10 +316,8 @@ class SteamRetriever {
       await this.checkSteamApiDlls();
       await this.getAppInfo();
       await this.downloadAppHeader();
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      this.console(error, true);
+    } catch (error: unknown) {
+      this.console(error as Error, true);
       this.consoleHide();
       stop = true;
     }
@@ -349,9 +329,8 @@ class SteamRetriever {
         } else {
           this.console('The WebApi key is missing, i skip the achievements and stats.');
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        this.console(error, true);
+      } catch (error: unknown) {
+        this.console(error as Error, true);
       }
 
       try {
@@ -360,29 +339,28 @@ class SteamRetriever {
         } else {
           this.console('The WebApi key is missing, i skip the items.');
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        this.console(error, true);
+      } catch (error: unknown) {
+        this.console(error as Error, true);
       }
 
       try {
-        await this.addGame();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        this.console(error, true);
+        this.addGame();
+      } catch (error: unknown) {
+        this.console(error as Error, true);
         this.consoleHide();
       }
     }
   }
 
-  private async imageDownloader (url: string, saveTo: string) {
+  private async imageDownloader(url: string, saveTo: string) {
     const response = await axios({
       method: 'GET',
       responseType: 'stream',
       url,
     });
-    return await new Promise((resolve, reject) => {
-      response.data.pipe(createWriteStream(saveTo))
+    return new Promise((resolve, reject) => {
+      response.data
+        .pipe(createWriteStream(saveTo))
         .on('error', reject)
         .once('close', () => {
           resolve(saveTo);
@@ -391,17 +369,14 @@ class SteamRetriever {
   }
 
   // BASED ON generate_interfaces_file.cpp BY Mr. GoldBerg
-  private async writeSteamApiInterfaces (dll: string) {
+  private async writeSteamApiInterfaces(dll: string) {
     const interfaces = await this.findSteamApiInterfaces(dll);
     await writeFile(this.gamePaths.appIdSteamInterfacesPath, interfaces.join('\r\n')).then(() => {
-      this.console(
-        `${this.gamePaths.appIdSteamInterfacesPath} was written successfully!`,
-        true,
-      );
+      this.console(`${this.gamePaths.appIdSteamInterfacesPath} was written successfully!`, true);
     });
   }
 
-  private async findSteamApiInterface (content: string, regexp: string) {
+  private findSteamApiInterface(content: string, regexp: string) {
     const result: string[] = [];
     const re = new RegExp(regexp, 'gmu');
     const matches = content.match(re);
@@ -415,7 +390,7 @@ class SteamRetriever {
     return result;
   }
 
-  private async findSteamApiInterfaces (dll: string) {
+  private async findSteamApiInterfaces(dll: string) {
     const interfaces = [
       'SteamClient',
       'SteamGameServer',
@@ -447,15 +422,16 @@ class SteamRetriever {
     });
     let result: string[] = [];
 
-    // eslint-disable-next-line @typescript-eslint/naming-convention, canonical/id-match
     for (const _interface of interfaces) {
-      const matches = await this.findSteamApiInterface(content, `${_interface}\\d{3}`);
-      result = result.concat(matches);
+      const matches = this.findSteamApiInterface(content, `${_interface}\\d{3}`);
+      result = [...result, ...matches];
     }
 
-    if ((await this.findSteamApiInterface(content, 'STEAMCONTROLLER_INTERFACE_VERSION\\d{3}')).length === 0) {
-      const matches = await this.findSteamApiInterface(content, 'STEAMCONTROLLER_INTERFACE_VERSION');
-      result = result.concat(matches);
+    if (
+      this.findSteamApiInterface(content, 'STEAMCONTROLLER_INTERFACE_VERSION\\d{3}').length === 0
+    ) {
+      const matches = this.findSteamApiInterface(content, 'STEAMCONTROLLER_INTERFACE_VERSION');
+      result = [...result, ...matches];
     }
 
     return result;

@@ -1,11 +1,9 @@
-import type {
-  OpenDialogReturnValue,
-} from 'electron';
+import type { OpenDialogReturnValue } from 'electron';
 
 (($) => {
   const fill = (dom: JQuery, values: OpenDialogReturnValue) => {
     if (typeof values.filePaths !== 'undefined') {
-      const filePaths = values.filePaths;
+      const { filePaths } = values;
       const inputGroup = dom.closest('.input-group');
       const input = inputGroup.find('.form-control');
       input.val(filePaths[0]);
@@ -13,11 +11,11 @@ import type {
   };
 
   const choseDirectory = async () => {
-    return await window.api.app.choseDirectory();
+    return window.api.app.choseDirectory();
   };
 
   const choseFile = async () => {
-    return await window.api.app.choseFile();
+    return window.api.app.choseFile();
   };
 
   $(document).on('click', '*[data-sk="choseDirFile"]', async (event) => {
@@ -43,7 +41,7 @@ import type {
       }
     }
 
-    fill(dom, chosed);
+    fill(dom as JQuery<HTMLElement>, chosed);
   });
 })(jQuery);
 

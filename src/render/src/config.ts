@@ -30,9 +30,7 @@ export const allowedLanguages = {
   vietnamese: 'Vietnamese',
 };
 
-export const allowedExtensions = [
-  '.exe',
-];
+export const allowedExtensions = ['.exe'];
 
 const defaults = {
   allowedExtensions,

@@ -1,9 +1,5 @@
-import {
-  join,
-} from 'node:path';
-import {
-  app,
-} from 'electron';
+import { join } from 'node:path';
+import { app } from 'electron';
 
 const gamePathsByAppId = (appId: string) => {
   const userData = app.getPath('userData');

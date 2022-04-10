@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/valid-types */
-
 const aspectRatio = require('@tailwindcss/aspect-ratio');
 const forms = require('@tailwindcss/forms');
 const lineClamp = require('@tailwindcss/line-clamp');

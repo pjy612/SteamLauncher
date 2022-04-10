@@ -5,27 +5,26 @@ class SettingsView {
 
   private data: StoreSettingsType | undefined;
 
-  public async show () {
+  public async show() {
     await this.setData();
     await this.setDom();
-    await this.appendDom();
+    this.appendDom();
   }
 
-  private async setData () {
+  private async setData() {
     this.data = await window.api.settings.getData();
   }
 
-  private async setDom () {
-    const {
-      default: html,
-    } = await import('./settings.html?raw');
+  private async setDom() {
+    // eslint-disable-next-line node/no-missing-import
+    const { default: html } = await import('./settings.html?raw');
     const rendered = mustache.render(html, {
       data: this.data,
     });
     this.dom = $(rendered);
   }
 
-  private async appendDom () {
+  private appendDom() {
     this.dom?.appendTo(document.body).modal('show');
   }
 }

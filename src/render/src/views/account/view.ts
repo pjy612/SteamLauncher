@@ -1,7 +1,5 @@
 import mustache from 'mustache';
-import {
-  allowedLanguages,
-} from '../../config';
+import { allowedLanguages } from '../../config';
 import mustacheObjsWithKeys from '../../functions/mustache-objs-with-keys';
 
 class AccountView {
@@ -11,7 +9,7 @@ class AccountView {
 
   private isEditMode = false;
 
-  public async show (editMode = false) {
+  public async show(editMode = false) {
     this.isEditMode = editMode;
 
     if (this.isEditMode) {
@@ -19,18 +17,17 @@ class AccountView {
     }
 
     await this.setDom();
-    await this.afterSetDom();
-    await this.appendDom();
+    this.afterSetDom();
+    this.appendDom();
   }
 
-  private async setData () {
+  private async setData() {
     this.accountData = await window.api.account.getData();
   }
 
-  private async setDom () {
-    const {
-      default: html,
-    } = await import('./account.html?raw');
+  private async setDom() {
+    // eslint-disable-next-line node/no-missing-import
+    const { default: html } = await import('./account.html?raw');
     const view = {
       inputLanguages: mustacheObjsWithKeys(allowedLanguages),
       isEditMode: this.isEditMode,
@@ -52,13 +49,13 @@ class AccountView {
     this.dom = $(rendered);
   }
 
-  private async afterSetDom () {
+  private afterSetDom() {
     if (this.isEditMode) {
       this.dom?.find('select[name="language"]').val(this.accountData!.language);
     }
   }
 
-  private async appendDom () {
+  private appendDom() {
     if (!this.isEditMode) {
       this.dom?.attr({
         'data-bs-backdrop': 'static',

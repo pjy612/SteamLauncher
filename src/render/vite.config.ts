@@ -1,7 +1,4 @@
-/* eslint-disable import/extensions */
-import {
-  fileURLToPath,
-} from 'node:url';
+import { fileURLToPath } from 'node:url';
 import createConfig from '../../vite.config';
 
 const path = fileURLToPath(new URL('.', import.meta.url));

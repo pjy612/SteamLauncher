@@ -4,30 +4,29 @@ import navigo from '../../navigo';
 class HomeView {
   private dom: JQuery | undefined;
 
-  public async show () {
+  public async show() {
     await this.beforeHook();
     await this.setDom();
     await this.appendGamesList();
-    await this.setEvents();
-    await this.appendDom();
+    this.setEvents();
+    this.appendDom();
   }
 
-  public async beforeHook () {
+  public async beforeHook() {
     const accountExist = await window.api.account.exist();
     if (!accountExist) {
       navigo.navigate('/account/create');
     }
   }
 
-  private async setDom () {
-    const {
-      default: html,
-    } = await import('./home.html?raw');
+  private async setDom() {
+    // eslint-disable-next-line node/no-missing-import
+    const { default: html } = await import('./home.html?raw');
     const rendered = mustache.render(html, {});
     this.dom = $(rendered);
   }
 
-  private async appendGamesList () {
+  private async appendGamesList() {
     const gamesData = await window.api.games.getData();
     const gamesList = this.dom?.find('#games-list .card-body').empty();
     if (typeof gamesData !== 'undefined' && Object.keys(gamesData).length > 0) {
@@ -35,11 +34,11 @@ class HomeView {
       $.each(gamesData, async (appId: string, values) => {
         const paths = await window.api.game.getPaths(appId);
         const header = paths.appIdHeaderPath;
-        const name = values.name;
+        const { name } = values;
 
         const gameContainer = $(`<div class="game-container" data-appId="${appId}"></div>`).attr(
           'title',
-          'To open the context menu click on the right mouse button!',
+          'To open the context menu click on the right mouse button!'
         );
         $('<img>').attr('src', header).appendTo(gameContainer);
         $('<div>').text(name).appendTo(gameContainer);
@@ -52,7 +51,7 @@ class HomeView {
     }
   }
 
-  private async setEvents () {
+  private setEvents() {
     this.dom?.on('contextmenu', '.game-container', (event) => {
       const appId = $(event.currentTarget).attr('data-appId');
       window.api.game.openContextMenu(appId!);
@@ -63,12 +62,12 @@ class HomeView {
       navigo.navigate(`/game/add/?${queryString}`);
     });
 
-    window.api.on('index-reload-games-list', async () => {
-      await this.appendGamesList();
+    window.api.on('index-reload-games-list', () => {
+      void this.appendGamesList();
     });
   }
 
-  private async appendDom () {
+  private appendDom() {
     $('main').html(this.dom![0]);
   }
 }

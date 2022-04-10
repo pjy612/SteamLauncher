@@ -1,13 +1,6 @@
-import {
-  app,
-  BrowserWindow,
-  shell,
-} from 'electron';
+import { app, BrowserWindow, Rectangle, shell } from 'electron';
 import log from 'electron-log';
-import {
-  paths,
-  allowedExternalUrls,
-} from './config';
+import { paths, allowedExternalUrls } from './config';
 import storage from './storage';
 
 const environments = import.meta.env;
@@ -52,9 +45,9 @@ export const createWindow = async () => {
       win.setFullScreen(true);
     }
 
-    const windowBounds = storage.get('window.bounds', null);
-    if (windowBounds !== null && win.isNormal()) {
-      win.setBounds(windowBounds);
+    const windowBounds = storage.get('window.bounds');
+    if (typeof windowBounds !== 'undefined' && win.isNormal()) {
+      win.setBounds(windowBounds as Partial<Rectangle>);
     }
   });
 

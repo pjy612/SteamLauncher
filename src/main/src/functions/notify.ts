@@ -1,6 +1,4 @@
-import {
-  Notification,
-} from 'electron';
+import { Notification } from 'electron';
 import log from 'electron-log';
 
 const notify = (message: string) => {
@@ -10,7 +8,7 @@ const notify = (message: string) => {
     });
     nn.show();
   } else {
-    log.error('Notifications system isn\'t supported! Message:');
+    log.error("Notifications system isn't supported! Message:");
     log.info(message);
   }
 };

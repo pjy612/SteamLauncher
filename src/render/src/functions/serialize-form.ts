@@ -3,14 +3,14 @@ const serializeForm = (form: HTMLFormElement) => {
   const formData = new FormData(form);
 
   for (const pair of formData) {
-    const key = pair[0];
-    let value: boolean | string = pair[1] as string;
+    const { 0: pairKey, 1: pairValue } = pair;
+    let value: string | boolean = pairValue.toString();
 
     if (value === 'true' || value === 'false') {
       value = value === 'true';
     }
 
-    objects[key] = value;
+    objects[pairKey] = value;
   }
 
   return objects;

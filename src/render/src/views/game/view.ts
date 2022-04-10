@@ -7,26 +7,25 @@ class GameView {
 
   private isEditMode = false;
 
-  public async show (editMode = false) {
+  public async show(editMode = false) {
     this.isEditMode = editMode;
 
     await this.setDom();
-    await this.appendDom();
+    this.appendDom();
   }
 
-  private async appendDom () {
+  private appendDom() {
     this.dom?.appendTo(document.body).modal('show');
   }
 
-  private async setDom () {
-    const {
-      default: html,
-    } = await import('./game.html?raw');
+  private async setDom() {
+    // eslint-disable-next-line node/no-missing-import
+    const { default: html } = await import('./game.html?raw');
 
     let view = {};
-    const current = navigo.current![0];
+    const { 0: current } = navigo.current!;
     const appId = current.data?.appId;
-    const queryString = current.queryString;
+    const { queryString } = current;
 
     if (this.isEditMode) {
       const data = await window.api.game.getData(appId!);

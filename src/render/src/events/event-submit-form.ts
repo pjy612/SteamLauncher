@@ -5,7 +5,7 @@ import serializeForm from '../functions/serialize-form';
     event.preventDefault();
     const dom = $(event.currentTarget);
     const channel = dom.attr('data-sk-channel')!;
-    const serialized = serializeForm(dom[0]);
+    const serialized = serializeForm(dom[0] as HTMLFormElement);
     window.api.send(channel, serialized);
   });
 })();

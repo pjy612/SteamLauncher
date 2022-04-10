@@ -1,9 +1,5 @@
-import {
-  join,
-} from 'node:path';
-import {
-  app,
-} from 'electron';
+import { join } from 'node:path';
+import { app } from 'electron';
 
 const environments = import.meta.env;
 const appPath = app.getAppPath();
@@ -20,9 +16,7 @@ export const paths = {
   signToolBin: join(binPath, 'signtool/signtool.exe'),
 };
 
-export const allowedWillNavigateUrls = new Set([
-  'http://localhost:3000',
-]);
+export const allowedWillNavigateUrls = new Set(['http://localhost:3000']);
 
 export const allowedExternalUrls = new Set([
   'https://www.paypal.com',

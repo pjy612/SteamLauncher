@@ -1,6 +1,7 @@
-import config from '../config';
+import { allowedExtensions } from '../config';
 
 (($) => {
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   $.fn.fileDrop = function (callback) {
     const activeClass = 'drop-highlight';
 
@@ -24,27 +25,23 @@ import config from '../config';
 
         const dataTransfer = event.originalEvent?.dataTransfer;
         if (typeof dataTransfer !== 'undefined' && dataTransfer !== null) {
-          const {
-            files: droppedFiles,
-            items,
-          } = dataTransfer;
+          const { files: droppedFiles, items } = dataTransfer;
           if (droppedFiles.length === 1) {
-            const {
-              kind,
-            } = items[0];
+            const { 0: firstItem } = items;
+            const { kind } = firstItem;
             if (kind === 'file') {
               const droppedFilePath = droppedFiles[0].path;
               const parsedFilePath = await window.api.app.filePathParse(droppedFilePath);
-              if (config.allowedExtensions.includes(parsedFilePath.ext)) {
+              if (allowedExtensions.includes(parsedFilePath.ext)) {
                 callback.call(this, parsedFilePath);
               } else {
-                window.api.app.notify('The file extension isn\'t allowed!');
+                window.api.app.notify("The file extension isn't allowed!");
               }
             } else {
-              window.api.app.notify('The dropped item isn\'t a valid file!');
+              window.api.app.notify("The dropped item isn't a valid file!");
             }
           } else {
-            window.api.app.notify('Isn\'t possible to add more than one file!');
+            window.api.app.notify("Isn't possible to add more than one file!");
           }
         } else {
           window.api.app.notify('filedrop: unknown error');

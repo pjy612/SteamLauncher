@@ -1,16 +1,7 @@
 import childProcess from 'node:child_process';
-import {
-  join,
-} from 'node:path';
-import {
-  promisify,
-} from 'node:util';
-import {
-  pathExists,
-  emptyDir,
-  copy,
-  writeFile,
-} from 'fs-extra';
+import { join } from 'node:path';
+import { promisify } from 'node:util';
+import { pathExists, emptyDir, copy, writeFile } from 'fs-extra';
 import ini from 'ini';
 import storage from '../storage';
 import gamePathsByAppId from './game-paths-by-appid';
@@ -49,7 +40,7 @@ const gameLauncher = async (dataGame: StoreGameDataType, withoutEmu = false) => 
 
   const emulatorSettingsForceAccountName = join(
     emulatorSteamSettingsPath,
-    'force_account_name.txt',
+    'force_account_name.txt'
   );
   const emulatorSettingsForceLanguage = join(emulatorSteamSettingsPath, 'force_language.txt');
   const emulatorSettingsForceSteamId = join(emulatorSteamSettingsPath, 'force_steamid.txt');
@@ -69,7 +60,7 @@ const gameLauncher = async (dataGame: StoreGameDataType, withoutEmu = false) => 
 
   const emulatorSettingsDisableNetworking = join(
     emulatorSteamSettingsPath,
-    'disable_networking.txt',
+    'disable_networking.txt'
   );
   const emulatorSettingsOffline = join(emulatorSteamSettingsPath, 'offline.txt');
 

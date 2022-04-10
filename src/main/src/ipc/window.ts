@@ -1,7 +1,4 @@
-import {
-  BrowserWindow,
-  ipcMain as ipc,
-} from 'electron';
+import { BrowserWindow, ipcMain as ipc } from 'electron';
 
 ipc.handle('window-close', (event) => {
   const currentWindow = BrowserWindow.fromId(event.frameId);

@@ -1,17 +1,9 @@
-import {
-  parse,
-} from 'node:path';
-import {
-  app,
-  ipcMain as ipc,
-  dialog,
-  BrowserWindow,
-} from 'electron';
+import { parse } from 'node:path';
+import { app, ipcMain as ipc, dialog, BrowserWindow } from 'electron';
 import MarkDownIt from 'markdown-it';
+// eslint-disable-next-line node/no-missing-import
 import readme from '../../../../README.md?raw';
-import {
-  author as packageAuthor,
-} from '../../../../package.json';
+import { author as packageAuthor } from '../../../../package.json';
 import notify from '../functions/notify';
 
 const markdown = new MarkDownIt({
@@ -35,7 +27,7 @@ ipc.handle('app-get-copyright', () => {
   return `Copyright © ${new Date().getUTCFullYear()} ${packageAuthor.name}`;
 });
 
-ipc.handle('app-notify', (_event, message) => {
+ipc.handle('app-notify', (_event, message: string) => {
   notify(message);
 });
 
@@ -49,17 +41,13 @@ ipc.handle('app-file-path-parse', (_event, filePath: string) => {
 ipc.handle('app-chose-directory', (event) => {
   const currentWindow = BrowserWindow.fromId(event.frameId);
   return dialog.showOpenDialog(currentWindow!, {
-    properties: [
-      'openDirectory',
-    ],
+    properties: ['openDirectory'],
   });
 });
 
 ipc.handle('app-chose-file', (event) => {
   const currentWindow = BrowserWindow.fromId(event.frameId);
   return dialog.showOpenDialog(currentWindow!, {
-    properties: [
-      'openFile',
-    ],
+    properties: ['openFile'],
   });
 });

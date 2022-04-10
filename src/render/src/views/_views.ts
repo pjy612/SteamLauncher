@@ -6,7 +6,7 @@ import HomeView from './home/view';
 import SettingsView from './settings/view';
 
 const homeController = new HomeView();
-(async () => {
+void (async () => {
   await homeController.show();
 })();
 

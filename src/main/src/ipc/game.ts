@@ -1,23 +1,9 @@
-import {
-  join,
-} from 'node:path';
-import type {
-  IpcMainEvent,
-} from 'electron';
-import {
-  ipcMain as ipc,
-  Menu,
-  shell,
-  app,
-  dialog,
-} from 'electron';
-import {
-  pathExists,
-} from 'fs-extra';
+import { join } from 'node:path';
+import type { IpcMainEvent } from 'electron';
+import { ipcMain as ipc, Menu, shell, app, dialog } from 'electron';
+import { pathExists } from 'fs-extra';
 import SteamRetriever from '../classes/steam-retriever';
-import {
-  paths,
-} from '../config';
+import { paths } from '../config';
 import gameLauncher from '../functions/game-launcher';
 import gamePathsByAppId from '../functions/game-paths-by-appid';
 import gameRemove from '../functions/game-remove';
@@ -57,13 +43,13 @@ ipc.on('game-contextmenu', (event, appId: string) => {
 
   Menu.buildFromTemplate([
     {
-      async click () {
+      async click() {
         await gameLauncher(dataGame);
       },
       label: 'Launch',
     },
     {
-      async click () {
+      async click() {
         await gameLauncher(dataGame, true);
       },
       label: 'Launch normally',
@@ -72,7 +58,7 @@ ipc.on('game-contextmenu', (event, appId: string) => {
       type: 'separator',
     },
     {
-      click () {
+      click() {
         const name = dataGame.name.replace(/[^\d .A-Za-z]/gu, '');
         const to = join(app.getPath('desktop'), `Launch ${name}.lnk`);
         const created = shell.writeShortcutLink(to, {
@@ -90,7 +76,7 @@ ipc.on('game-contextmenu', (event, appId: string) => {
       label: 'Create desktop shortcut',
     },
     {
-      async click () {
+      async click() {
         if (await pathExists(dataGame.path)) {
           shell.showItemInFolder(dataGame.path);
         } else {
@@ -100,7 +86,7 @@ ipc.on('game-contextmenu', (event, appId: string) => {
       label: 'Open file location',
     },
     {
-      async click () {
+      async click() {
         const savesPath = join(paths.emulator.saves, appId);
         if (await pathExists(savesPath)) {
           await shell.openPath(savesPath);
@@ -111,7 +97,7 @@ ipc.on('game-contextmenu', (event, appId: string) => {
       label: 'Open save location',
     },
     {
-      async click () {
+      async click() {
         const appData = gamePathsByAppId(appId).appIdDataPath;
         if (await pathExists(appData)) {
           await shell.openPath(appData);
@@ -125,12 +111,9 @@ ipc.on('game-contextmenu', (event, appId: string) => {
       type: 'separator',
     },
     {
-      async click () {
+      async click() {
         const prompt = await dialog.showMessageBox({
-          buttons: [
-            'Yes',
-            'No',
-          ],
+          buttons: ['Yes', 'No'],
           cancelId: 1,
           defaultId: 1,
           message: 'Are you sure? The data will be overwritten!',
@@ -147,18 +130,15 @@ ipc.on('game-contextmenu', (event, appId: string) => {
       type: 'separator',
     },
     {
-      click () {
+      click() {
         event.sender.send('app-navigate-to', `/game/edit/${appId}`);
       },
       label: 'Edit game',
     },
     {
-      async click () {
+      async click() {
         const prompt = await dialog.showMessageBox({
-          buttons: [
-            'Yes',
-            'No',
-          ],
+          buttons: ['Yes', 'No'],
           cancelId: 1,
           defaultId: 1,
           message: 'Are you sure you want to remove the game?',

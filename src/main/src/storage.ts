@@ -1,5 +1,8 @@
 import ElectronStore from 'electron-store';
 
+const environments = import.meta.env;
+name: `config${environments.DEV ? '.dev' : ''}`,
+
 const storage = new ElectronStore<StoreType>({
   defaults: {
     settings: {
