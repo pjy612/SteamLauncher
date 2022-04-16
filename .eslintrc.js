@@ -279,13 +279,7 @@ module.exports = defineConfig({
       ],
       rules: {
         '@typescript-eslint/no-misused-promises': 0,
-
         '@typescript-eslint/no-non-null-assertion': 0,
-
-        //'@typescript-eslint/no-unsafe-assignment': 0,
-        //'@typescript-eslint/no-unsafe-member-access': 0,
-        //'@typescript-eslint/no-explicit-any': 0,
-        //'@typescript-eslint/no-unsafe-argument': 0,
 
         'unicorn/prefer-module': 2,
       },

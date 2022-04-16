@@ -6,9 +6,9 @@ import HomeView from './home/view';
 import SettingsView from './settings/view';
 
 const homeController = new HomeView();
-void (async () => {
+$(async () => {
   await homeController.show();
-})();
+});
 
 navigo.on('/', () => {
   //

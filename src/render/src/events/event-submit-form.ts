@@ -1,6 +1,6 @@
 import serializeForm from '../functions/serialize-form';
 
-(() => {
+$(() => {
   $(document).on('submit', '.modal form[data-sk-channel]', (event) => {
     event.preventDefault();
     const dom = $(event.currentTarget);
@@ -8,4 +8,4 @@ import serializeForm from '../functions/serialize-form';
     const serialized = serializeForm(dom[0] as HTMLFormElement);
     window.api.send(channel, serialized);
   });
-})();
+});

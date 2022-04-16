@@ -1,4 +1,4 @@
-(() => {
+$(() => {
   const modalConsole = $('#console');
   const modalTextarea = modalConsole.find('textarea');
 
@@ -40,6 +40,6 @@
       }
     }
   });
-})();
+});
 
 export {};

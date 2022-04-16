@@ -42,11 +42,9 @@
     "release:bundle": "yarn run bundle",
     "release:build": "yarn electron-builder build -p always --x64",
     "lint": "tsc --noEmit && eslint . --ext .js,.ts",
-    "jquery": "yarn fse copy \"./node_modules/jquery/dist/jquery.min.js\" \"./src/render/src/public/js/jquery.min.js\"",
-    "postinstall": "yarn electron-builder install-app-deps && yarn run jquery"
+    "postinstall": "yarn electron-builder install-app-deps"
   },
   "devDependencies": {
-    "@atao60/fse-cli": "^0.1.7",
     "@fontsource/cascadia-code": "^4.2.1",
     "@fontsource/oswald": "^4.5.7",
     "@mdi/font": "^6.6.96",

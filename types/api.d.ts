@@ -16,6 +16,8 @@ type ApiGameGetPaths = {
 
 declare global {
   interface Window {
+    $: JQueryStatic;
+    jQuery: JQueryStatic;
     api: {
       account: {
         exist: () => Promise<boolean>;

@@ -1,23 +1,23 @@
 import type { OpenDialogReturnValue } from 'electron';
 
-(($) => {
-  const fill = (dom: JQuery, values: OpenDialogReturnValue) => {
-    if (typeof values.filePaths !== 'undefined') {
-      const { filePaths } = values;
-      const inputGroup = dom.closest('.input-group');
-      const input = inputGroup.find('.form-control');
-      input.val(filePaths[0]);
-    }
-  };
+const fill = (dom: JQuery, values: OpenDialogReturnValue) => {
+  if (typeof values.filePaths !== 'undefined') {
+    const { filePaths } = values;
+    const inputGroup = dom.closest('.input-group');
+    const input = inputGroup.find('.form-control');
+    input.val(filePaths[0]);
+  }
+};
 
-  const choseDirectory = async () => {
-    return window.api.app.choseDirectory();
-  };
+const choseDirectory = async () => {
+  return window.api.app.choseDirectory();
+};
 
-  const choseFile = async () => {
-    return window.api.app.choseFile();
-  };
+const choseFile = async () => {
+  return window.api.app.choseFile();
+};
 
+$(() => {
   $(document).on('click', '*[data-sk="choseDirFile"]', async (event) => {
     event.preventDefault();
     const dom = $(event.currentTarget);
@@ -43,6 +43,4 @@ import type { OpenDialogReturnValue } from 'electron';
 
     fill(dom as JQuery<HTMLElement>, chosed);
   });
-})(jQuery);
-
-export {};
+});
