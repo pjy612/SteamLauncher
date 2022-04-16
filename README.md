@@ -31,7 +31,7 @@ For more information on the emulator: [gitlab](https://gitlab.com/Mr_Goldberg/go
 - **Mr. GoldBerg Emulator Autodownload** _(from v0.1.5)_
   - The first time you start the game, the emulator will be downloaded and extracted to the appropriate folder within SteamLauncher. This feature also includes auto updating of it.
 - **SteamCloud** _(from v0.1.5)_
-  - It is not properly as Steam Cloud, the saves game data is not saved on Steam but they are saved all within the folder **_"\_INSTALL_PATH_STEAMLAUNCHER/date/steam_cloud/"._**
+  - It is not properly as Steam Cloud, the saves game data is not saved on Steam but they are saved all within the folder **_"\_INSTALL_PATH_STEAMLAUNCHER/data/steam_cloud/"._**
   - Backup and restore is done automatically or manually.
     - BACKUP: The automatic backup occurs when you start the game and close it, the manual instead takes place via the game contextmenu in the launcher.
     - RESTORE: The automatic restore occurs when you enter a game that was previously deleted from the launcher, the manual instead takes place via the game contextmenu in the launcher.
