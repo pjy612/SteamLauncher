@@ -1,6 +1,6 @@
 import mustache from 'mustache';
 import iteratorToObject from '../../functions/iterator-to-object';
-import navigo from '../../navigo';
+import navigo from '../../instances/navigo';
 
 class GameView {
   private dom: JQuery | undefined;

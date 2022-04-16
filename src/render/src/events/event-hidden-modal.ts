@@ -1,4 +1,4 @@
-import navigo from '../navigo';
+import navigo from '../instances/navigo';
 
 $(() => {
   $(document).on('hidden.bs.modal', '.modal', (event) => {

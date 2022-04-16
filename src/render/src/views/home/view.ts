@@ -1,5 +1,5 @@
 import mustache from 'mustache';
-import navigo from '../../navigo';
+import navigo from '../../instances/navigo';
 
 class HomeView {
   private dom: JQuery | undefined;

@@ -29,12 +29,10 @@ $(() => {
         chosed = await choseDirectory();
         break;
       }
-
       case 'file': {
         chosed = await choseFile();
         break;
       }
-
       default: {
         chosed = await choseDirectory();
         break;
