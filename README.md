@@ -1,18 +1,20 @@
-# SteamLauncher (ALPHA)
+# SteamLauncher (ALPHA\*)
 
 **_SteamLauncher_** optimizes the setup process of each game in a simple and automatic way.
 
 [forum cs.rin.ru support](https://cs.rin.ru/forum/viewtopic.php?f=20&t=116801)
 
-#### Screenshots
+**(\*) In the ALPHA version, substantial changes can make previous versions incompatible.**
 
-<img src="https://raw.githubusercontent.com/Sak32009/SteamLauncher/main/screenshots/screenshot_main.png" alt="screenshot-main" width="400">
-
-## Donate
+#### Donate
 
 > **Protect development and free things -- because their survival is in our hands.**
 >
 > **You can donate by clicking on [paypal.me](https://www.paypal.me/sak32009a).**
+
+#### Screenshots
+
+<img src="https://raw.githubusercontent.com/Sak32009/SteamLauncher/main/screenshots/screenshot_main.png" alt="screenshot-main" width="300">
 
 ## Introduction
 
@@ -21,6 +23,18 @@
 Instead of manually configuring each game, **_SteamLauncher_** automatically performs all operations for **Mr. Goldberg's Steam Emulator**.
 
 For more information on the emulator: [gitlab](https://gitlab.com/Mr_Goldberg/goldberg_emulator) [cs.rin.ru](https://cs.rin.ru/forum/viewtopic.php?f=29&t=91627)
+
+## Main Features
+
+- **SteamRetriever** _(from v0.0.3)_
+  - In a simple way: it is the one that extracts all the data from steam.
+- **Mr. GoldBerg Emulator Autodownload** _(from v0.1.5)_
+  - The first time you start the game, the emulator will be downloaded and extracted to the appropriate folder within SteamLauncher. This feature also includes auto updating of it.
+- **SteamCloud** _(from v0.1.5)_
+  - It is not properly as Steam Cloud, the saves game data is not saved on Steam but they are saved all within the folder **_"\_INSTALL_PATH_STEAMLAUNCHER/date/steam_cloud/"._**
+  - Backup and restore is done automatically or manually.
+    - BACKUP: The automatic backup occurs when you start the game and close it, the manual instead takes place via the game contextmenu in the launcher.
+    - RESTORE: The automatic restore occurs when you enter a game that was previously deleted from the launcher, the manual instead takes place via the game contextmenu in the launcher.
 
 ## Installation
 
@@ -37,46 +51,36 @@ For the portable version, replace manually files.
 
 ## Small description of usage
 
-When the application starts, you will be asked to create the account. Once done, download the latest version of the Mr. GoldBerg emulator, extract the zip and go to the settings in the application and select the "experimental_steamclient" folder.
-
-To add a game, simply drag the game executable to the main page of the application in the appropriate section, fill in the data and right-click on the game card to open the context menu and click "Launch".
+When the application starts, you will be asked to create the account. Once done, you can insert games by simply dragging the game executable on the main application page in the appropriate section, fill out all the data, save and pressing the right click on the card game will open the context menu and press "Launch".
 
 ## Supported Mr. GoldBerg Steam Emulator features
 
-- Set items
-- Set stats
-- Set achievements and images
-- Set enable/disable overlay
-- Set online/offline mode
-- Set language
-- Set listen port
-- DLCs
+- Set DLC.txt
+- Set items.json
+- Set default_items.json
+- Set stats.txt
+- Set achievements.json and images
+- Set disable_overlay.txt
+- Set disable_networking.txt
+- Set offline.txt
+- Set account_name.txt (inside steam_saves/settings)
+- Set language.txt (inside steam_saves/settings)
+- Set user_steam_id (inside steam_saves/settings)
+- Set listen_port.txt (inside steam_saves/settings)
+- Set steam_interfaces.txt (only if steam_api(64).dll is before May 2016)
 
 ## Unsupported Mr. GoldBerg Steam Emulator features
 
 - All those not listed.
 
-**To solve this problem just go to the folder "%APPDATA%/SteamLauncher/data/apps/_APPID_" and enter the missing data.**
+To solve this problem just go to the folder **"_INSTALL_PATH_STEAMLAUNCHER/data/steam_retriever/\_APPID_"** and enter the missing data.
 
-**Attention! This data is always overwritten:**
-
-- folder achievements
-- achievements.json
-- stats.txt
-- items.json
-- DLC.txt
-- steam_interfaces.txt
-- force_account_name.txt
-- force_language.txt
-- force_listen_port.txt
-- force_steamid.txt
+**Attention! Supported features are always overwritten!**
 
 ## TODO
 
 The first item in the list has priority.
 
-- ~~**The SteamLauncher code is sadly worse than a child's drawing of a tree.**~~
-- Automatically download the Mr. GoldBerg emulator.
 - Integrate https://github.com/Sak32009/GetDLCInfoFromSteamDB into the launcher.
 
 ## FAQ
