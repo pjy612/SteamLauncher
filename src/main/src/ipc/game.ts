@@ -1,6 +1,7 @@
 import type { IpcMainEvent } from 'electron';
 import { ipcMain as ipc, Menu } from 'electron';
 import Game from '../classes/game';
+import SteamCloud from '../classes/steam-cloud';
 import SteamRetriever from '../classes/steam-retriever';
 import notify from '../functions/notify';
 import promptYesNo from '../functions/prompt-yes-no';
@@ -86,6 +87,21 @@ ipc.on('game-contextmenu', (event, appId: string) => {
           const steamRetriever = new SteamRetriever(data);
           await steamRetriever.run();
         }
+      },
+    },
+    {
+      type: 'separator',
+    },
+    {
+      label: 'Manually backup saves to cloud',
+      async click() {
+        await SteamCloud.backupByAppId(appId);
+      },
+    },
+    {
+      label: 'Manually restore saves from cloud',
+      async click() {
+        await SteamCloud.restoreByAppId(appId);
       },
     },
     {

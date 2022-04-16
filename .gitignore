@@ -1,6 +1,5 @@
 # SteamLauncher
-/src/render/src/public/js/jquery.min.js
-
+/bin/win/ludusavi/manifest.yaml
 /data
 /build/release
 /src/main/dist/

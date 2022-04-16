@@ -7,6 +7,7 @@ import storage from '../instances/storage';
 import execFile from '../node/exec-file-promisify';
 import paths from '../paths';
 import MrGoldBergEmulator from './mr-goldberg-emulator';
+import SteamCloud from './steam-cloud';
 
 class Game {
   public static async launch(dataGame: StoreGameDataType, withoutEmu = false) {
@@ -85,6 +86,9 @@ class Game {
     notify(`Launch ${dataGame.name}`);
 
     await execFile(paths.emulator.loaderPath);
+
+    // after the game is closed, I make backups of the saves
+    await SteamCloud.backupByAppId(dataGame.appId);
   }
 
   public static remove(appId: string) {
@@ -99,8 +103,10 @@ class Game {
   }
 
   public static paths(appId: string) {
-    const appsPath = join(paths.appDataPath, 'apps');
-    const appIdDataPath = join(appsPath, appId);
+    const steamRetrieverPath = join(paths.appDataPath, 'steam_retriever');
+    const steamCloudPath = join(paths.appDataPath, 'steam_cloud');
+    const appIdSavesCloudPath = join(steamCloudPath, appId);
+    const appIdDataPath = join(steamRetrieverPath, appId);
     const appIdAchievementsPath = join(appIdDataPath, 'achievements');
     const appIdAchievementsInfoPath = join(appIdDataPath, 'achievements.json');
     const appIdStatsInfoPath = join(appIdDataPath, 'stats.txt');
@@ -112,7 +118,7 @@ class Game {
     const appIdSavesPath = join(paths.emulator.savesPath, appId);
 
     return {
-      appsPath,
+      steamRetrieverPath,
       appIdSavesPath,
       appIdAchievementsInfoPath,
       appIdAchievementsPath,
@@ -123,6 +129,7 @@ class Game {
       appIdItemsInfoPath,
       appIdStatsInfoPath,
       appIdSteamInterfacesPath,
+      appIdSavesCloudPath,
     };
   }
 
@@ -136,11 +143,19 @@ class Game {
   }
 
   public static async openSaveLocation(appId: string) {
-    const savesPath = Game.paths(appId).appIdSavesPath;
+    const gamePaths = Game.paths(appId);
+    const savesPath = gamePaths.appIdSavesPath;
+    const savesCloudPath = gamePaths.appIdSavesCloudPath;
     if (await pathExists(savesPath)) {
       await shell.openPath(savesPath);
     } else {
-      notify('The game saves does not exists!');
+      notify('The game has no saves inside the emulator. Try in cloud saves...');
+
+      if (await pathExists(savesCloudPath)) {
+        await shell.openPath(savesCloudPath);
+      } else {
+        notify('The game has no saves inside the cloud saves.');
+      }
     }
   }
 

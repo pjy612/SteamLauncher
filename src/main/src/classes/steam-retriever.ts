@@ -11,6 +11,7 @@ import notify from '../functions/notify';
 import log from '../instances/log';
 import storage from '../instances/storage';
 import Game from './game';
+import SteamCloud from './steam-cloud';
 
 class SteamRetriever {
   private accountSteamWebApiKey: string = storage.get('account.steamWebApiKey');
@@ -289,7 +290,7 @@ class SteamRetriever {
     }
   }
 
-  private addGame() {
+  private async addGame() {
     const inputs: StoreGameDataType = {
       ...this.gameInputs,
       ...this.gameData,
@@ -303,6 +304,8 @@ class SteamRetriever {
       const oo = 'Game created successfully!';
       notify(oo);
       this.console(oo);
+
+      await SteamCloud.restoreByAppId(inputs.appId);
     }
 
     storage.set(`games.${inputs.appId}`, inputs);
@@ -350,7 +353,7 @@ class SteamRetriever {
       }
 
       try {
-        this.addGame();
+        await this.addGame();
       } catch (error: unknown) {
         this.console(error as Error, true);
         this.consoleHide();

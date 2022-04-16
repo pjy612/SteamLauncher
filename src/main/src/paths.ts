@@ -6,7 +6,7 @@ const appRootPath = appIsDevelopment ? app.getAppPath() : resolve(app.getAppPath
 const appResourcePath = app.getAppPath();
 const appDataPath = join(appRootPath, 'data');
 const appLogsPath = join(appDataPath, 'logs');
-const appEmuPath = join(appDataPath, 'emu');
+const appEmuPath = join(appDataPath, 'steam_emulator');
 const appBinPath = join(appResourcePath + (appIsProduction ? '.unpacked' : ''), 'bin');
 
 const appEmuSteamSettings = join(appEmuPath, 'steam_settings');
@@ -41,6 +41,7 @@ const paths = {
     preloadFile: join(appResourcePath, '/src/preload/dist/preload.cjs.js'),
     renderFile: join(appResourcePath, '/src/render/dist/index.html'),
     signToolFile: join(appBinPath, 'win/signtool/signtool.exe'),
+    ludusaviFile: join(appBinPath, 'win/ludusavi/ludusavi.exe'),
   },
 };
 
