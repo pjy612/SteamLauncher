@@ -30,12 +30,12 @@
         <div class="input-group mb-3">
           <div class="input-group-text">
             <span class="mdi mdi-account-question mdi-18px"></span>
-            <span class="ml-1">Path</span>
+            <span class="ml-1">Exe Path</span>
           </div>
           <input type="text" class="form-control disabled" name="path"
             value="{{^isEditMode}}{{parameters.fullPath}}{{/isEditMode}}{{#isEditMode}}{{data.path}}{{/isEditMode}}"
             placeholder="..." required readonly>
-          <button type="button" class="btn btn-gray" data-sk="choseDirFile">
+          <button type="button" class="btn btn-gray" data-sk="choseDirFile" data-sk-what="file">
             <span class="mdi mdi-paperclip mdi-18px"></span>
           </button>
         </div>
