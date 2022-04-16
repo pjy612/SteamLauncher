@@ -1,8 +1,7 @@
 import Navigo from 'navigo';
 
-const environments = import.meta.env;
 const router = new Navigo('/', {
-  hash: environments.PROD,
+  hash: true,
 });
 
 export default router;

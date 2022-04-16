@@ -3,9 +3,8 @@ import { ipcMain as ipc } from 'electron';
 import { customAlphabet } from 'nanoid/non-secure';
 import { fromIndividualAccountID } from 'steamid';
 import notify from '../functions/notify';
-import storage from '../storage';
+import storage from '../instances/storage';
 
-const nanoid = customAlphabet('0123456789', 8);
 const functionAccountCreateEdit = (event: IpcMainEvent, inputs: StoreAccountType) => {
   if (!fromIndividualAccountID(inputs.steamId).isValidIndividual()) {
     notify(`Invalid ${inputs.steamId} SteamId!`);
@@ -29,5 +28,6 @@ ipc.handle('account-exist', () => {
 });
 
 ipc.handle('account-get-random-steamid', () => {
+  const nanoid = customAlphabet('0123456789', 8);
   return fromIndividualAccountID(nanoid()).getSteamID64();
 });

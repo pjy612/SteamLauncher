@@ -1,9 +1,8 @@
-import { app, BrowserWindow, Rectangle, shell } from 'electron';
-import log from 'electron-log';
-import { paths, allowedExternalUrls } from './config';
-import storage from './storage';
+import { app, BrowserWindow, Rectangle } from 'electron';
+import { appIsDevelopment, appIsProduction } from '../environments';
+import storage from '../instances/storage';
+import paths from '../paths';
 
-const environments = import.meta.env;
 const viteServerUrl = 'http://localhost:3000/';
 
 const stateChangeHandler = (win: BrowserWindow) => {
@@ -12,22 +11,22 @@ const stateChangeHandler = (win: BrowserWindow) => {
   storage.set('window.isFullScreen', win.isFullScreen());
 };
 
-export const createWindow = async () => {
+const createWindow = async () => {
   const win = new BrowserWindow({
     backgroundColor: '#161920',
-    frame: environments.DEV,
+    frame: appIsDevelopment,
     height: 720,
-    icon: paths.iconFilePath,
+    icon: paths.files.iconFile,
     minHeight: 720,
     minWidth: 800,
     show: false,
     title: app.getName(),
     webPreferences: {
       // SECURITY: disable devtools in production mode
-      devTools: environments.DEV,
-      preload: paths.preloadFilePath,
+      devTools: appIsDevelopment,
+      preload: paths.files.preloadFile,
       // NOTE: local files are not displayed in developer mode
-      webSecurity: environments.PROD,
+      webSecurity: appIsProduction,
     },
     width: 800,
   });
@@ -79,33 +78,18 @@ export const createWindow = async () => {
     win.webContents.send(windowStateChangeName, win.isMaximized());
   });
 
-  win.webContents.openDevTools({
-    mode: 'undocked',
-  });
-
-  if (environments.PROD) {
+  if (appIsProduction) {
     win.removeMenu();
-    await win.loadFile(paths.renderFilePath);
+    await win.loadFile(paths.files.renderFile);
   } else {
     await win.loadURL(viteServerUrl);
   }
 
+  win.webContents.openDevTools({
+    mode: 'undocked',
+  });
+
   return win;
 };
 
-export const openUrlExternal = (url: string) => {
-  const parsedUrl = new URL(url);
-  if (allowedExternalUrls.has(parsedUrl.origin)) {
-    log.debug(`${url} is opened externally.`);
-    setImmediate(async () => {
-      await shell.openExternal(url);
-    });
-  }
-};
-
-const defaults = {
-  createWindow,
-  openUrlExternal,
-};
-
-export default defaults;
+export default createWindow;

@@ -59,15 +59,6 @@
           <input type="text" class="form-control" name="commandLine"
             value="{{#isEditMode}}{{data.commandLine}}{{/isEditMode}}" placeholder="ex: -steam">
         </div>
-        <div class="input-group mb-3">
-          <div class="input-group-text">
-            <span class="mdi mdi-account-question mdi-18px"></span>
-            <span class="ml-1">Listen Port</span>
-          </div>
-          <input type="number" class="form-control" name="listenPort"
-            value="{{^isEditMode}}47584{{/isEditMode}}{{#isEditMode}}{{data.listenPort}}{{/isEditMode}}"
-            placeholder="default: 47584" required>
-        </div>
         <div class="input-group">
           <div class="input-group-text">
             <span class="mdi mdi-account-question mdi-18px"></span>

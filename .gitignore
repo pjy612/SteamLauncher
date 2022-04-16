@@ -1,6 +1,7 @@
 # SteamLauncher
 /src/render/src/public/js/jquery.min.js
 
+/data
 /build/release
 /src/main/dist/
 /src/preload/dist/

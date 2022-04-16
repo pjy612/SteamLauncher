@@ -1,37 +1,26 @@
-import { argv } from 'node:process';
 import { app, session, dialog } from 'electron';
-import log from 'electron-log';
 import { autoUpdater } from 'electron-updater';
-import './process';
-import './https';
 import { appId } from '../../../electron-builder.json';
-import { openUrlExternal, createWindow } from './browser';
+import Game from './classes/game';
 import { allowedWillNavigateUrls } from './config';
-import gameLauncher from './functions/game-launcher';
-import storage from './storage';
-import './ipc/app';
-import './ipc/window';
-import './ipc/account';
-import './ipc/settings';
-import './ipc/game';
+import { appCommandsLine } from './environments';
+import createWindow from './functions/create-window';
+import openUrlExternally from './functions/open-url-externally';
+import log from './instances/log';
+import storage from './instances/storage';
+import './node';
+import './ipc/_ipcs';
 
 log.info('App starting...');
 
-// SET LOG TO AUTOUPDATER
 autoUpdater.logger = log;
 
-// COMMANDS LINE
-const commandsLine = argv.slice(app.isPackaged ? 1 : 2);
-
-// REQUEST SINGLE INSTANCE
-if (!app.requestSingleInstanceLock() && commandsLine.length === 0) {
+if (!app.requestSingleInstanceLock() && appCommandsLine.length === 0) {
   log.error('Only single instances are allowed');
   app.quit();
 }
 
-// SET APP USER MODEL
 app.setAppUserModelId(appId);
-// DISABLE HARDWARE ACCELERATION
 app.disableHardwareAcceleration();
 // SECURITY: https://www.electronjs.org/docs/latest/tutorial/security/#4-enable-sandboxing
 app.enableSandbox();
@@ -41,26 +30,30 @@ app.on('web-contents-created', (_event, contents) => {
   contents.on('will-navigate', (event, url) => {
     const parsedUrl = new URL(url);
     if (!allowedWillNavigateUrls.has(parsedUrl.origin)) {
-      log.error(`will-navigate: ${parsedUrl.href} isn't allowed`);
+      log.debug(`will-navigate: ${parsedUrl.href} isn't allowed`);
       event.preventDefault();
     }
 
-    openUrlExternal(url);
+    openUrlExternally(url);
   });
 
   // SECURITY: https://www.electronjs.org/docs/latest/tutorial/security/#14-disable-or-limit-creation-of-new-windows
   // NOTE: this happen when link have target="_blank"
   contents.setWindowOpenHandler(({ url }) => {
-    openUrlExternal(url);
+    openUrlExternally(url);
     return {
       action: 'deny',
     };
   });
 });
 
+app.on('second-instance', () => {
+  app.focus();
+});
+
 app
   .whenReady()
-  .then(() => {
+  .then(async () => {
     // SECURITY: https://www.electronjs.org/docs/latest/tutorial/security/#5-handle-session-permission-requests-from-remote-content
     session.defaultSession.setPermissionRequestHandler((_webContents, permission, callback) => {
       log.debug(`${permission} permission is not granted.`);
@@ -68,28 +61,22 @@ app
       callback(false);
     });
 
-    app.on('second-instance', () => {
-      app.focus();
-    });
-  })
-  .then(async () => {
-    if (commandsLine.length > 0) {
-      const { 0: argumentAppId } = commandsLine;
-      const has = storage.has(`games.${argumentAppId}`);
-      if (has) {
-        const data: StoreGameDataType = storage.get(`games.${argumentAppId}`);
-        await gameLauncher(data);
+    if (appCommandsLine.length > 0) {
+      const { 0: argumentAppId } = appCommandsLine;
+      const data: StoreGameDataType = storage.get(`games.${argumentAppId}`);
+      if (typeof data !== 'undefined') {
+        await Game.launch(data);
       } else {
         dialog.showErrorBox('Error', `${argumentAppId} does not exist!`);
       }
 
       app.exit();
-    } else {
-      void autoUpdater.checkForUpdatesAndNotify();
-
-      await createWindow();
     }
+
+    void autoUpdater.checkForUpdatesAndNotify();
+
+    await createWindow();
   })
   .catch((error) => {
-    log.error(error);
+    log.error((error as Error).message);
   });

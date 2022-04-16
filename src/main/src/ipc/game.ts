@@ -1,19 +1,15 @@
-import { join } from 'node:path';
 import type { IpcMainEvent } from 'electron';
-import { ipcMain as ipc, Menu, shell, app, dialog } from 'electron';
-import { pathExists } from 'fs-extra';
+import { ipcMain as ipc, Menu } from 'electron';
+import Game from '../classes/game';
 import SteamRetriever from '../classes/steam-retriever';
-import { paths } from '../config';
-import gameLauncher from '../functions/game-launcher';
-import gamePathsByAppId from '../functions/game-paths-by-appid';
-import gameRemove from '../functions/game-remove';
 import notify from '../functions/notify';
-import storage from '../storage';
+import promptYesNo from '../functions/prompt-yes-no';
+import storage from '../instances/storage';
 
 const functionGameAddEdit = async (event: IpcMainEvent, inputs: StoreGameDataType) => {
   const key = `games.${inputs.appId}`;
-  if (storage.has(key)) {
-    const data: StoreGameDataType = storage.get(key);
+  const data: StoreGameDataType | undefined = storage.get(key);
+  if (typeof data !== 'undefined') {
     storage.set(key, Object.assign(data, inputs));
     notify('Game edited successfully!');
     event.sender.send('modal-hide');
@@ -27,7 +23,7 @@ ipc.on('game-add', functionGameAddEdit);
 ipc.on('game-edit', functionGameAddEdit);
 
 ipc.handle('game-paths-by-appid', (_event, appId: string) => {
-  return gamePathsByAppId(appId);
+  return Game.paths(appId);
 });
 
 ipc.handle('game-data', (_event, appId: string): StoreGameDataType | undefined => {
@@ -39,116 +35,77 @@ ipc.handle('games-data', () => {
 });
 
 ipc.on('game-contextmenu', (event, appId: string) => {
-  const dataGame: StoreGameDataType = storage.get(`games.${appId}`);
-
-  Menu.buildFromTemplate([
+  const data: StoreGameDataType = storage.get(`games.${appId}`);
+  const menu = Menu.buildFromTemplate([
     {
-      async click() {
-        await gameLauncher(dataGame);
-      },
       label: 'Launch',
+      async click() {
+        await Game.launch(data);
+      },
     },
     {
-      async click() {
-        await gameLauncher(dataGame, true);
-      },
       label: 'Launch normally',
+      async click() {
+        await Game.launch(data, true);
+      },
     },
     {
       type: 'separator',
     },
     {
-      click() {
-        const name = dataGame.name.replace(/[^\d .A-Za-z]/gu, '');
-        const to = join(app.getPath('desktop'), `Launch ${name}.lnk`);
-        const created = shell.writeShortcutLink(to, {
-          args: dataGame.appId,
-          icon: dataGame.path,
-          iconIndex: 0,
-          target: app.getPath('exe'),
-        });
-        if (created) {
-          notify('Shortcut created successfully on desktop!');
-        } else {
-          notify('Unknown error with creating shortcut!');
-        }
-      },
       label: 'Create desktop shortcut',
+      click() {
+        Game.createDesktopShortcut(appId);
+      },
     },
     {
-      async click() {
-        if (await pathExists(dataGame.path)) {
-          shell.showItemInFolder(dataGame.path);
-        } else {
-          notify('The game path does not exists!');
-        }
-      },
       label: 'Open file location',
+      async click() {
+        await Game.openFileLocation(appId);
+      },
     },
     {
-      async click() {
-        const savesPath = join(paths.emulator.saves, appId);
-        if (await pathExists(savesPath)) {
-          await shell.openPath(savesPath);
-        } else {
-          notify('The game saves does not exists!');
-        }
-      },
       label: 'Open save location',
+      async click() {
+        await Game.openSaveLocation(appId);
+      },
     },
     {
-      async click() {
-        const appData = gamePathsByAppId(appId).appIdDataPath;
-        if (await pathExists(appData)) {
-          await shell.openPath(appData);
-        } else {
-          notify('The game data does not exists!');
-        }
-      },
       label: 'Open data location',
+      async click() {
+        await Game.openDataLocation(appId);
+      },
     },
     {
       type: 'separator',
     },
     {
+      label: 'Rebase DLCs, Items, etc...',
       async click() {
-        const prompt = await dialog.showMessageBox({
-          buttons: ['Yes', 'No'],
-          cancelId: 1,
-          defaultId: 1,
-          message: 'Are you sure? The data will be overwritten!',
-          type: 'warning',
-        });
-        if (prompt.response === 0) {
-          const steamRetriever = new SteamRetriever(dataGame);
+        if (await promptYesNo('Are you sure? The data will be overwritten!')) {
+          const steamRetriever = new SteamRetriever(data);
           await steamRetriever.run();
         }
       },
-      label: 'Rebase DLCs, Items, etc...',
     },
     {
       type: 'separator',
     },
     {
+      label: 'Edit game',
       click() {
         event.sender.send('app-navigate-to', `/game/edit/${appId}`);
       },
-      label: 'Edit game',
     },
     {
+      label: 'Remove game',
       async click() {
-        const prompt = await dialog.showMessageBox({
-          buttons: ['Yes', 'No'],
-          cancelId: 1,
-          defaultId: 1,
-          message: 'Are you sure you want to remove the game?',
-          type: 'warning',
-        });
-        if (prompt.response === 0) {
-          gameRemove(appId);
+        if (await promptYesNo('Are you sure you want to remove the game?')) {
+          Game.remove(appId);
         }
       },
-      label: 'Remove game',
     },
-  ]).popup();
+  ]);
+
+  menu.popup();
 });

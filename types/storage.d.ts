@@ -3,13 +3,13 @@ type StoreAccountType = {
   name: string;
   steamId: string;
   steamWebApiKey: string;
+  listenPort: string;
 };
 
 type StoreGameDataType = {
   appId: string;
   commandLine: string;
   header: string;
-  listenPort: string;
   name: string;
   overlay: boolean;
   path: string;
@@ -21,7 +21,7 @@ type StoreGamesDataType = Record<string, StoreGameDataType>;
 type StoreSettingsType = {
   httpsRejectUnauthorized: boolean;
   network: boolean;
-  steamClientPath?: string;
+  emulatorLocalJobId?: string;
 };
 
 type StoreWindowBoundsType = {

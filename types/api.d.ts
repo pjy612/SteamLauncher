@@ -1,5 +1,19 @@
 import type { IpcRendererEvent, OpenDialogReturnValue } from 'electron';
 
+type ApiGameGetPaths = {
+  appsPath: string;
+  appIdSavesPath: string;
+  appIdAchievementsInfoPath: string;
+  appIdAchievementsPath: string;
+  appIdDataPath: string;
+  appIdDefaultItemsInfoPath: string;
+  appIdDlcsInfoPath: string;
+  appIdHeaderPath: string;
+  appIdItemsInfoPath: string;
+  appIdStatsInfoPath: string;
+  appIdSteamInterfacesPath: string;
+};
+
 declare global {
   interface Window {
     api: {
@@ -20,8 +34,7 @@ declare global {
       };
       game: {
         getData: (appId: string) => Promise<StoreGameDataType | undefined>;
-        // TODO: add interface
-        getPaths: (appId: string) => Promise<Record<string, string>>;
+        getPaths: (appId: string) => Promise<ApiGameGetPaths>;
         openContextMenu: (appId: string) => void;
       };
       games: {

@@ -1,21 +1,18 @@
-import { BrowserWindow, ipcMain as ipc } from 'electron';
+import { ipcMain as ipc } from 'electron';
+import getCurrentWindow from '../functions/get-current-window';
 
 ipc.handle('window-close', (event) => {
-  const currentWindow = BrowserWindow.fromId(event.frameId);
-  currentWindow?.close();
+  getCurrentWindow(event)?.close();
 });
 
 ipc.handle('window-minimize', (event) => {
-  const currentWindow = BrowserWindow.fromId(event.frameId);
-  currentWindow?.minimize();
+  getCurrentWindow(event)?.minimize();
 });
 
 ipc.handle('window-maximize', (event) => {
-  const currentWindow = BrowserWindow.fromId(event.frameId);
-  currentWindow?.maximize();
+  getCurrentWindow(event)?.maximize();
 });
 
 ipc.handle('window-restore', (event) => {
-  const currentWindow = BrowserWindow.fromId(event.frameId);
-  currentWindow?.restore();
+  getCurrentWindow(event)?.restore();
 });

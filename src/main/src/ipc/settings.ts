@@ -1,6 +1,6 @@
 import { ipcMain as ipc } from 'electron';
 import notify from '../functions/notify';
-import storage from '../storage';
+import storage from '../instances/storage';
 
 ipc.on('settings-edit', (event, inputs: StoreSettingsType) => {
   storage.set('settings', inputs);

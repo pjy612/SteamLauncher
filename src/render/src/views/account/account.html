@@ -60,6 +60,11 @@
             value="{{#isEditMode}}{{accountData.steamWebApiKey}}{{/isEditMode}}"
           />
         </div>
+        <div class="form-text mb-3">
+          <span class="text-red-500">(*)</span> To get achievements, stats and items get key from
+          <a class="link" href="https://steamcommunity.com/dev/apikey" target="_blank">here</a>. If
+          no API key is given, it will only get games infos and DLCs.
+        </div>
         <div class="input-group mb-3">
           <div class="input-group-text">
             <span class="mdi mdi-identifier mdi-18px"></span>
@@ -73,10 +78,19 @@
             placeholder="Ex: 76596712918662909"
           />
         </div>
-        <div class="form-text">
-          <span class="text-red-500">(*)</span> To get achievements, stats and items get key from
-          <a class="link" href="https://steamcommunity.com/dev/apikey" target="_blank">here</a>. If
-          no API key is given, it will only get games infos and DLCs.
+        <div class="input-group">
+          <div class="input-group-text">
+            <span class="mdi mdi-account-question mdi-18px"></span>
+            <span class="ml-1">Listen Port</span>
+          </div>
+          <input
+            type="number"
+            class="form-control"
+            name="listenPort"
+            value="{{^isEditMode}}47584{{/isEditMode}}{{#isEditMode}}{{accountData.listenPort}}{{/isEditMode}}"
+            placeholder="default: 47584"
+            required
+          />
         </div>
       </div>
       <div class="modal-footer">

@@ -1,16 +1,16 @@
-import { createWriteStream } from 'node:fs';
 import { readFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 import { webContents } from 'electron';
-import log from 'electron-log';
 import glob from 'fast-glob';
 import { ensureDir, pathExists, writeFile, writeJson } from 'fs-extra';
 import signVerify from '../bin/sign-verify';
-import gamePathsByAppId from '../functions/game-paths-by-appid';
+import download from '../functions/download';
 import notify from '../functions/notify';
-import storage from '../storage';
+import log from '../instances/log';
+import storage from '../instances/storage';
+import Game from './game';
 
 class SteamRetriever {
   private accountSteamWebApiKey: string = storage.get('account.steamWebApiKey');
@@ -19,7 +19,7 @@ class SteamRetriever {
 
   private ipcEvent = webContents.getFocusedWebContents();
 
-  private gameData: Record<string, string> = {};
+  private gameData = {} as SteamRetrieverGameData;
 
   private readonly gameAppId: string;
 
@@ -30,31 +30,31 @@ class SteamRetriever {
   public constructor(inputs: StoreGameDataType) {
     this.gameInputs = inputs;
     this.gameAppId = inputs.appId;
-    this.gamePaths = gamePathsByAppId(inputs.appId);
+    this.gamePaths = Game.paths(inputs.appId);
   }
 
   private console(content: AxiosError | Error | string, space = false) {
     let nContent = content;
     if (typeof nContent === 'string') {
-      log.info(nContent);
-    } else {
-      if (axios.isAxiosError(nContent)) {
-        const url = new URL(nContent.config.url!);
-        const urlSearchParameters = url.searchParams;
-        const urlQueryPrivacy = '_PRIVACY_';
+      log.info(`SteamRetriever: ${nContent}`);
+    } else if (axios.isAxiosError(nContent)) {
+      const url = new URL(nContent.config.url!);
+      const urlSearchParameters = url.searchParams;
+      const urlQueryPrivacy = '_PRIVACY_';
 
-        if (urlSearchParameters.has('key')) {
-          urlSearchParameters.set('key', urlQueryPrivacy);
-        }
-
-        if (urlSearchParameters.has('digest')) {
-          urlSearchParameters.set('digest', urlQueryPrivacy);
-        }
-
-        nContent = `${url.href}; response: ${nContent.message}`;
+      if (urlSearchParameters.has('key')) {
+        urlSearchParameters.set('key', urlQueryPrivacy);
       }
 
-      log.error(nContent);
+      if (urlSearchParameters.has('digest')) {
+        urlSearchParameters.set('digest', urlQueryPrivacy);
+      }
+
+      nContent = `${url.href}; response: ${nContent.message}`;
+
+      log.error(`SteamRetriever: ${nContent}`);
+    } else {
+      log.error(`SteamRetriever: ${nContent.message}`);
     }
 
     this.ipcEvent.send(
@@ -77,12 +77,13 @@ class SteamRetriever {
 
     const url = `https://store.steampowered.com/api/appdetails/?appids=${this.gameAppId}&filters=basic`;
     const response = await axios.get(url);
-    const data = response.data[this.gameAppId];
+    const responseData = response.data as SteamRetrieverAppDetails;
+    const data = responseData[this.gameAppId];
     if (data.success === true) {
       if (data.data.type === 'game') {
         this.console('The appid is the "game" type, keep on...', true);
 
-        // await ensureDir(this.paths.appIdDataPath);
+        await ensureDir(this.gamePaths.appIdDataPath);
         await ensureDir(this.gamePaths.appIdAchievementsPath);
       } else {
         throw new Error('The appid is not a game.');
@@ -139,14 +140,16 @@ class SteamRetriever {
 
     const url = `https://store.steampowered.com/api/dlcforapp/?appid=${this.gameAppId}`;
     const response = await axios.get(url);
-    if (response.data.status === 1) {
-      this.gameData.name = response.data.name;
+    const responseData = response.data as SteamRetrieverDlcForApp;
 
-      this.console(`NAME: ${this.gameData.name}; DLCS: ${response.data.dlc.length}`, true);
+    if (responseData.status === 1) {
+      this.gameData.name = responseData.name;
 
-      if (response.data.dlc.length > 0) {
+      this.console(`NAME: ${this.gameData.name}; DLCS: ${responseData.dlc.length}`, true);
+
+      if (responseData.dlc.length > 0) {
         const resultDlcs = [];
-        for (const appDlcData of response.data.dlc) {
+        for (const appDlcData of responseData.dlc) {
           const appDlcAppId = appDlcData.id;
           const appDlcMame = appDlcData.name;
           this.console(`DLC AppID: ${appDlcAppId}; DLC Name: ${appDlcMame}`, true);
@@ -168,7 +171,7 @@ class SteamRetriever {
     const url = `https://cdn.akamai.steamstatic.com/steam/apps/${this.gameAppId}/header.jpg?t=1581535048`;
 
     if (!(await pathExists(this.gamePaths.appIdHeaderPath))) {
-      await this.imageDownloader(url, this.gamePaths.appIdHeaderPath).then(() => {
+      await download(url, this.gamePaths.appIdHeaderPath).then(() => {
         this.console(`${url} was downloaded successfully!`);
       });
     } else {
@@ -182,7 +185,8 @@ class SteamRetriever {
 
     const url = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=${this.accountSteamWebApiKey}&l=${this.accountLanguage}&appid=${this.gameAppId}`;
     const response = await axios.get(url);
-    const achievementsData = response.data.game.availableGameStats.achievements;
+    const responseData = response.data as SteamRetrieverGetSchemaForGame;
+    const achievementsData = responseData.game.availableGameStats.achievements;
     if (typeof achievementsData !== 'undefined' && achievementsData.length > 0) {
       const resultAchievements = [];
       for (const achievement of achievementsData) {
@@ -201,7 +205,7 @@ class SteamRetriever {
         resultAchievements.push(achievement);
 
         if (!(await pathExists(iconNamePath))) {
-          await this.imageDownloader(iconUrl, iconNamePath).then(() => {
+          await download(iconUrl, iconNamePath).then(() => {
             this.console(`${iconName} was downloaded successfully!`, true);
           });
         } else {
@@ -209,7 +213,7 @@ class SteamRetriever {
         }
 
         if (!(await pathExists(iconGrayNamePath))) {
-          await this.imageDownloader(iconGrayUrl, iconGrayNamePath).then(() => {
+          await download(iconGrayUrl, iconGrayNamePath).then(() => {
             this.console(`${iconGrayName} was downloaded successfully!`, true);
           });
         } else {
@@ -226,15 +230,15 @@ class SteamRetriever {
       this.console('The game has no achievements.', true);
     }
 
-    const statsData = response.data.game.availableGameStats.stats;
+    const statsData = responseData.game.availableGameStats.stats;
     if (typeof statsData !== 'undefined' && statsData.length > 0) {
       const resultStats = [];
       for (const _stat of statsData) {
-        const { name, defaultValue } = _stat;
+        const { name, defaultvalue } = _stat;
         // NOTE: ..., float, avgrate but where can I find this data?
         const typeValue = 'int';
 
-        resultStats.push(`${name}=${typeValue}=${defaultValue}`);
+        resultStats.push(`${name}=${typeValue}=${defaultvalue}`);
       }
 
       await writeFile(this.gamePaths.appIdStatsInfoPath, resultStats.join('\r\n')).then(() => {
@@ -250,18 +254,20 @@ class SteamRetriever {
 
     let url = `https://api.steampowered.com/IInventoryService/GetItemDefMeta/v1/?key=${this.accountSteamWebApiKey}&appid=${this.gameAppId}`;
     let response = await axios.get(url);
-    const { digest } = response.data.response;
+    const { digest } = (response.data as SteamRetrieverGetItemDefMeta).response;
 
     if (typeof digest !== 'undefined') {
       url = `https://api.steampowered.com/IGameInventory/GetItemDefArchive/v1/?digest=${digest}&appid=${this.gameAppId}`;
       response = await axios.get(url);
       // NOTE: the last character is a finger in the ass
-      response.data = JSON.parse(response.data.slice(0, -1));
+      response.data = JSON.parse(
+        (response.data as string).slice(0, -1)
+      ) as SteamRetrieverGetItemDefArchive;
 
-      const resultItems: Record<string, string> = {};
+      const resultItems: Record<string, unknown> = {};
       const resultDefaultItems: Record<string, number> = {};
 
-      for (const item of response.data) {
+      for (const item of response.data as SteamRetrieverGetItemDefArchive) {
         const { itemdefid } = item;
         resultItems[itemdefid] = item;
         resultDefaultItems[itemdefid] = 1;
@@ -289,10 +295,6 @@ class SteamRetriever {
       ...this.gameData,
     };
 
-    storage.set(`games.${inputs.appId}`, inputs);
-
-    this.ipcEvent.send('index-reload-games-list');
-
     if (storage.has(`games.${inputs.appId}`)) {
       const oo = 'Game rebased successfully!';
       notify(oo);
@@ -302,6 +304,10 @@ class SteamRetriever {
       notify(oo);
       this.console(oo);
     }
+
+    storage.set(`games.${inputs.appId}`, inputs);
+
+    this.ipcEvent.send('index-reload-games-list');
 
     this.consoleHide(true);
   }
@@ -350,22 +356,6 @@ class SteamRetriever {
         this.consoleHide();
       }
     }
-  }
-
-  private async imageDownloader(url: string, saveTo: string) {
-    const response = await axios({
-      method: 'GET',
-      responseType: 'stream',
-      url,
-    });
-    return new Promise((resolve, reject) => {
-      response.data
-        .pipe(createWriteStream(saveTo))
-        .on('error', reject)
-        .once('close', () => {
-          resolve(saveTo);
-        });
-    });
   }
 
   // BASED ON generate_interfaces_file.cpp BY Mr. GoldBerg

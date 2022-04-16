@@ -38,7 +38,7 @@ module.exports = defineConfig({
   ],
   settings: {
     node: {
-      tryExtensions: ['.js', '.ts', '.d.ts', '.html', '.json'],
+      tryExtensions: ['.js', '.ts', '.d.ts', '.json'],
     },
     'import/parsers': {
       '@typescript-eslint/parser': ['.ts'],
@@ -94,7 +94,7 @@ module.exports = defineConfig({
     // max-nested-callbacks
     // max-params
     // max-statements
-    'multiline-comment-style': [2, 'separate-lines'],
+    // multiline-comment-style
     'new-cap': 2,
     'no-alert': 2,
     'no-array-constructor': 2,
@@ -193,6 +193,7 @@ module.exports = defineConfig({
     // symbol-description
     // vars-on-top
     // yoda
+    semi: [2, 'always'],
 
     // PLUGIN: node
     // node/handle-callback-err
@@ -224,7 +225,21 @@ module.exports = defineConfig({
     'node/no-unpublished-require': 0,
 
     // PLUGIN: import
-    'import/no-unresolved': 2,
+    'import/no-useless-path-segments': 2,
+    'import/no-mutable-exports': 2,
+    'import/no-unused-modules': 2,
+    'import/newline-after-import': 2,
+    'import/order': [
+      2,
+      {
+        alphabetize: {
+          caseInsensitive: false,
+          order: 'asc',
+        },
+        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+        'newlines-between': 'never',
+      },
+    ],
 
     // PLUGIN: promise
     'promise/always-return': 0,
@@ -241,6 +256,7 @@ module.exports = defineConfig({
     // unicorn/string-content
 
     'unicorn/prefer-module': 0,
+    'unicorn/prefer-export-from': [2, { ignoreUsedVariables: true }],
 
     // PLUGIN: eslint-comments
     'eslint-comments/no-unused-disable': 2,

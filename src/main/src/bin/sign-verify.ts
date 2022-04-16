@@ -1,11 +1,10 @@
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
-import { paths } from '../config';
+import execFile from '../node/exec-file-promisify';
+import paths from '../paths';
 
 const signVerify = async (filePath: string) => {
-  const exe = paths.signToolBin;
+  const exe = paths.files.signToolFile;
   try {
-    await promisify(execFile)(exe, ['verify', '/pa', filePath]);
+    await execFile(exe, ['verify', '/pa', filePath]);
     return true;
   } catch {
     return false;

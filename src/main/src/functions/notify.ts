@@ -1,5 +1,5 @@
 import { Notification } from 'electron';
-import log from 'electron-log';
+import log from '../instances/log';
 
 const notify = (message: string) => {
   if (Notification.isSupported()) {
