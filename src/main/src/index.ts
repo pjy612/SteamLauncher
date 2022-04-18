@@ -12,11 +12,9 @@ import storage from './instances/storage';
 import './node';
 import './ipc/_ipcs';
 
-const _appIsInstalled = appIsInstalled();
-
 log.info(
-  `App starting... (portable: ${_appIsInstalled ? 'false' : 'true'}; autoUpdater: ${
-    _appIsInstalled ? 'true' : 'false'
+  `App starting... (portable: ${appIsInstalled ? 'false' : 'true'}; autoUpdater: ${
+    appIsInstalled ? 'true' : 'false'
   };)`
 );
 
@@ -80,7 +78,7 @@ app
       app.exit();
     }
 
-    if (_appIsInstalled) {
+    if (appIsInstalled) {
       void autoUpdater.checkForUpdatesAndNotify();
     }
 

@@ -1,10 +1,11 @@
 import { join, resolve } from 'node:path';
 import { app } from 'electron';
 import { appIsDevelopment, appIsProduction } from './environments';
+import appIsInstalled from './functions/app-is-installed';
 
 const appRootPath = appIsDevelopment ? app.getAppPath() : resolve(app.getAppPath(), '../../');
 const appResourcePath = app.getAppPath();
-const appDataPath = join(appRootPath, 'data');
+const appDataPath = join(appIsInstalled ? app.getPath('userData') : appRootPath, 'data');
 const appLogsPath = join(appDataPath, 'logs');
 const appEmuPath = join(appDataPath, 'steam_emulator');
 const appBinPath = join(appResourcePath + (appIsProduction ? '.unpacked' : ''), 'bin');
@@ -37,7 +38,6 @@ const paths = {
     loaderPath: join(appEmuPath, 'steamclient_loader.exe'),
   },
   files: {
-    uninstallFile: join(appResourcePath, 'Uninstall SteamLauncher.exe'),
     iconFile: join(appResourcePath, '/build/resources/icon.ico'),
     preloadFile: join(appResourcePath, '/src/preload/dist/preload.cjs.js'),
     renderFile: join(appResourcePath, '/src/render/dist/index.html'),

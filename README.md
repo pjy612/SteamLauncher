@@ -1,10 +1,10 @@
-# SteamLauncher (ALPHA\*)
+# SteamLauncher (ALPHA (1.))
 
 **_SteamLauncher_** optimizes the setup process of each game in a simple and automatic way.
 
 [forum cs.rin.ru support](https://cs.rin.ru/forum/viewtopic.php?f=20&t=116801)
 
-**(\*) In the ALPHA version, substantial changes can make previous versions incompatible.**
+**(1.) In the ALPHA version, substantial changes can make previous versions incompatible.**
 
 #### Donate
 
@@ -31,7 +31,7 @@ For more information on the emulator: [gitlab](https://gitlab.com/Mr_Goldberg/go
 - **Mr. GoldBerg Emulator Autodownload** _(from v0.1.5)_
   - The first time you start the game, the emulator will be downloaded and extracted to the appropriate folder within SteamLauncher. This feature also includes auto updating of it.
 - **SteamCloud** _(from v0.1.5)_
-  - It is not properly as Steam Cloud, the saves game data is not saved on Steam but they are saved all within the folder **_"\_INSTALL_PATH_STEAMLAUNCHER/data/steam_cloud/"._**
+  - It is not properly as Steam Cloud, the saves game data is not saved on Steam but they are saved all within the folder **"PATH_STEAMLAUNCHER/data/steam_cloud/"** in portable mode or **"%APPDATA%/SteamLauncher/data/steam_cloud/"** in installer mode.
   - Backup and restore is done automatically or manually.
     - BACKUP: The automatic backup occurs when you start the game and close it, the manual instead takes place via the game contextmenu in the launcher.
     - RESTORE: The automatic restore occurs when you enter a game that was previously deleted from the launcher, the manual instead takes place via the game contextmenu in the launcher.
@@ -73,7 +73,7 @@ When the application starts, you will be asked to create the account. Once done,
 
 - All those not listed.
 
-To solve this problem just go to the folder **"_INSTALL_PATH_STEAMLAUNCHER/data/steam_retriever/\_APPID_"** and enter the missing data.
+To solve this problem just go to the folder **"PATH_STEAMLAUNCHER/data/steam_retriever/APPID"** in portable mode or **"%APPDATA%/SteamLauncher/data/steam_retriever/"** in installer mode and enter the missing data.
 
 **Attention! Supported features are always overwritten!**
 

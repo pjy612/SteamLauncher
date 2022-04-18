@@ -1,9 +1,11 @@
+import { join, resolve } from 'node:path';
+import { app } from 'electron';
 import { pathExistsSync } from 'fs-extra';
-import paths from '../paths';
+import { appIsDevelopment } from '../environments';
 
-const appIsInstalled = () => {
-  // TODO: It's the only way i've found to check if the app is portable or installed.
-  return pathExistsSync(paths.files.uninstallFile);
-};
+// NOTE: copied to avoid the dependency cycle
+const appRootPath = appIsDevelopment ? app.getAppPath() : resolve(app.getAppPath(), '../../');
+// TODO: It's the only way i've found to check if the app is portable or installed.
+const appIsInstalled = pathExistsSync(join(appRootPath, 'Uninstall SteamLauncher.exe'));
 
 export default appIsInstalled;
