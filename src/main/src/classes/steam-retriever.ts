@@ -79,6 +79,7 @@ class SteamRetriever {
     const url = `https://store.steampowered.com/api/appdetails/?appids=${this.gameAppId}&filters=basic`;
     const response = await axios.get(url);
     const responseData = response.data as SteamRetrieverAppDetails;
+
     const data = responseData[this.gameAppId];
     if (data.success === true) {
       if (data.data.type === 'game') {
@@ -130,8 +131,9 @@ class SteamRetriever {
         await this.writeSteamApiInterfaces(searchDlls[0]);
       }
     } else {
-      throw new Error(
-        'The game does not contain any steam_api(64).dll, please select the correct run path!'
+      this.console(
+        'The game does not contain any steam_api64.dll, if it is drm-free everything is in order otherwise select the correct run path!',
+        true
       );
     }
   }
@@ -149,15 +151,15 @@ class SteamRetriever {
       this.console(`NAME: ${this.gameData.name}; DLCS: ${responseData.dlc.length}`, true);
 
       if (responseData.dlc.length > 0) {
-        const resultDlcs = [];
+        const dlcsResult = [];
         for (const appDlcData of responseData.dlc) {
           const appDlcAppId = appDlcData.id;
           const appDlcMame = appDlcData.name;
           this.console(`DLC AppID: ${appDlcAppId}; DLC Name: ${appDlcMame}`, true);
-          resultDlcs.push(`${appDlcAppId}=${appDlcMame}`);
+          dlcsResult.push(`${appDlcAppId}=${appDlcMame}`);
         }
 
-        await writeFile(this.gamePaths.appIdDlcsInfoPath, resultDlcs.join('\r\n')).then(() => {
+        await writeFile(this.gamePaths.appIdDlcsInfoPath, dlcsResult.join('\r\n')).then(() => {
           this.console(`${this.gamePaths.appIdDlcsInfoPath} was written successfully!`, true);
         });
       } else {
@@ -187,9 +189,15 @@ class SteamRetriever {
     const url = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=${this.accountSteamWebApiKey}&l=${this.accountLanguage}&appid=${this.gameAppId}`;
     const response = await axios.get(url);
     const responseData = response.data as SteamRetrieverGetSchemaForGame;
-    const achievementsData = responseData.game.availableGameStats.achievements;
-    if (typeof achievementsData !== 'undefined' && achievementsData.length > 0) {
-      const resultAchievements = [];
+
+    if (
+      typeof responseData.game !== 'undefined' &&
+      typeof responseData.game.availableGameStats !== 'undefined' &&
+      typeof responseData.game.availableGameStats.achievements !== 'undefined' &&
+      responseData.game.availableGameStats.achievements.length > 0
+    ) {
+      const achievementsData = responseData.game.availableGameStats.achievements;
+      const achievementsResult = [];
       for (const achievement of achievementsData) {
         const iconUrl = achievement.icon;
         const iconGrayUrl = achievement.icongray;
@@ -203,7 +211,7 @@ class SteamRetriever {
         achievement.icon = `achievements/${iconName}`;
         achievement.icongray = `achievements/${iconGrayName}`;
 
-        resultAchievements.push(achievement);
+        achievementsResult.push(achievement);
 
         if (!(await pathExists(iconNamePath))) {
           await download(iconUrl, iconNamePath).then(() => {
@@ -222,7 +230,7 @@ class SteamRetriever {
         }
       }
 
-      await writeJson(this.gamePaths.appIdAchievementsInfoPath, resultAchievements, {
+      await writeJson(this.gamePaths.appIdAchievementsInfoPath, achievementsResult, {
         spaces: 2,
       }).then(() => {
         this.console(`${this.gamePaths.appIdAchievementsInfoPath} was written successfully!`, true);
@@ -231,18 +239,23 @@ class SteamRetriever {
       this.console('The game has no achievements.', true);
     }
 
-    const statsData = responseData.game.availableGameStats.stats;
-    if (typeof statsData !== 'undefined' && statsData.length > 0) {
-      const resultStats = [];
+    if (
+      typeof responseData.game !== 'undefined' &&
+      typeof responseData.game.availableGameStats !== 'undefined' &&
+      typeof responseData.game.availableGameStats.stats !== 'undefined' &&
+      responseData.game.availableGameStats.stats.length > 0
+    ) {
+      const statsData = responseData.game.availableGameStats.stats;
+      const statsResult = [];
       for (const _stat of statsData) {
         const { name, defaultvalue } = _stat;
         // NOTE: ..., float, avgrate but where can I find this data?
         const typeValue = 'int';
 
-        resultStats.push(`${name}=${typeValue}=${defaultvalue}`);
+        statsResult.push(`${name}=${typeValue}=${defaultvalue}`);
       }
 
-      await writeFile(this.gamePaths.appIdStatsInfoPath, resultStats.join('\r\n')).then(() => {
+      await writeFile(this.gamePaths.appIdStatsInfoPath, statsResult.join('\r\n')).then(() => {
         this.console(`${this.gamePaths.appIdStatsInfoPath} was written successfully!`, true);
       });
     } else {

@@ -45,7 +45,7 @@ type SteamRetrieverGetSchemaForGameAvailableGameStats = {
 };
 
 type SteamRetrieverGetSchemaForGameGame = {
-  availableGameStats: SteamRetrieverGetSchemaForGameAvailableGameStats;
+  availableGameStats?: SteamRetrieverGetSchemaForGameAvailableGameStats;
 };
 
 type SteamRetrieverGetSchemaForGame = {

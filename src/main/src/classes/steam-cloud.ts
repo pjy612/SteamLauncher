@@ -1,4 +1,5 @@
 import type { ChildProcess } from 'node:child_process';
+import { pathExists } from 'fs-extra';
 import notify from '../functions/notify';
 import log from '../instances/log';
 import execFile from '../node/exec-file-promisify';
@@ -21,13 +22,13 @@ class SteamCloud {
         appId,
       ]);
       log.debug(`SteamCloud backupByAppId: \n${spawn.stdout}`);
-      notify('The backups of the saves were successful.');
+      notify('SteamCloud Backup: The backups of the saves were successful.');
       return true;
     } catch (error) {
       const { stderr } = error as ChildProcess;
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       log.error(`SteamCloud backupByAppId: ${stderr}`);
-      notify('The backup of the saves was not successful. Check the logs.');
+      notify('SteamCloud Backup: The backup of the saves was not successful, check the logs.');
       return false;
     }
   }
@@ -38,22 +39,29 @@ class SteamCloud {
     const exe = paths.files.ludusaviFile;
     const gamePaths = Game.paths(appId);
     try {
-      const spawn = await execFile(exe, [
-        'restore',
-        '--by-steam-id',
-        '--force',
-        `--path`,
-        gamePaths.appIdSavesCloudPath,
-        appId,
-      ]);
-      log.debug(`SteamCloud restoreByAppId: \n${spawn.stdout}`);
-      notify('The restore of the saves were successful.');
+      if (await pathExists(gamePaths.appIdSavesCloudPath)) {
+        const spawn = await execFile(exe, [
+          'restore',
+          '--by-steam-id',
+          '--force',
+          `--path`,
+          gamePaths.appIdSavesCloudPath,
+          appId,
+        ]);
+        log.debug(`SteamCloud restoreByAppId: \n${spawn.stdout}`);
+        notify('SteamCloud Restore: The restore of the saves were successful.');
+      } else {
+        log.debug('SteamCloud restoreByAppId: The game does not contain any save backups.');
+        notify(
+          'SteamCloud Restore: The restore of the saves was not successful, the game does not contain any save backups.'
+        );
+      }
       return true;
     } catch (error) {
       const { stderr } = error as ChildProcess;
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       log.error(`SteamCloud restoreByAppId: ${stderr}`);
-      notify('The restore of the saves was not successful. Check the logs.');
+      notify('SteamCloud Restore: The restore of the saves was not successful, check the logs.');
       return false;
     }
   }

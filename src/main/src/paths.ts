@@ -37,6 +37,7 @@ const paths = {
     loaderPath: join(appEmuPath, 'steamclient_loader.exe'),
   },
   files: {
+    uninstallFile: join(appResourcePath, 'Uninstall SteamLauncher.exe'),
     iconFile: join(appResourcePath, '/build/resources/icon.ico'),
     preloadFile: join(appResourcePath, '/src/preload/dist/preload.cjs.js'),
     renderFile: join(appResourcePath, '/src/render/dist/index.html'),

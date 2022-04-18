@@ -4,6 +4,7 @@ import { appId } from '../../../electron-builder.json';
 import Game from './classes/game';
 import { allowedWillNavigateUrls } from './config';
 import { appCommandsLine } from './environments';
+import appIsInstalled from './functions/app-is-installed';
 import createWindow from './functions/create-window';
 import openUrlExternally from './functions/open-url-externally';
 import log from './instances/log';
@@ -11,7 +12,13 @@ import storage from './instances/storage';
 import './node';
 import './ipc/_ipcs';
 
-log.info('App starting...');
+const _appIsInstalled = appIsInstalled();
+
+log.info(
+  `App starting... (portable: ${_appIsInstalled ? 'false' : 'true'}; autoUpdater: ${
+    _appIsInstalled ? 'true' : 'false'
+  };)`
+);
 
 autoUpdater.logger = log;
 
@@ -73,7 +80,9 @@ app
       app.exit();
     }
 
-    void autoUpdater.checkForUpdatesAndNotify();
+    if (_appIsInstalled) {
+      void autoUpdater.checkForUpdatesAndNotify();
+    }
 
     await createWindow();
   })

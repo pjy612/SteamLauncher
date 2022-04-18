@@ -1,4 +1,5 @@
 # SteamLauncher
+/bin/win/ludusavi/config.yaml
 /bin/win/ludusavi/manifest.yaml
 /data
 /build/release
