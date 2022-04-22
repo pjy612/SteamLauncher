@@ -1,5 +1,5 @@
-import { argv } from 'node:process';
 import { app } from 'electron';
+import { argv } from 'node:process';
 
 export const { DEV: appIsDevelopment, PROD: appIsProduction } = import.meta.env;
 

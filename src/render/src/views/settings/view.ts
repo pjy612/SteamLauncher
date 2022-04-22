@@ -16,7 +16,6 @@ class SettingsView {
   }
 
   private async setDom() {
-    // eslint-disable-next-line node/no-missing-import
     const { default: html } = await import('./settings.html?raw');
     const rendered = mustache.render(html, {
       data: this.data,

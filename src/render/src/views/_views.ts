@@ -1,4 +1,5 @@
 import navigo from '../instances/navigo';
+
 import AboutView from './about/view';
 import AccountView from './account/view';
 import GameView from './game/view';

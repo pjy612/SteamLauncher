@@ -1,5 +1,6 @@
-import { join, resolve } from 'node:path';
 import { app } from 'electron';
+import { join, resolve } from 'node:path';
+
 import { appIsDevelopment, appIsProduction } from './environments';
 import appIsInstalled from './functions/app-is-installed';
 

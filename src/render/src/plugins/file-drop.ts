@@ -1,7 +1,7 @@
 import { allowedExtensions } from '../config';
 
 $(() => {
-  // eslint-disable-next-line sonarjs/cognitive-complexity
+  // eslint-disable-next-line func-names, sonarjs/cognitive-complexity
   $.fn.fileDrop = function (callback) {
     const activeClass = 'drop-highlight';
 

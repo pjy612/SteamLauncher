@@ -1,4 +1,5 @@
 import { shell } from 'electron';
+
 import { allowedExternalUrls } from '../config';
 import log from '../instances/log';
 

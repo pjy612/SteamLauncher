@@ -1,12 +1,14 @@
-import { join } from 'node:path';
 import { app } from 'electron';
+import { join } from 'node:path';
+
 import { transports, format, createLogger } from 'winston';
+
 import { appIsDevelopment } from '../environments';
 import paths from '../paths';
 
-const logFormatString = format.printf(({ level, timestamp, message }) => {
-  return `[${timestamp as string}] [${level}]: ${message}`;
-});
+const logFormatString = format.printf(
+  ({ level, timestamp, message }) => `[${timestamp as string}] [${level}]: ${message}`
+);
 const logFormatTimestamp = 'YYYY-MM-DD hh:mm:ss.SSS';
 const logFilePath = join(paths.appLogsPath, `${app.getName()}.log`);
 

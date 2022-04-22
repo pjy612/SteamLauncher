@@ -1,4 +1,5 @@
 import mustache from 'mustache';
+
 import { allowedLanguages } from '../../config';
 import mustacheObjsWithKeys from '../../functions/mustache-objs-with-keys';
 
@@ -26,7 +27,6 @@ class AccountView {
   }
 
   private async setDom() {
-    // eslint-disable-next-line node/no-missing-import
     const { default: html } = await import('./account.html?raw');
     const view = {
       inputLanguages: mustacheObjsWithKeys(allowedLanguages),

@@ -1,4 +1,5 @@
 import { app, BrowserWindow, Rectangle } from 'electron';
+
 import { appIsDevelopment, appIsProduction } from '../environments';
 import storage from '../instances/storage';
 import paths from '../paths';

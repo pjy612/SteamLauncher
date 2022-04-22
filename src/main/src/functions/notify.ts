@@ -1,4 +1,5 @@
 import { Notification } from 'electron';
+
 import log from '../instances/log';
 
 const notify = (message: string) => {

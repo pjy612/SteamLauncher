@@ -1,6 +1,8 @@
-import { join, resolve } from 'node:path';
 import { app } from 'electron';
+import { join, resolve } from 'node:path';
+
 import { pathExistsSync } from 'fs-extra';
+
 import { appIsDevelopment } from '../environments';
 
 // NOTE: copied to avoid the dependency cycle

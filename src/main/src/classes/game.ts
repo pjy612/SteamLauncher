@@ -1,12 +1,16 @@
-import { join, basename } from 'node:path';
 import { app, shell, webContents } from 'electron';
+import { join, basename } from 'node:path';
+
 import { pathExists, emptyDir, copy, writeFile, ensureDir } from 'fs-extra';
 import ini from 'ini';
+
 import notify from '../functions/notify';
 import storage from '../instances/storage';
 import execFile from '../node/exec-file-promisify';
 import paths from '../paths';
+
 import MrGoldBergEmulator from './mr-goldberg-emulator';
+// eslint-disable-next-line import/no-cycle
 import SteamCloud from './steam-cloud';
 
 class Game {
@@ -48,9 +52,7 @@ class Game {
     await emptyDir(paths.emulator.settingsPath);
 
     await copy(dataGamePaths.appIdDataPath, paths.emulator.settingsPath, {
-      filter: (source) => {
-        return basename(source) !== 'header.jpg';
-      },
+      filter: (source) => basename(source) !== 'header.jpg',
     });
 
     // steam_settings/disable_overlay.txt

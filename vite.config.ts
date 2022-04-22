@@ -1,13 +1,13 @@
 import { builtinModules } from 'node:module';
 import { join, basename } from 'node:path';
 import { cwd } from 'node:process';
+
 import type { UserConfigExport } from 'vite';
 import { defineConfig } from 'vite';
+
 import { dependencies } from './package.json';
 
-const builtinModulesNodeProtocol = builtinModules.map((module) => {
-  return `node:${module}`;
-});
+const builtinModulesNodeProtocol = builtinModules.map((module) => `node:${module}`);
 const externalModules = [...Object.keys(dependencies), 'electron'];
 
 export default function createConfig(packagePath: string) {

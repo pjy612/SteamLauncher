@@ -9,13 +9,9 @@ const fill = (dom: JQuery, values: OpenDialogReturnValue) => {
   }
 };
 
-const choseDirectory = async () => {
-  return window.api.app.choseDirectory();
-};
+const choseDirectory = async () => window.api.app.choseDirectory();
 
-const choseFile = async () => {
-  return window.api.app.choseFile();
-};
+const choseFile = async () => window.api.app.choseFile();
 
 $(() => {
   $(document).on('click', '*[data-sk="choseDirFile"]', async (event) => {

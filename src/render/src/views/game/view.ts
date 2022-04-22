@@ -1,4 +1,5 @@
 import mustache from 'mustache';
+
 import iteratorToObject from '../../functions/iterator-to-object';
 import navigo from '../../instances/navigo';
 
@@ -19,7 +20,6 @@ class GameView {
   }
 
   private async setDom() {
-    // eslint-disable-next-line node/no-missing-import
     const { default: html } = await import('./game.html?raw');
 
     let view = {};

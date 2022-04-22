@@ -1,5 +1,6 @@
 import type { IpcMainEvent } from 'electron';
 import { ipcMain as ipc, Menu } from 'electron';
+
 import Game from '../classes/game';
 import SteamCloud from '../classes/steam-cloud';
 import SteamRetriever from '../classes/steam-retriever';
@@ -23,17 +24,13 @@ const functionGameAddEdit = async (event: IpcMainEvent, inputs: StoreGameDataTyp
 ipc.on('game-add', functionGameAddEdit);
 ipc.on('game-edit', functionGameAddEdit);
 
-ipc.handle('game-paths-by-appid', (_event, appId: string) => {
-  return Game.paths(appId);
-});
+ipc.handle('game-paths-by-appid', (_event, appId: string) => Game.paths(appId));
 
-ipc.handle('game-data', (_event, appId: string): StoreGameDataType | undefined => {
-  return storage.get(`games.${appId}`);
-});
+ipc.handle('game-data', (_event, appId: string): StoreGameDataType | undefined =>
+  storage.get(`games.${appId}`)
+);
 
-ipc.handle('games-data', () => {
-  return storage.get('games');
-});
+ipc.handle('games-data', () => storage.get('games'));
 
 ipc.on('game-contextmenu', (event, appId: string) => {
   const data: StoreGameDataType = storage.get(`games.${appId}`);
@@ -45,7 +42,7 @@ ipc.on('game-contextmenu', (event, appId: string) => {
       },
     },
     {
-      label: 'Launch normally',
+      label: 'Launch without emulator',
       async click() {
         await Game.launch(data, true);
       },
@@ -58,6 +55,9 @@ ipc.on('game-contextmenu', (event, appId: string) => {
       click() {
         Game.createDesktopShortcut(appId);
       },
+    },
+    {
+      type: 'separator',
     },
     {
       label: 'Open file location',

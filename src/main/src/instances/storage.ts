@@ -1,4 +1,5 @@
 import Conf from 'conf';
+
 import { appIsDevelopment } from '../environments';
 import paths from '../paths';
 

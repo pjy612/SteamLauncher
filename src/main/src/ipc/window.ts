@@ -1,4 +1,5 @@
 import { ipcMain as ipc } from 'electron';
+
 import getCurrentWindow from '../functions/get-current-window';
 
 ipc.handle('window-close', (event) => {

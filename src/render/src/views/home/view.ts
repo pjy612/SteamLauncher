@@ -1,4 +1,5 @@
 import mustache from 'mustache';
+
 import navigo from '../../instances/navigo';
 
 class HomeView {
@@ -20,7 +21,6 @@ class HomeView {
   }
 
   private async setDom() {
-    // eslint-disable-next-line node/no-missing-import
     const { default: html } = await import('./home.html?raw');
     const rendered = mustache.render(html, {});
     this.dom = $(rendered);

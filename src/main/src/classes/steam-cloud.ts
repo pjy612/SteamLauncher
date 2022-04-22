@@ -1,9 +1,13 @@
 import type { ChildProcess } from 'node:child_process';
+
 import { pathExists } from 'fs-extra';
+
 import notify from '../functions/notify';
 import log from '../instances/log';
 import execFile from '../node/exec-file-promisify';
 import paths from '../paths';
+
+// eslint-disable-next-line import/no-cycle
 import Game from './game';
 
 class SteamCloud {

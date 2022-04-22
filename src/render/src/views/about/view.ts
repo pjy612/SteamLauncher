@@ -17,7 +17,7 @@ class AboutView {
     const version = await window.api.app.getVersion();
     const description = await window.api.app.getDescription();
     const copyright = await window.api.app.getCopyright();
-    // eslint-disable-next-line node/no-missing-import
+
     const { default: html } = await import('./about.html?raw');
     const rendered = mustache.render(html, {
       copyright,

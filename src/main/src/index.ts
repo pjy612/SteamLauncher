@@ -1,6 +1,9 @@
 import { app, session, dialog } from 'electron';
+
 import { autoUpdater } from 'electron-updater';
+
 import { appId } from '../../../electron-builder.json';
+
 import Game from './classes/game';
 import { allowedWillNavigateUrls } from './config';
 import { appCommandsLine } from './environments';

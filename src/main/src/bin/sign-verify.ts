@@ -1,4 +1,5 @@
 import type { ChildProcess } from 'node:child_process';
+
 import log from '../instances/log';
 import execFile from '../node/exec-file-promisify';
 import paths from '../paths';

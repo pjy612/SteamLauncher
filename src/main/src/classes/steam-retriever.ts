@@ -1,15 +1,18 @@
+import { webContents } from 'electron';
 import { readFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
+
 import type { AxiosError } from 'axios';
 import axios from 'axios';
-import { webContents } from 'electron';
 import glob from 'fast-glob';
 import { ensureDir, pathExists, writeFile, writeJson } from 'fs-extra';
+
 import signVerify from '../bin/sign-verify';
 import download from '../functions/download';
 import notify from '../functions/notify';
 import log from '../instances/log';
 import storage from '../instances/storage';
+
 import Game from './game';
 import SteamCloud from './steam-cloud';
 
