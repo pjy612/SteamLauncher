@@ -16,7 +16,7 @@ jobs:
           check-latest: 'true'
       - name: git-chglog | Download
         run: |
-          go get -u github.com/git-chglog/git-chglog/cmd/git-chglog
+          go install github.com/git-chglog/git-chglog/cmd/git-chglog
       - name: git-chglog | Update CHANGELOG.md
         run: |
           git-chglog -o CHANGELOG.md
