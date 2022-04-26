@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Changed
+- changelog header pattern test
+
 
 <a name="v0.1.8"></a>
 ## [v0.1.8] - 2022-04-18
