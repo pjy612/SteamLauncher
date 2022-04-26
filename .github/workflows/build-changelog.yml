@@ -1,0 +1,16 @@
+name: Build Changelog
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-changelog:
+    steps:
+      - name: Action / Checkout
+        uses: actions/checkout@v3
+
+      - name: Build Changelog
+      uses: mikepenz/release-changelog-builder-action@v3.0.0-rc01
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

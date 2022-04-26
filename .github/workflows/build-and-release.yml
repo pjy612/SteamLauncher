@@ -2,11 +2,10 @@ name: Build and Release
 
 on:
   push:
-    tags:
-      - v[0-9]+.[0-9]+.[0-9]+
+    branches: [main]
 
 jobs:
-  release:
+  build-and-release:
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -20,8 +19,8 @@ jobs:
       - name: Action / Setup Node v16
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
-          cache: "yarn"
+          node-version: '16'
+          cache: 'yarn'
 
       - name: Install Dependencies
         run: yarn install
