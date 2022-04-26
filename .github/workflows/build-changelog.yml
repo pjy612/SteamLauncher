@@ -1,8 +1,6 @@
 name: Build Changelog
 
-on:
-  push:
-    branches: [main]
+on: [push]
 
 jobs:
   build-changelog:
@@ -12,9 +10,8 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build Changelog
-        uses: mikepenz/release-changelog-builder-action@v3.0.0-rc01
+        uses: saadmk11/changelog-ci@v1.0.0
         with:
-          commitMode: true
-          outputFile: 'CHANGELOG.md'
+          config_file: changelog-ci-config.yaml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
