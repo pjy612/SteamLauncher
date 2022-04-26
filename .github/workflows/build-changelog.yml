@@ -27,4 +27,3 @@ jobs:
         with:
           commit_message: 'Update CHANGELOG.md'
           file_pattern: 'CHANGELOG.md'
-          commit_author: 'build-changelog.yml'
