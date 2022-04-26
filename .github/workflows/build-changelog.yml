@@ -1,6 +1,13 @@
 name: Build Changelog
 
-on: [push]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'Set Release Version'
+        required: true
 
 jobs:
   build-changelog:
@@ -12,6 +19,7 @@ jobs:
       - name: Build Changelog
         uses: saadmk11/changelog-ci@v1.0.0
         with:
+          release_version: ${{ github.event.inputs.release_version }}
           config_file: './.github/workflows/build-changelog-config.json'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
