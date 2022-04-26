@@ -15,5 +15,6 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v3.0.0-rc01
         with:
           commitMode: true
+          outputFile: CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
