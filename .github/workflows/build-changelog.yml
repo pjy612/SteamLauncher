@@ -12,6 +12,6 @@ jobs:
       - name: Build Changelog
         uses: saadmk11/changelog-ci@v1.0.0
         with:
-          config_file: changelog-ci-config.yaml
+          config_file: build-changelog-config.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
