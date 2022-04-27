@@ -1,8 +1,9 @@
 name: Build Changelog
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
+  push:
+    tags:
+      - v*
 
 jobs:
   build-changelog:
