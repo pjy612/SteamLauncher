@@ -1,5 +1,4 @@
 import { ipcMain as ipc } from 'electron';
-
 import notify from '../functions/notify';
 import storage from '../instances/storage';
 

@@ -1,0 +1,5 @@
+@layer components {
+  .markdown-body ul {
+    list-style: revert;
+  }
+}

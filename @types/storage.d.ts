@@ -1,19 +1,24 @@
 type StoreAccountType = {
-  language: string;
   name: string;
+  language: string;
   steamId: string;
-  steamWebApiKey: string;
   listenPort: string;
+  steamWebApiKey: string;
 };
 
 type StoreGameDataType = {
   appId: string;
-  commandLine: string;
-  header: string;
   name: string;
-  overlay: boolean;
-  path: string;
-  runPath: string;
+  executableFilePath: string;
+  executableWorkingDirectory: string;
+  commandLine: string;
+  disableOverlay: boolean;
+  disableNetworking: boolean;
+  disableLanOnly: boolean;
+  forceAccountName: string;
+  forceAccountLanguage: string;
+  forceAccountSteamId: string;
+  forceAccountListenPort: string;
 };
 
 type StoreGamesDataType = Record<string, StoreGameDataType>;
@@ -38,8 +43,8 @@ type StoreWindowType = {
 };
 
 type StoreType = {
+  settings: StoreSettingsType;
   account?: StoreAccountType;
   games?: StoreGamesDataType;
-  settings: StoreSettingsType;
   window?: StoreWindowType;
 };

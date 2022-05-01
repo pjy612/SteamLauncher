@@ -1,9 +1,7 @@
 import type { IpcMainEvent } from 'electron';
 import { ipcMain as ipc } from 'electron';
-
 import { customAlphabet } from 'nanoid/non-secure';
 import { fromIndividualAccountID } from 'steamid';
-
 import notify from '../functions/notify';
 import storage from '../instances/storage';
 

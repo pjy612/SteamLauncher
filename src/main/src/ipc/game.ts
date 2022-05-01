@@ -1,6 +1,5 @@
 import type { IpcMainEvent } from 'electron';
 import { ipcMain as ipc, Menu } from 'electron';
-
 import Game from '../classes/game';
 import SteamCloud from '../classes/steam-cloud';
 import SteamRetriever from '../classes/steam-retriever';

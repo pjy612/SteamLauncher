@@ -1,4 +1,4 @@
-export const allowedLanguages = {
+const allowedLanguages = {
   arabic: 'Arabic',
   brazilian: 'Portuguese-Brazil',
   bulgarian: 'Bulgarian',
@@ -30,11 +30,4 @@ export const allowedLanguages = {
   vietnamese: 'Vietnamese',
 };
 
-export const allowedExtensions = ['.exe'];
-
-const defaults = {
-  allowedExtensions,
-  allowedLanguages,
-};
-
-export default defaults;
+export default allowedLanguages;

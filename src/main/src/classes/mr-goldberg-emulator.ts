@@ -1,9 +1,7 @@
 import { join } from 'node:path';
-
 import AdmZip from 'adm-zip';
 import axios from 'axios';
 import { ensureDir, pathExists } from 'fs-extra';
-
 import download from '../functions/download';
 import log from '../instances/log';
 import storage from '../instances/storage';
@@ -13,8 +11,7 @@ class MrGoldBergEmulator {
   public static async checkForUpdatesAndNotify() {
     const existsEmuFiles =
       (await pathExists(paths.emulator.steamClientFilePath)) &&
-      (await pathExists(paths.emulator.steamClient64FilePath)) &&
-      (await pathExists(paths.emulator.loaderPath));
+      (await pathExists(paths.emulator.steamClient64FilePath));
 
     try {
       log.info('MrGoldBergEmulator: Check which is the latest version of the emulator...');
@@ -37,7 +34,7 @@ class MrGoldBergEmulator {
         log.error(
           'MrGoldBergEmulator: Unknown error, it was not possible to check which is the latest version of the emulator.'
         );
-        // i still continue if the emulator exists.
+        // NOTE: i still continue if the emulator exists.
         return existsEmuFiles;
       }
 
@@ -81,12 +78,6 @@ class MrGoldBergEmulator {
         false,
         true
       );
-      zip.extractEntryTo(
-        'experimental_steamclient/steamclient_loader.exe',
-        paths.emulator.rootPath,
-        false,
-        true
-      );
 
       log.info(`MrGoldBergEmulator: The emulator has been successfully updated.`);
 
@@ -95,7 +86,7 @@ class MrGoldBergEmulator {
       return true;
     } catch (error) {
       log.error(`MrGoldBergEmulator: ${(error as Error).message}`);
-      // i still continue if the emulator exists.
+      // NOTE: i still continue if the emulator exists.
       return existsEmuFiles;
     }
   }

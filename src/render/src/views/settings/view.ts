@@ -1,9 +1,9 @@
 import mustache from 'mustache';
 
 class SettingsView {
-  private dom: JQuery | undefined;
+  private dom = $('');
 
-  private data: StoreSettingsType | undefined;
+  private settingsData: StoreSettingsType | undefined;
 
   public async show() {
     await this.setData();
@@ -12,19 +12,19 @@ class SettingsView {
   }
 
   private async setData() {
-    this.data = await window.api.settings.getData();
+    this.settingsData = await window.api.settings.getData();
   }
 
   private async setDom() {
     const { default: html } = await import('./settings.html?raw');
     const rendered = mustache.render(html, {
-      data: this.data,
+      data: this.settingsData,
     });
     this.dom = $(rendered);
   }
 
   private appendDom() {
-    this.dom?.appendTo(document.body).modal('show');
+    this.dom.appendTo(document.body).modal('show');
   }
 }
 

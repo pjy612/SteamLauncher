@@ -1,10 +1,9 @@
 import mustache from 'mustache';
-
-import { allowedLanguages } from '../../config';
+import allowedLanguages from '../../configs/allowed-languages';
 import mustacheObjsWithKeys from '../../functions/mustache-objs-with-keys';
 
 class AccountView {
-  private dom: JQuery | undefined;
+  private dom = $('');
 
   private accountData: StoreAccountType | undefined;
 
@@ -27,43 +26,44 @@ class AccountView {
   }
 
   private async setDom() {
-    const { default: html } = await import('./account.html?raw');
     const view = {
       inputLanguages: mustacheObjsWithKeys(allowedLanguages),
       isEditMode: this.isEditMode,
     };
+
     if (this.isEditMode) {
       Object.assign(view, {
-        accountData: this.accountData,
+        data: this.accountData,
       });
     } else {
       const steamId = await window.api.account.getRandomSteamId();
       Object.assign(view, {
-        accountData: {
+        data: {
           steamId,
         },
       });
     }
 
+    const { default: html } = await import('./account.html?raw');
     const rendered = mustache.render(html, view);
     this.dom = $(rendered);
   }
 
   private afterSetDom() {
-    if (this.isEditMode) {
-      this.dom?.find('select[name="language"]').val(this.accountData!.language);
-    }
+    this.dom
+      ?.find('select[name="language"]')
+      .val(this.isEditMode ? this.accountData!.language : 'english');
   }
 
   private appendDom() {
     if (!this.isEditMode) {
-      this.dom?.attr({
+      this.dom.attr({
         'data-bs-backdrop': 'static',
         'data-bs-keyboard': 'false',
       });
     }
 
-    this.dom?.appendTo(document.body).modal('show');
+    this.dom.appendTo(document.body).modal('show');
   }
 }
 

@@ -1,7 +1,7 @@
 import mustache from 'mustache';
 
 class AboutView {
-  private dom: JQuery | undefined;
+  private dom = $('');
 
   public async show() {
     await this.setDom();
@@ -9,7 +9,7 @@ class AboutView {
   }
 
   private appendDom() {
-    this.dom?.appendTo(document.body).modal('show');
+    this.dom.appendTo(document.body).modal('show');
   }
 
   private async setDom() {

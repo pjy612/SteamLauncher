@@ -17,7 +17,7 @@
         @apply flex p-2 border-b border-b-transparent;
         @apply hover:bg-gray-200 hover:bg-opacity-10;
 
-        &[data-navigo] {
+        &[data-navigare] {
           @apply hover:border-b-white;
         }
       }
@@ -36,19 +36,19 @@
       @apply ml-1 hidden lg:inline-block;
     }
 
-    &[data-sk="titlebar"] {
+    &[data-sk='titlebar'] {
       @apply z-40 relative;
     }
 
-    &[data-sk="titlebar"][data-sk-attr="close"] {
+    &[data-sk='titlebar'][data-sk-attr='close'] {
       @apply hover:bg-red-600;
     }
 
-    &[data-sk="titlebar"][data-sk-attr="restore"] {
+    &[data-sk='titlebar'][data-sk-attr='restore'] {
       @apply hidden;
     }
 
-    &[data-sk="set-network"][data-sk-to="offline"] {
+    &[data-sk='set-network'][data-sk-to='offline'] {
       @apply text-green-600;
 
       & > .mdi:last-child {
@@ -56,7 +56,7 @@
       }
     }
 
-    &[data-sk="set-network"][data-sk-to="online"] {
+    &[data-sk='set-network'][data-sk-to='online'] {
       @apply text-red-600;
 
       & > .mdi:first-child {
@@ -66,11 +66,11 @@
   }
 
   .window-is-maximized .nav-link {
-    &[data-sk="titlebar"][data-sk-attr="maximize"] {
+    &[data-sk='titlebar'][data-sk-attr='maximize'] {
       @apply hidden;
     }
 
-    &[data-sk="titlebar"][data-sk-attr="restore"] {
+    &[data-sk='titlebar'][data-sk-attr='restore'] {
       @apply flex;
     }
   }

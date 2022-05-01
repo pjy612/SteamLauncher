@@ -1,9 +1,8 @@
 import mustache from 'mustache';
-
-import navigo from '../../instances/navigo';
+import router from '../../instances/router';
 
 class HomeView {
-  private dom: JQuery | undefined;
+  private dom = $('');
 
   public async show() {
     await this.beforeHook();
@@ -14,9 +13,8 @@ class HomeView {
   }
 
   public async beforeHook() {
-    const accountExist = await window.api.account.exist();
-    if (!accountExist) {
-      navigo.navigate('/account/create');
+    if (!(await window.api.account.exist())) {
+      router.navigate('/account/create');
     }
   }
 
@@ -28,9 +26,9 @@ class HomeView {
 
   private async appendGamesList() {
     const gamesData = await window.api.games.getData();
-    const gamesList = this.dom?.find('#games-list .card-body').empty();
+    const $gamesList = this.dom.find('#games-list .card-body').empty();
     if (typeof gamesData !== 'undefined' && Object.keys(gamesData).length > 0) {
-      const gamesGrid = $('<div class="games-grid"></div>');
+      const $gamesGrid = $('<div class="games-grid"></div>');
       $.each(gamesData, async (appId: string, values) => {
         const paths = await window.api.game.getPaths(appId);
         const header = paths.appIdHeaderPath;
@@ -43,23 +41,23 @@ class HomeView {
         $('<img>').attr('src', header).appendTo(gameContainer);
         $('<div>').text(name).appendTo(gameContainer);
 
-        gamesGrid.append(gameContainer);
+        $gamesGrid.append(gameContainer);
       });
-      gamesList?.append(gamesGrid);
+      $gamesList.append($gamesGrid);
     } else {
-      gamesList?.html('<h1 class="text-center">You haven\'t entered any games yet!</h1>');
+      $gamesList.html('<h1 class="text-center">You haven\'t entered any games yet!</h1>');
     }
   }
 
   private setEvents() {
-    this.dom?.on('contextmenu', '.game-container', (event) => {
-      const appId = $(event.currentTarget).attr('data-appId');
-      window.api.game.openContextMenu(appId!);
+    this.dom.on('contextmenu', '.game-container', (event) => {
+      const appId = $(event.currentTarget).attr('data-appId') as string;
+      window.api.game.openContextMenu(appId);
     });
 
-    this.dom?.find('#file-drop').fileDrop((file) => {
+    this.dom.find('#file-drop').fileDrop((file) => {
       const queryString = new URLSearchParams(file).toString();
-      navigo.navigate(`/game/add/?${queryString}`);
+      router.navigate(`/game/add/?${queryString}`);
     });
 
     window.api.on('index-reload-games-list', () => {
@@ -68,7 +66,7 @@ class HomeView {
   }
 
   private appendDom() {
-    $('main').html(this.dom![0]);
+    $('main').html(this.dom[0]);
   }
 }
 

@@ -10,7 +10,7 @@
 
 > **Protect development and free things -- because their survival is in our hands.**
 >
-> **You can donate by clicking on [paypal.me](https://www.paypal.me/sak32009a).**
+> **You can donate by clicking on [paypal.me](https://paypal.me/sak32009a).**
 
 #### Screenshots
 
@@ -62,7 +62,12 @@ When the application starts, you will be asked to create the account. Once done,
 - Set achievements.json and images
 - Set disable_overlay.txt
 - Set disable_networking.txt
+- Set disable_lan_only.txt (inside root of emulator)
 - Set offline.txt
+- Set force_account_name.txt
+- Set force_language.txt
+- Set force_steamid.txt
+- Set force_listen_port.txt
 - Set account_name.txt (inside steam_saves/settings)
 - Set language.txt (inside steam_saves/settings)
 - Set user_steam_id (inside steam_saves/settings)

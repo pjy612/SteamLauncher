@@ -65,12 +65,17 @@ module.exports = {
   'import/order': [
     2,
     {
-      alphabetize: {
-        caseInsensitive: false,
-        order: 'asc',
-      },
-      groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-      'newlines-between': 'always',
+      groups: [
+        'type',
+        'builtin',
+        'external',
+        'internal',
+        'parent',
+        'sibling',
+        'index',
+        'object',
+        'unknown',
+      ],
     },
   ],
   // enforce a newline after import statements

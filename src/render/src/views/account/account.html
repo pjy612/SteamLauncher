@@ -3,13 +3,8 @@
     <form class="modal-content" action="" data-sk-channel="account-create">
       <div class="modal-header">
         <div class="modal-title">
-          <span
-            class="mdi {{^isEditMode}}mdi-account-plus{{/isEditMode}}{{#isEditMode}}mdi-account-edit{{/isEditMode}} mdi-18px"
-          ></span>
-          <span class="ml-1">
-            {{^isEditMode}} Create account {{/isEditMode}} {{#isEditMode}} Edit account
-            {{/isEditMode}}
-          </span>
+          <span class="mdi {{^isEditMode}}mdi-account-plus{{/isEditMode}}{{#isEditMode}}mdi-account-edit{{/isEditMode}} mdi-18px"></span>
+          <span class="ml-1">{{^isEditMode}}Create account{{/isEditMode}}{{#isEditMode}}Edit account{{/isEditMode}}</span>
         </div>
         {{#isEditMode}}
         <button type="button" class="btn-close" data-bs-dismiss="modal">
@@ -17,80 +12,59 @@
         </button>
         {{/isEditMode}}
       </div>
-      <div class="modal-body text-center">
+      <div class="modal-body">
         {{^isEditMode}}
-        <div class="mb-3">Before proceeding, please create your account!</div>
+        <div class="text-center">Before proceeding, please create your account!</div>
         {{/isEditMode}}
-        <div class="input-group mb-3">
-          <div class="input-group-text">
-            <span class="mdi mdi-account-question mdi-18px"></span>
+        <div class="card">
+          <div class="card-title">
+            <span class="mdi mdi-badge-account mdi-18px"></span>
             <span class="ml-1">Name</span>
           </div>
-          <input
-            type="text"
-            class="form-control"
-            name="name"
-            value="{{#isEditMode}}{{accountData.name}}{{/isEditMode}}"
-            placeholder="..."
-            required
-          />
+          <div class="card-body">
+            <input type="text" class="form-control" name="name" value="{{^isEditMode}}Player#{{data.steamId}}{{/isEditMode}}{{#isEditMode}}{{data.name}}{{/isEditMode}}" placeholder="example: Player" required />
+          </div>
         </div>
-        <div class="input-group mb-3">
-          <div class="input-group-text">
+        <div class="card">
+          <div class="card-title">
             <span class="mdi mdi-translate mdi-18px"></span>
             <span class="ml-1">Language</span>
           </div>
-          <select class="form-select" name="language" required>
-            <option value="english">...</option>
-            {{#inputLanguages}}
-            <option value="{{@key}}">{{@val}}</option>
-            {{/inputLanguages}}
-          </select>
-        </div>
-        <div class="input-group mb-3">
-          <div class="input-group-text">
-            <span class="mdi mdi-key mdi-18px"></span>
-            <span class="ml-1">WebAPI Key <span class="text-red-500">(*)</span></span>
+          <div class="card-body">
+            <select class="form-select" name="language" required>
+              {{#inputLanguages}}
+              <option value="{{@key}}">{{@val}}</option>
+              {{/inputLanguages}}
+            </select>
           </div>
-          <input
-            type="text"
-            class="form-control"
-            name="steamWebApiKey"
-            placeholder="..."
-            value="{{#isEditMode}}{{accountData.steamWebApiKey}}{{/isEditMode}}"
-          />
         </div>
-        <div class="form-text mb-3">
-          <span class="text-red-500">(*)</span> To get achievements, stats and items get key from
-          <a class="link" href="https://steamcommunity.com/dev/apikey" target="_blank">here</a>. If
-          no API key is given, it will only get games infos and DLCs.
-        </div>
-        <div class="input-group mb-3">
-          <div class="input-group-text">
+        <div class="card">
+          <div class="card-title">
             <span class="mdi mdi-identifier mdi-18px"></span>
             <span class="ml-1">SteamID</span>
           </div>
-          <input
-            type="number"
-            class="form-control"
-            name="steamId"
-            value="{{accountData.steamId}}"
-            placeholder="Ex: 76596712918662909"
-          />
+          <div class="card-body">
+            <input type="number" class="form-control" name="steamId" value="{{data.steamId}}" placeholder="example: 76596712918662909" required />
+          </div>
         </div>
-        <div class="input-group">
-          <div class="input-group-text">
-            <span class="mdi mdi-account-question mdi-18px"></span>
+        <div class="card">
+          <div class="card-title">
+            <span class="mdi mdi-ip mdi-18px"></span>
             <span class="ml-1">Listen Port</span>
           </div>
-          <input
-            type="number"
-            class="form-control"
-            name="listenPort"
-            value="{{^isEditMode}}47584{{/isEditMode}}{{#isEditMode}}{{accountData.listenPort}}{{/isEditMode}}"
-            placeholder="default: 47584"
-            required
-          />
+          <div class="card-body">
+            <input type="number" class="form-control" name="listenPort" value="{{^isEditMode}}47584{{/isEditMode}}{{#isEditMode}}{{data.listenPort}}{{/isEditMode}}" placeholder="example: 47584" required />
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            <span class="mdi mdi-key mdi-18px"></span>
+            <span class="ml-1">Steam WebAPI Key</span>
+          </div>
+          <div class="card-body">
+            <input type="text" class="form-control !rounded-none" name="steamWebApiKey" placeholder="..." value="{{#isEditMode}}{{data.steamWebApiKey}}{{/isEditMode}}" />
+          </div>
+          <div class="form-text text-center p-2">To get achievements, stats and items get WebApi Key from <a class="link" href="https://steamcommunity.com/dev/apikey" target="_blank">here</a>. If no WebAPI Key is given, it will only get games infos and dlcs.</div>
         </div>
       </div>
       <div class="modal-footer">

@@ -1,10 +1,8 @@
+import type { UserConfigExport } from 'vite';
 import { builtinModules } from 'node:module';
 import { join, basename } from 'node:path';
 import { cwd } from 'node:process';
-
-import type { UserConfigExport } from 'vite';
 import { defineConfig } from 'vite';
-
 import { dependencies } from './package.json';
 
 const builtinModulesNodeProtocol = builtinModules.map((module) => `node:${module}`);

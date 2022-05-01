@@ -1,12 +1,10 @@
 import { app, ipcMain as ipc, dialog } from 'electron';
 import { parse } from 'node:path';
-
 import MarkDownIt from 'markdown-it';
-
 import readme from '../../../../README.md?raw';
 import { author as packageAuthor } from '../../../../package.json';
-import getCurrentWindow from '../functions/get-current-window';
 import notify from '../functions/notify';
+import { getWindow } from '../functions/window';
 
 const markdown = new MarkDownIt({
   html: true,
@@ -33,14 +31,14 @@ ipc.handle('app-file-path-parse', (_event, filePath: string) => ({
   fullPath: filePath,
 }));
 
-ipc.handle('app-chose-directory', (event) =>
-  dialog.showOpenDialog(getCurrentWindow(event)!, {
+ipc.handle('app-chose-directory', () =>
+  dialog.showOpenDialog(getWindow()!, {
     properties: ['openDirectory'],
   })
 );
 
-ipc.handle('app-chose-file', (event) =>
-  dialog.showOpenDialog(getCurrentWindow(event)!, {
+ipc.handle('app-chose-file', () =>
+  dialog.showOpenDialog(getWindow()!, {
     properties: ['openFile'],
   })
 );

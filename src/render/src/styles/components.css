@@ -1,24 +1,27 @@
-@import "github-markdown-css/github-markdown-dark.css";
-@import "@mdi/font/css/materialdesignicons.css";
-@import "@fontsource/oswald";
-@import "@fontsource/cascadia-code";
+@import 'github-markdown-css/github-markdown-dark.css';
+@import '@mdi/font/css/materialdesignicons.css';
+@import '@fontsource/oswald';
+@import '@fontsource/cascadia-code';
 
-@import "tailwindcss/base";
-@import "./base";
+@import './plugins/markdown-it';
 
-@import "tailwindcss/components";
+@import 'tailwindcss/base';
+@import './base';
 
-@import "./components/forms";
-@import "./components/buttons";
-@import "./components/transitions";
-@import "./components/navbar";
-@import "./components/card";
-@import "./components/modal";
+@import 'tailwindcss/components';
 
-@import "./components/scrollbar";
-@import "./components/main";
-@import "./components/games";
-@import "./components/console";
+@import './components/forms';
+@import './components/buttons';
+@import './components/transitions';
+@import './components/navbar';
+@import './components/card';
+@import './components/modal';
 
-@import "tailwindcss/utilities";
-@import "./utilities";
+@import './components/scrollbar';
+@import './components/main';
+@import './components/games';
+@import './components/console';
+@import './components/custom';
+
+@import 'tailwindcss/utilities';
+@import './utilities';

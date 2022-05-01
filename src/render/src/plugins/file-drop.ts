@@ -1,9 +1,8 @@
-import { allowedExtensions } from '../config';
-
 $(() => {
   // eslint-disable-next-line func-names, sonarjs/cognitive-complexity
   $.fn.fileDrop = function (callback) {
     const activeClass = 'drop-highlight';
+    const allowedExtensions = new Set(['.exe']);
 
     return this.each(() => {
       const dom = $(this);
@@ -32,7 +31,7 @@ $(() => {
             if (kind === 'file') {
               const droppedFilePath = droppedFiles[0].path;
               const parsedFilePath = await window.api.app.filePathParse(droppedFilePath);
-              if (allowedExtensions.includes(parsedFilePath.ext)) {
+              if (allowedExtensions.has(parsedFilePath.ext)) {
                 callback.call(this, parsedFilePath);
               } else {
                 window.api.app.notify("The file extension isn't allowed!");
@@ -50,3 +49,5 @@ $(() => {
     });
   };
 });
+
+export {};

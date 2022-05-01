@@ -5,12 +5,8 @@
         <div class="modal-title">
           <span class="mdi mdi-nintendo-game-boy mdi-18px"></span>
           <span class="ml-1">
-            {{^isEditMode}}
-            Add {{parameters.name}}
-            {{/isEditMode}}
-            {{#isEditMode}}
-            Edit {{data.name}}
-            {{/isEditMode}}
+            {{^isEditMode}}Add {{parameters.name}}{{/isEditMode}}
+            {{#isEditMode}}Edit {{data.name}}{{/isEditMode}}
           </span>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal">
@@ -18,56 +14,133 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="input-group mb-3">
-          <div class="input-group-text">
-            <span class="mdi mdi-account-question mdi-18px"></span>
+        <div class="card">
+          <div class="card-title">
+            <span class="mdi mdi-identifier mdi-18px"></span>
             <span class="ml-1">AppId</span>
           </div>
-          <input type="number" class="form-control {{#isEditMode}}disabled{{/isEditMode}}" name="appId"
-            value="{{#isEditMode}}{{data.appId}}{{/isEditMode}}" placeholder="..."
-            {{#isEditMode}}readonly{{/isEditMode}} required>
-        </div>
-        <div class="input-group mb-3">
-          <div class="input-group-text">
-            <span class="mdi mdi-account-question mdi-18px"></span>
-            <span class="ml-1">Exe Path</span>
+          <div class="card-body">
+            <input type="number" class="form-control {{#isEditMode}}disabled{{/isEditMode}}" name="appId"
+              value="{{#isEditMode}}{{data.appId}}{{/isEditMode}}" placeholder="example: 1593500"
+              {{#isEditMode}}readonly{{/isEditMode}} required>
           </div>
-          <input type="text" class="form-control disabled" name="path"
-            value="{{^isEditMode}}{{parameters.fullPath}}{{/isEditMode}}{{#isEditMode}}{{data.path}}{{/isEditMode}}"
-            placeholder="..." required readonly>
-          <button type="button" class="btn btn-gray" data-sk="choseDirFile" data-sk-what="file">
-            <span class="mdi mdi-paperclip mdi-18px"></span>
-          </button>
         </div>
-        <div class="input-group mb-3">
-          <div class="input-group-text">
-            <span class="mdi mdi-account-question mdi-18px"></span>
-            <span class="ml-1">Run Path</span>
+        <div class="card">
+          <div class="card-title">
+            <span class="mdi mdi-directions-fork mdi-18px"></span>
+            <span class="ml-1">Exe File Path</span>
           </div>
-          <input type="text" class="form-control disabled" name="runPath"
-            value="{{^isEditMode}}{{parameters.dir}}{{/isEditMode}}{{#isEditMode}}{{data.runPath}}{{/isEditMode}}"
-            placeholder="..." required readonly>
-          <button type="button" class="btn btn-gray" data-sk="choseDirFile">
-            <span class="mdi mdi-paperclip mdi-18px"></span>
-          </button>
+          <div class="card-body">
+            <div class="input-group">
+              <input type="text" class="form-control disabled" name="executableFilePath"
+                value="{{^isEditMode}}{{parameters.fullPath}}{{/isEditMode}}{{#isEditMode}}{{data.executableFilePath}}{{/isEditMode}}"
+                placeholder="example: C:\Games\GodOfWar\GoW.exe" required readonly>
+              <button type="button" class="btn btn-gray" data-sk="choseDirFile" data-sk-what="file">
+                <span class="mdi mdi-paperclip mdi-18px"></span>
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="input-group mb-3">
-          <div class="input-group-text">
-            <span class="mdi mdi-account-question mdi-18px"></span>
+        <div class="card">
+          <div class="card-title">
+            <span class="mdi mdi-directions-fork mdi-18px"></span>
+            <span class="ml-1">Dir Run Path</span>
+          </div>
+          <div class="card-body">
+            <div class="input-group">
+              <input type="text" class="form-control disabled" name="executableWorkingDirectory"
+                value="{{^isEditMode}}{{parameters.dir}}{{/isEditMode}}{{#isEditMode}}{{data.executableWorkingDirectory}}{{/isEditMode}}"
+                placeholder="example: C:\Games\GodOfWar\" required readonly>
+              <button type="button" class="btn btn-gray" data-sk="choseDirFile">
+                <span class="mdi mdi-paperclip mdi-18px"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            <span class="mdi mdi-playlist-plus mdi-18px"></span>
             <span class="ml-1">Command Line</span>
           </div>
-          <input type="text" class="form-control" name="commandLine"
-            value="{{#isEditMode}}{{data.commandLine}}{{/isEditMode}}" placeholder="ex: -steam">
-        </div>
-        <div class="input-group">
-          <div class="input-group-text">
-            <span class="mdi mdi-account-question mdi-18px"></span>
-            <span class="ml-1">Overlay</span>
+          <div class="card-body">
+            <input type="text" class="form-control" name="commandLine"
+              value="{{#isEditMode}}{{data.commandLine}}{{/isEditMode}}" placeholder="example: -steam">
           </div>
-          <select class="form-select" name="overlay" required>
-            <option value="true" {{#data.overlay}}selected{{/data.overlay}}>Activated</option>
-            <option value="false" {{^data.overlay}}selected{{/data.overlay}}>Deactivated</option>
-          </select>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            <span class="mdi mdi-stack-overflow mdi-18px"></span>
+            <span class="ml-1">Disable Overlay</span>
+          </div>
+          <div class="card-body">
+            <select class="form-select" name="disableOverlay" required>
+              <option value="true" {{#data.disableOverlay}}selected{{/data.disableOverlay}}>True</option>
+              <option value="false" {{^data.disableOverlay}}selected{{/data.disableOverlay}}>False</option>
+            </select>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            <span class="mdi mdi-stack-overflow mdi-18px"></span>
+            <span class="ml-1">Disable Networking</span>
+          </div>
+          <div class="card-body">
+            <select class="form-select" name="disableNetworking" required>
+              <option value="true" {{#data.disableNetworking}}selected{{/data.disableNetworking}}>True</option>
+              <option value="false" {{^data.disableNetworking}}selected{{/data.disableNetworking}}>False</option>
+            </select>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            <span class="mdi mdi-stack-overflow mdi-18px"></span>
+            <span class="ml-1">Disable Lan Only</span>
+          </div>
+          <div class="card-body">
+            <select class="form-select" name="disableLanOnly" required>
+              <option value="true" {{#data.disableLanOnly}}selected{{/data.disableLanOnly}}>True</option>
+              <option value="false" {{^data.disableLanOnly}}selected{{/data.disableLanOnly}}>False</option>
+            </select>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            <span class="mdi mdi-badge-account mdi-18px"></span>
+            <span class="ml-1">Force Account Name</span>
+          </div>
+          <div class="card-body">
+            <input type="text" class="form-control" name="forceAccountName" value="{{#isEditMode}}{{data.forceAccountName}}{{/isEditMode}}" placeholder="# use account settings #"/>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            <span class="mdi mdi-translate mdi-18px"></span>
+            <span class="ml-1">Force Account Language</span>
+          </div>
+          <div class="card-body">
+            <select class="form-select" name="forceAccountLanguage">
+              <option value=""># use account settings #</option>
+              {{#inputLanguages}}<option value="{{@key}}">{{@val}}</option>{{/inputLanguages}}
+            </select>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            <span class="mdi mdi-identifier mdi-18px"></span>
+            <span class="ml-1">Force SteamID</span>
+          </div>
+          <div class="card-body">
+            <input type="number" class="form-control" name="forceAccountSteamId" value="{{data.forceAccountSteamId}}" placeholder="# use account settings #"/>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            <span class="mdi mdi-ip mdi-18px"></span>
+            <span class="ml-1">Force Listen Port</span>
+          </div>
+          <div class="card-body">
+            <input type="number" class="form-control" name="forceAccountListenPort" value="{{#isEditMode}}{{data.forceAccountListenPort}}{{/isEditMode}}" placeholder="# use account settings #"/>
+          </div>
         </div>
       </div>
       <div class="modal-footer">

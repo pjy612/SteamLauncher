@@ -1,9 +1,9 @@
-export const allowedWillNavigateUrls = new Set(['http://localhost:3000']);
+export const allowedWillNavigateUrls = new Set(['localhost']);
 
 export const allowedExternalUrls = new Set([
-  'https://www.paypal.com',
-  'https://github.com',
-  'https://gitlab.com',
-  'https://cs.rin.ru',
-  'https://steamcommunity.com',
+  'paypal.me',
+  'github.com',
+  'gitlab.com',
+  'cs.rin.ru',
+  'steamcommunity.com',
 ]);

@@ -5,8 +5,17 @@
     "buildResources": "./build/resources/",
     "output": "./build/release/${version}/"
   },
-  "files": ["./bin/**/*", "./src/*/dist/**/*", "./build/resources/"],
-  "asarUnpack": ["./bin/**/*"],
+  "files": ["./src/*/dist/**/*", "./build/resources/icon.ico"],
+  "extraResources": [
+    {
+      "from": "bin",
+      "to": "bin"
+    },
+    {
+      "from": "node_modules/regedit/vbs",
+      "to": "bin/win/regedit/vbs"
+    }
+  ],
   "win": {
     "target": ["nsis", "zip"],
     "artifactName": "${name}-${version}-${os}-${arch}-portable.zip"

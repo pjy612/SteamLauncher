@@ -1,12 +1,9 @@
 import type { ChildProcess } from 'node:child_process';
-
 import { pathExists } from 'fs-extra';
-
 import notify from '../functions/notify';
 import log from '../instances/log';
 import execFile from '../node/exec-file-promisify';
 import paths from '../paths';
-
 // eslint-disable-next-line import/no-cycle
 import Game from './game';
 
@@ -14,7 +11,7 @@ class SteamCloud {
   public static async backupByAppId(appId: string) {
     log.info(`SteamCloud backupByAppId: Initializing backup for ${appId}...`);
 
-    const exe = paths.files.ludusaviFile;
+    const exe = paths.files.ludusaviFilePath;
     const gamePaths = Game.paths(appId);
     try {
       const spawn = await execFile(exe, [
@@ -40,7 +37,7 @@ class SteamCloud {
   public static async restoreByAppId(appId: string) {
     log.info(`SteamCloud restoreByAppId: Initializing restore for ${appId}...`);
 
-    const exe = paths.files.ludusaviFile;
+    const exe = paths.files.ludusaviFilePath;
     const gamePaths = Game.paths(appId);
     try {
       if (await pathExists(gamePaths.appIdSavesCloudPath)) {

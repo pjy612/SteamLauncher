@@ -1,13 +1,12 @@
 const { defineConfig } = require('eslint-define-config');
-
-const myCommentsConfig = require('./eslint-configs/comments');
-const myEslintConfig = require('./eslint-configs/eslint');
-const myImportConfig = require('./eslint-configs/import');
-const myModuleConfig = require('./eslint-configs/module');
-const myNodeConfig = require('./eslint-configs/node');
-const myPromiseConfig = require('./eslint-configs/promise');
-const myTypescriptConfig = require('./eslint-configs/typescript');
-const myUnicornConfig = require('./eslint-configs/unicorn');
+const myCommentsConfig = require('./eslint/comments');
+const myEslintConfig = require('./eslint/eslint');
+const myImportConfig = require('./eslint/import');
+const myModuleConfig = require('./eslint/module');
+const myNodeConfig = require('./eslint/node');
+const myPromiseConfig = require('./eslint/promise');
+const myTypescriptConfig = require('./eslint/typescript');
+const myUnicornConfig = require('./eslint/unicorn');
 
 module.exports = defineConfig({
   root: true,

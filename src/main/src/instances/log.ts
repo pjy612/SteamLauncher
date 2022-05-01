@@ -1,9 +1,6 @@
 import { app } from 'electron';
 import { join } from 'node:path';
-
 import { transports, format, createLogger } from 'winston';
-
-import { appIsDevelopment } from '../environments';
 import paths from '../paths';
 
 const logFormatString = format.printf(
@@ -27,7 +24,7 @@ const log = createLogger({
   ],
 });
 
-if (appIsDevelopment) {
+if (import.meta.env.DEV) {
   log.add(
     new transports.Console({
       format: format.combine(

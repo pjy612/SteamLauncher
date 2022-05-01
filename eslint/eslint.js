@@ -6,6 +6,8 @@ module.exports = {
   'array-callback-return': 2,
   // disallow `await` inside of loops
   // no-await-in-loop
+  // disallow expressions where the operation doesn't affect the value
+  'no-constant-binary-expression': 2,
   // disallow returning value from constructor
   'no-constructor-return': 2,
   // disallow duplicate module imports
@@ -242,7 +244,7 @@ module.exports = {
   // require `const` declarations for variables that are never reassigned after declared
   'prefer-const': 2,
   // require destructuring from arrays and/or objects
-  'prefer-destructuring': 2,
+  // prefer-destructuring
   // disallow the use of `Math.pow` in favor of the `**` operator
   // prefer-exponentiation-operator
   // enforce using named capture group in regular expression

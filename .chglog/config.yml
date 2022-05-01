@@ -17,6 +17,7 @@ options:
         - refactor
         - perf
         - test
+        - mixed
     sort_by: Type
   commit_groups:
     title_maps:
@@ -30,6 +31,7 @@ options:
       refactor: Code Refactoring
       perf: Performance Improvements
       test: Test
+      mixed: Mixed
   header:
     pattern: "^(\\w*)\\:\\s(.*)$"
     pattern_maps:

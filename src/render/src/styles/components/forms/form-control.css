@@ -3,7 +3,7 @@
     @apply form-input;
 
     &.disabled {
-      @apply bg-gray-600 text-gray-500;
+      @apply bg-gray-600 text-black;
     }
   }
 
