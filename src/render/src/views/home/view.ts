@@ -56,8 +56,8 @@ class HomeView {
     });
 
     this.dom.find('#file-drop').fileDrop((file) => {
-      const queryString = new URLSearchParams(file).toString();
-      router.navigate(`/game/add/?${queryString}`);
+      const searchParameters = `?${new URLSearchParams(file).toString()}`;
+      router.navigate(`/game/add/${searchParameters}`);
     });
 
     window.api.on('index-reload-games-list', () => {

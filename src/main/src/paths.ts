@@ -4,10 +4,14 @@ import { appIsInstalled } from './app';
 import appRootPath from './functions/app-root-path';
 
 const appResourceAsarPath = app.getAppPath();
-const appResourcePath = appIsInstalled ? dirname(appResourceAsarPath) : appResourceAsarPath;
+const appResourcePath = app.isPackaged ? dirname(appResourceAsarPath) : appResourceAsarPath;
 const appDataPath = join(appIsInstalled ? app.getPath('userData') : appRootPath, 'data');
 
 const appBinPath = join(appResourcePath, 'bin');
+
+const appRegeditVbsPath = app.isPackaged
+  ? join(appBinPath, 'win/regedit/vbs')
+  : join(appResourcePath, 'node_modules/regedit/vbs');
 
 const appEmuPath = join(appDataPath, 'steam_emulator');
 const appEmuSteamSettings = join(appEmuPath, 'steam_settings');
@@ -16,10 +20,8 @@ const appEmuSteamSettingsSaves = join(appEmuSteamSaves, 'settings');
 
 const paths = {
   appDataPath,
+  appRegeditVbsPath,
   appLogsPath: join(appDataPath, 'logs'),
-  appRegeditVbsPath: appIsInstalled
-    ? join(appBinPath, 'win/regedit/vbs')
-    : join(appResourcePath, 'node_modules/regedit/vbs'),
   emulator: {
     rootPath: appEmuPath,
     jobsPath: join(appEmuPath, 'jobs'),

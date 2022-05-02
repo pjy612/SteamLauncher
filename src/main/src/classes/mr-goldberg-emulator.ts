@@ -25,9 +25,7 @@ class MrGoldBergEmulator {
         match[0],
         match.groups?.jobid,
       ]);
-      // eslint-disable-next-line prefer-destructuring
       const downloadUrl = match[0][0];
-      // eslint-disable-next-line prefer-destructuring
       const downloadJobId = match[0][1];
 
       if (typeof downloadUrl === 'undefined' && typeof downloadJobId === 'undefined') {
