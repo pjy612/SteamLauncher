@@ -11,8 +11,8 @@ const functionAccountCreateEdit = (event: IpcMainEvent, inputs: StoreAccountType
     return;
   }
 
-  storage.set('account', inputs);
   notify(storage.has('account') ? 'Account edited successfully!' : 'Account created successfully!');
+  storage.set('account', inputs);
   event.sender.send('modal-hide');
 };
 
