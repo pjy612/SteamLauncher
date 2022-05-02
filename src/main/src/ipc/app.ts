@@ -7,6 +7,7 @@ import notify from '../functions/notify';
 import { getWindow } from '../functions/window';
 import execFile from '../node/exec-file-promisify';
 import paths from '../paths';
+import handlebars from '../instances/handlebars';
 
 const markdown = new MarkDownIt({
   html: true,
@@ -19,10 +20,7 @@ ipc.handle('app-get-name', () => app.getName());
 
 ipc.handle('app-get-description', () => markdown.render(readme));
 
-ipc.handle(
-  'app-get-copyright',
-  () => `Copyright © ${new Date().getUTCFullYear()} ${packageAuthor.name}`
-);
+ipc.handle('app-get-copyright', () => `Copyright © ${new Date().getUTCFullYear()} ${packageAuthor.name}`);
 
 ipc.handle('app-notify', (_event, message: string) => {
   notify(message);
@@ -47,4 +45,9 @@ ipc.handle('app-chose-file', () =>
 
 ipc.handle('app-open-ludusavi', async () => {
   await execFile(paths.files.ludusaviFilePath);
+});
+
+ipc.handle('app-handlebars-generate', (_event, template: string, context: Record<string, string> = {}) => {
+  const compile = handlebars.compile(template);
+  return compile(context);
 });

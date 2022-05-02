@@ -1,7 +1,7 @@
+import HandlebarsHelpers from 'just-handlebars-helpers';
 import Handlebars from 'handlebars';
-import Helpers from 'just-handlebars-helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-Helpers.registerHelpers(Handlebars);
+HandlebarsHelpers.registerHelpers(Handlebars);
 
 export default Handlebars;

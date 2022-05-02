@@ -38,6 +38,10 @@ contextBridge.exposeInMainWorld('api', {
     async openLudusavi() {
       return ipc.invoke('app-open-ludusavi');
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async handlebarsGenerate(template: string, context: Record<string, any> = {}) {
+      return ipc.invoke('app-handlebars-generate', template, context);
+    },
     notify(message: string) {
       ipc.invoke('app-notify', message).catch(() => {
         //

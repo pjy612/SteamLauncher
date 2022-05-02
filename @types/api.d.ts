@@ -33,6 +33,8 @@ declare global {
         getName: () => Promise<string>;
         getVersion: () => Promise<string>;
         openLudusavi: () => Promise<void>;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        handlebarsGenerate: (template: string, context: Record<string, any> = {}) => Promise<string>;
         notify: (message: string) => void;
       };
       game: {

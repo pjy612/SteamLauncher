@@ -1,5 +1,3 @@
-import handlebars from 'handlebars';
-
 class AboutView {
   private dom = $('');
 
@@ -19,8 +17,7 @@ class AboutView {
     const copyright = await window.api.app.getCopyright();
 
     const { default: html } = await import('./about.hbs?raw');
-    const compile = handlebars.compile(html);
-    const template = compile({
+    const template = await window.api.app.handlebarsGenerate(html, {
       copyright,
       description,
       name,

@@ -1,4 +1,3 @@
-import handlebars from 'handlebars';
 import router from '../../instances/router';
 
 class HomeView {
@@ -20,8 +19,7 @@ class HomeView {
 
   private async setDom() {
     const { default: html } = await import('./home.hbs?raw');
-    const compile = handlebars.compile(html);
-    const template = compile({});
+    const template = await window.api.app.handlebarsGenerate(html);
     this.dom = $(template);
   }
 

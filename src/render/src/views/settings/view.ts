@@ -1,5 +1,3 @@
-import handlebars from 'handlebars';
-
 class SettingsView {
   private dom = $('');
 
@@ -11,8 +9,7 @@ class SettingsView {
   private async setDom() {
     const settingsData = await window.api.settings.getData();
     const { default: html } = await import('./settings.hbs?raw');
-    const compile = handlebars.compile(html);
-    const template = compile({
+    const template = await window.api.app.handlebarsGenerate(html, {
       data: settingsData,
     });
     this.dom = $(template);

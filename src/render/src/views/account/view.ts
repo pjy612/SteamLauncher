@@ -1,4 +1,3 @@
-import handlebars from '../../instances/handlebars';
 import allowedLanguages from '../../configs/allowed-languages';
 
 class AccountView {
@@ -34,8 +33,7 @@ class AccountView {
     }
 
     const { default: html } = await import('./account.hbs?raw');
-    const compile = handlebars.compile(html);
-    const template = compile(view);
+    const template = await window.api.app.handlebarsGenerate(html, view);
     this.dom = $(template);
   }
 

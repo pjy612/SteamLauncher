@@ -1,4 +1,3 @@
-import handlebars from 'handlebars';
 import allowedLanguages from '../../configs/allowed-languages';
 import router from '../../instances/router';
 
@@ -35,8 +34,7 @@ class GameView {
     }
 
     const { default: html } = await import('./game.hbs?raw');
-    const compile = handlebars.compile(html);
-    const template = compile(view);
+    const template = await window.api.app.handlebarsGenerate(html, view);
     this.dom = $(template);
   }
 
