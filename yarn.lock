@@ -468,13 +468,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mustache@npm:^4.1.2":
-  version: 4.1.2
-  resolution: "@types/mustache@npm:4.1.2"
-  checksum: 1f37849aae39b3188dbeac71734393586db80faa798795ea730db8e40d393c1d4d6a65ad8735a5ccf6dfc8b920d0792af1e6ef13e3ed2e02d204259678545240
-  languageName: node
-  linkType: hard
-
 "@types/node@npm:*":
   version: 17.0.5
   resolution: "@types/node@npm:17.0.5"
@@ -1049,12 +1042,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"autoprefixer@npm:^10.4.6":
-  version: 10.4.6
-  resolution: "autoprefixer@npm:10.4.6"
+"autoprefixer@npm:^10.4.7":
+  version: 10.4.7
+  resolution: "autoprefixer@npm:10.4.7"
   dependencies:
     browserslist: ^4.20.3
-    caniuse-lite: ^1.0.30001334
+    caniuse-lite: ^1.0.30001335
     fraction.js: ^4.2.0
     normalize-range: ^0.1.2
     picocolors: ^1.0.0
@@ -1063,7 +1056,7 @@ __metadata:
     postcss: ^8.1.0
   bin:
     autoprefixer: bin/autoprefixer
-  checksum: 4e8fbe94e8d66e77908958a041e3c1db267eb6d6d710f567db6ec4c349364082a75fef96ae808a6bdbc884bb2c63f1981067858317ef4e6af3d7561b551a634f
+  checksum: 0e55d0d19806c672ec0c79cc23c27cf77e90edf2600670735266ba33ec5294458f404baaa2f7cd4cfe359cf7a97b3c86f01886bdbdc129a4f2f76ca5977a91af
   languageName: node
   linkType: hard
 
@@ -1385,7 +1378,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.30001334":
+"caniuse-lite@npm:^1.0.30001335":
   version: 1.0.30001335
   resolution: "caniuse-lite@npm:1.0.30001335"
   checksum: fe08b49ec6cb76cc69958ff001cf89d0a8ef9f35e0c8028b65981585046384f76e007d64dea372a34ca56d91caa83cc614c00779fe2b4d378aa0e68696374f67
@@ -1783,6 +1776,13 @@ __metadata:
   bin:
     cssesc: bin/cssesc
   checksum: f8c4ababffbc5e2ddf2fa9957dda1ee4af6048e22aeda1869d0d00843223c1b13ad3f5d88b51caa46c994225eacb636b764eb807a8883e2fb6f99b4f4e8c48b2
+  languageName: node
+  linkType: hard
+
+"currencyformatter.js@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "currencyformatter.js@npm:2.2.0"
+  checksum: 27c5d0dc8a2345bbe9a1e9ef9180b235c025b2ee9c883bcb3dcdf976e3856b952c35fb7aaa552ba3d9c6739679a52ed299cace42cda082bb61db928e47070498
   languageName: node
   linkType: hard
 
@@ -3397,6 +3397,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"handlebars@npm:^4.7.7":
+  version: 4.7.7
+  resolution: "handlebars@npm:4.7.7"
+  dependencies:
+    minimist: ^1.2.5
+    neo-async: ^2.6.0
+    source-map: ^0.6.1
+    uglify-js: ^3.1.4
+    wordwrap: ^1.0.0
+  dependenciesMeta:
+    uglify-js:
+      optional: true
+  bin:
+    handlebars: bin/handlebars
+  checksum: 1e79a43f5e18d15742977cb987923eab3e2a8f44f2d9d340982bcb69e1735ed049226e534d7c1074eaddaf37e4fb4f471a8adb71cddd5bc8cf3f894241df5cee
+  languageName: node
+  linkType: hard
+
 "has-bigints@npm:^1.0.1":
   version: 1.0.1
   resolution: "has-bigints@npm:1.0.1"
@@ -4092,6 +4110,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"just-handlebars-helpers@npm:^1.0.19":
+  version: 1.0.19
+  resolution: "just-handlebars-helpers@npm:1.0.19"
+  peerDependencies:
+    currencyformatter.js: ">= 1.0.4 < 2"
+    handlebars: ">= 3.*"
+    moment: ">= 2.22.0 < 3"
+    sprintf-js: ">= 1.1.1 < 2"
+  checksum: c974df65254e85d7e3201fc8bcea9b04652de90bdbbab3f17a6277a45f40b5d1d35049a91efdd1869682ef15d4c0f16bc3598becd6ede32ec433bdbf14c8361a
+  languageName: node
+  linkType: hard
+
 "keyv@npm:^3.0.0":
   version: 3.1.0
   resolution: "keyv@npm:3.1.0"
@@ -4564,6 +4594,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"moment@npm:^2.29.3":
+  version: 2.29.3
+  resolution: "moment@npm:2.29.3"
+  checksum: 2e780e36d9a1823c08a1b6313cbb08bd01ecbb2a9062095820a34f42c878991ccba53abaa6abb103fd5c01e763724f295162a8c50b7e95b4f1c992ef0772d3f0
+  languageName: node
+  linkType: hard
+
 "ms@npm:2.0.0":
   version: 2.0.0
   resolution: "ms@npm:2.0.0"
@@ -4582,15 +4619,6 @@ __metadata:
   version: 2.1.3
   resolution: "ms@npm:2.1.3"
   checksum: aa92de608021b242401676e35cfa5aa42dd70cbdc082b916da7fb925c542173e36bce97ea3e804923fe92c0ad991434e4a38327e15a1b5b5f945d66df615ae6d
-  languageName: node
-  linkType: hard
-
-"mustache@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "mustache@npm:4.2.0"
-  bin:
-    mustache: bin/mustache
-  checksum: 928fcb63e3aa44a562bfe9b59ba202cccbe40a46da50be6f0dd831b495be1dd7e38ca4657f0ecab2c1a89dc7bccba0885eab7ee7c1b215830da765758c7e0506
   languageName: node
   linkType: hard
 
@@ -4623,6 +4651,13 @@ __metadata:
   version: 0.6.2
   resolution: "negotiator@npm:0.6.2"
   checksum: dfddaff6c06792f1c4c3809e29a427b8daef8cd437c83b08dd51d7ee11bbd1c29d9512d66b801144d6c98e910ffd8723f2432e0cbf8b18d41d2a09599c975ab3
+  languageName: node
+  linkType: hard
+
+"neo-async@npm:^2.6.0":
+  version: 2.6.2
+  resolution: "neo-async@npm:2.6.2"
+  checksum: deac9f8d00eda7b2e5cd1b2549e26e10a0faa70adaa6fdadca701cc55f49ee9018e427f424bac0c790b7c7e2d3068db97f3093f1093975f2acb8f8818b936ed9
   languageName: node
   linkType: hard
 
@@ -5899,7 +5934,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map@npm:^0.6.0":
+"source-map@npm:^0.6.0, source-map@npm:^0.6.1":
   version: 0.6.1
   resolution: "source-map@npm:0.6.1"
   checksum: 59ce8640cf3f3124f64ac289012c2b8bd377c238e316fb323ea22fbfe83da07d81e000071d7242cad7a23cd91c7de98e4df8830ec3f133cb6133a5f6e9f67bc2
@@ -5954,6 +5989,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sprintf@npm:^0.1.5":
+  version: 0.1.5
+  resolution: "sprintf@npm:0.1.5"
+  checksum: 63126376a680da456309ff19df9f9d47373de6a0543744d085f2c80db1c2f3a521a45482f761c78fd822bb1474b9d884be04aa8eeec234b9806fd14a3b0b6d49
+  languageName: node
+  linkType: hard
+
 "ssri@npm:^8.0.0, ssri@npm:^8.0.1":
   version: 8.0.1
   resolution: "ssri@npm:8.0.1"
@@ -6001,18 +6043,18 @@ __metadata:
     "@types/ini": ^1.3.31
     "@types/jquery": ^3.5.14
     "@types/markdown-it": ^12.2.3
-    "@types/mustache": ^4.1.2
     "@types/node": ^17.0.31
     "@types/steamid": ^2.0.1
     "@types/tailwindcss": ^3.0.10
     "@typescript-eslint/eslint-plugin": ^5.21.0
     "@typescript-eslint/parser": ^5.21.0
     adm-zip: ^0.5.9
-    autoprefixer: ^10.4.6
+    autoprefixer: ^10.4.7
     axios: ^0.27.2
     bootstrap: ^5.1.3
     concurrently: ^7.1.0
     conf: ^10.1.2
+    currencyformatter.js: ^2.2.0
     electron: ^18.2.0
     electron-builder: ^23.0.8
     electron-updater: ^5.0.3
@@ -6032,18 +6074,21 @@ __metadata:
     fast-glob: ^3.2.11
     fs-extra: ^10.1.0
     github-markdown-css: ^5.1.0
+    handlebars: ^4.7.7
     jquery: ^3.6.0
+    just-handlebars-helpers: ^1.0.19
     markdown-it: ^13.0.0
-    mustache: ^4.2.0
+    moment: ^2.29.3
     nanoid: ^3.3.3
     npm-run-all: ^4.1.5
     postcss: ^8.4.13
     prettier: ^2.6.2
     regedit: "https://github.com/ironsource/node-regedit.git#commit=f9df4db824fe68ec3b11e33af987ec42a2eeec32"
+    sprintf: ^0.1.5
     steamid: ^2.0.0
     tailwindcss: ^3.0.24
     typescript: ^4.6.4
-    vite: ^2.9.6
+    vite: ^2.9.7
     winston: ^3.7.2
   languageName: unknown
   linkType: soft
@@ -6462,6 +6507,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"uglify-js@npm:^3.1.4":
+  version: 3.15.4
+  resolution: "uglify-js@npm:3.15.4"
+  bin:
+    uglifyjs: bin/uglifyjs
+  checksum: 5f673c5dd7f3b3dd15d1d26aebfe29bccbb1b896c4b5423ec70a2e8b9506c70b6fb6a53dec83df5ad65a717ec9a850adf08e0aedf9b1711eac5eb080216615fa
+  languageName: node
+  linkType: hard
+
 "unbox-primitive@npm:^1.0.1":
   version: 1.0.1
   resolution: "unbox-primitive@npm:1.0.1"
@@ -6597,13 +6651,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^2.9.6":
-  version: 2.9.6
-  resolution: "vite@npm:2.9.6"
+"vite@npm:^2.9.7":
+  version: 2.9.7
+  resolution: "vite@npm:2.9.7"
   dependencies:
     esbuild: ^0.14.27
     fsevents: ~2.3.2
-    postcss: ^8.4.12
+    postcss: ^8.4.13
     resolve: ^1.22.0
     rollup: ^2.59.0
   peerDependencies:
@@ -6622,7 +6676,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 79bbf516547f4adb1a297ac8648f8818b3e2a7bb113a7e12acc2355498d247556f58fc50d39eec4891c07250e7420e72773e358eeb8dc62af62fc1ff32c70877
+  checksum: d3d2a86855709e037d244c3066e785d7b700e41bf59ceb776818ea06ee2ed579055c10596ca883dd56de46b3654ec82da53369062013a012a1a60819dbb7c0ee
   languageName: node
   linkType: hard
 
@@ -6712,6 +6766,13 @@ __metadata:
   version: 1.2.3
   resolution: "word-wrap@npm:1.2.3"
   checksum: 30b48f91fcf12106ed3186ae4fa86a6a1842416df425be7b60485de14bec665a54a68e4b5156647dec3a70f25e84d270ca8bc8cd23182ed095f5c7206a938c1f
+  languageName: node
+  linkType: hard
+
+"wordwrap@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "wordwrap@npm:1.0.0"
+  checksum: 2a44b2788165d0a3de71fd517d4880a8e20ea3a82c080ce46e294f0b68b69a2e49cff5f99c600e275c698a90d12c5ea32aff06c311f0db2eb3f1201f3e7b2a04
   languageName: node
   linkType: hard
 
