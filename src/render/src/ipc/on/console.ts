@@ -20,7 +20,7 @@ $(() => {
     modalConsole.addClass(isOk ? 'all' : 'only-console');
     addToConsole('');
     addToConsole('');
-    addToConsole('PRESS ENTER TO EXIT...');
+    addToConsole('PRESS "C" TO CLOSE CONSOLE...');
   });
 
   window.api.on('console-add', (_event, txt: string, space = false) => {
@@ -28,7 +28,7 @@ $(() => {
   });
 
   $(window).on('keyup', (event) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'c') {
       if (modalConsole.hasClass('all')) {
         modalConsole.removeClass('all');
         modalTextarea.val('');
