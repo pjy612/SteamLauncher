@@ -8,8 +8,9 @@ const typography = require('@tailwindcss/typography');
  */
 module.exports = {
   content: [
-    './src/render/src/**/*.{ts,html}',
+    './src/render/src/**/*.{ts,html,hbs}',
     './node_modules/bootstrap/js/dist/modal.js',
+    './node_modules/bootstrap/js/dist/tab.js',
     './node_modules/markdown-it/dist/markdown-it.js',
   ],
   plugins: [

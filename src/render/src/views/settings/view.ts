@@ -1,33 +1,21 @@
-import mustache from 'mustache';
+import handlebars from 'handlebars';
 
 class SettingsView {
   private dom = $('');
 
-  private settingsData: StoreSettingsType | undefined;
-
   public async show() {
-    await this.setData();
     await this.setDom();
     this.appendDom();
-    this.afterSetDom();
-  }
-
-  private async setData() {
-    this.settingsData = await window.api.settings.getData();
   }
 
   private async setDom() {
-    const { default: html } = await import('./settings.html?raw');
-    const rendered = mustache.render(html, {
-      data: this.settingsData,
+    const settingsData = await window.api.settings.getData();
+    const { default: html } = await import('./settings.hbs?raw');
+    const compile = handlebars.compile(html);
+    const template = compile({
+      data: settingsData,
     });
-    this.dom = $(rendered);
-  }
-
-  private afterSetDom() {
-    this.dom
-      .find('select[name="httpsRejectUnauthorized"]')
-      .val(this.settingsData!.httpsRejectUnauthorized.toString());
+    this.dom = $(template);
   }
 
   private appendDom() {

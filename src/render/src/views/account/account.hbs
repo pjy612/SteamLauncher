@@ -3,26 +3,31 @@
     <form class="modal-content" action="" data-sk-channel="account-create">
       <div class="modal-header">
         <div class="modal-title">
-          <span class="mdi {{^isEditMode}}mdi-account-plus{{/isEditMode}}{{#isEditMode}}mdi-account-edit{{/isEditMode}} mdi-18px"></span>
-          <span class="ml-1">{{^isEditMode}}Create account{{/isEditMode}}{{#isEditMode}}Edit account{{/isEditMode}}</span>
+          {{#if isEditMode}}
+          <span class="mdi mdi-account-edit mdi-18px"></span>
+          <span class="ml-1">Edit account</span>
+          {{else}}
+          <span class="mdi mdi-account-plus mdi-18px"></span>
+          <span class="ml-1">Create account</span>
+          {{/if}}
         </div>
-        {{#isEditMode}}
+        {{#if isEditMode}}
         <button type="button" class="btn-close" data-bs-dismiss="modal">
           <span class="mdi mdi-close"></span>
         </button>
-        {{/isEditMode}}
+        {{/if}}
       </div>
       <div class="modal-body">
-        {{^isEditMode}}
+        {{#unless isEditMode}}
         <div class="text-center">Before proceeding, please create your account!</div>
-        {{/isEditMode}}
+        {{/unless}}
         <div class="card">
           <div class="card-title">
             <span class="mdi mdi-badge-account mdi-18px"></span>
             <span class="ml-1">Name</span>
           </div>
           <div class="card-body">
-            <input type="text" class="form-control" name="name" value="{{^isEditMode}}Player#{{data.steamId}}{{/isEditMode}}{{#isEditMode}}{{data.name}}{{/isEditMode}}" placeholder="example: Player" required />
+            <input type="text" class="form-control" name="name" value="{{#if isEditMode}}{{data.name}}{{else}}Player#{{data.steamId}}{{/if}}" placeholder="example: Player" required />
           </div>
         </div>
         <div class="card">
@@ -32,9 +37,13 @@
           </div>
           <div class="card-body">
             <select class="form-select" name="language" required>
-              {{#inputLanguages}}
-              <option value="{{@key}}">{{@val}}</option>
-              {{/inputLanguages}}
+              {{#each allowedLanguages}}
+              {{#if (eq ../data.language @key)}}
+              <option value="{{@key}}" selected>{{this}}</option>
+              {{else}}
+              <option value="{{@key}}">{{this}}</option>
+              {{/if}}
+              {{/each}}
             </select>
           </div>
         </div>
@@ -53,7 +62,7 @@
             <span class="ml-1">Listen Port</span>
           </div>
           <div class="card-body">
-            <input type="number" class="form-control" name="listenPort" value="{{^isEditMode}}47584{{/isEditMode}}{{#isEditMode}}{{data.listenPort}}{{/isEditMode}}" placeholder="example: 47584" required />
+            <input type="number" class="form-control" name="listenPort" value="{{#if isEditMode}}{{data.listenPort}}{{else}}47584{{/if}}" placeholder="example: 47584" required />
           </div>
         </div>
         <div class="card">
@@ -62,7 +71,7 @@
             <span class="ml-1">Steam WebAPI Key</span>
           </div>
           <div class="card-body">
-            <input type="text" class="form-control !rounded-none" name="steamWebApiKey" placeholder="..." value="{{#isEditMode}}{{data.steamWebApiKey}}{{/isEditMode}}" />
+            <input type="text" class="form-control !rounded-none" name="steamWebApiKey" placeholder="..." value="{{#if isEditMode}}{{data.steamWebApiKey}}{{/if}}" />
           </div>
           <div class="form-text text-center p-2">To get achievements, stats and items get WebApi Key from <a class="link" href="https://steamcommunity.com/dev/apikey" target="_blank">here</a>. If no WebAPI Key is given, it will only get games infos and dlcs.</div>
         </div>

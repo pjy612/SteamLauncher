@@ -1,4 +1,4 @@
-import mustache from 'mustache';
+import handlebars from 'handlebars';
 import router from '../../instances/router';
 
 class HomeView {
@@ -19,9 +19,10 @@ class HomeView {
   }
 
   private async setDom() {
-    const { default: html } = await import('./home.html?raw');
-    const rendered = mustache.render(html, {});
-    this.dom = $(rendered);
+    const { default: html } = await import('./home.hbs?raw');
+    const compile = handlebars.compile(html);
+    const template = compile({});
+    this.dom = $(template);
   }
 
   private async appendGamesList() {

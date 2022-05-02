@@ -1,36 +1,32 @@
-import mustache from 'mustache';
+import handlebars from 'handlebars';
 import allowedLanguages from '../../configs/allowed-languages';
-import mustacheObjsWithKeys from '../../functions/mustache-objs-with-keys';
 import router from '../../instances/router';
 
 class GameView {
   private dom = $('');
-  private gameData: StoreGameDataType | undefined;
+
   private isEditMode = false;
 
   public async show(editMode = false) {
     this.isEditMode = editMode;
 
     await this.setDom();
-    this.afterSetDom();
     this.appendDom();
   }
 
   private async setDom() {
     const view = {
-      inputLanguages: mustacheObjsWithKeys(allowedLanguages),
+      isEditMode: this.isEditMode,
+      allowedLanguages,
     };
-
     const getCurrentLocationInfo = router.getCurrentLocationInfo();
 
     if (this.isEditMode) {
       const appId = getCurrentLocationInfo?.data?.appId;
-
-      this.gameData = await window.api.game.getData(appId!);
+      const gameData = await window.api.game.getData(appId!);
 
       Object.assign(view, {
-        data: this.gameData,
-        isEditMode: this.isEditMode,
+        data: gameData,
       });
     } else {
       Object.assign(view, {
@@ -38,19 +34,10 @@ class GameView {
       });
     }
 
-    const { default: html } = await import('./game.html?raw');
-    const rendered = mustache.render(html, view);
-    this.dom = $(rendered);
-  }
-
-  private afterSetDom() {
-    if (
-      this.isEditMode &&
-      typeof this.gameData !== 'undefined' &&
-      this.gameData.forceAccountLanguage.length > 0
-    ) {
-      this.dom.find('select[name="forceAccountLanguage"]').val(this.gameData.forceAccountLanguage);
-    }
+    const { default: html } = await import('./game.hbs?raw');
+    const compile = handlebars.compile(html);
+    const template = compile(view);
+    this.dom = $(template);
   }
 
   private appendDom() {

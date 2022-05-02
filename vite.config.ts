@@ -42,6 +42,13 @@ export default function createConfig(packagePath: string) {
       };
     }
 
+    if (viteDistributionName === 'render') {
+      // NOTE: fix handlebars
+      viteConfig.define = {
+        global: {},
+      };
+    }
+
     return viteConfig;
   });
 }

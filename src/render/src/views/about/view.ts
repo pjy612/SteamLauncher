@@ -1,4 +1,4 @@
-import mustache from 'mustache';
+import handlebars from 'handlebars';
 
 class AboutView {
   private dom = $('');
@@ -18,14 +18,15 @@ class AboutView {
     const description = await window.api.app.getDescription();
     const copyright = await window.api.app.getCopyright();
 
-    const { default: html } = await import('./about.html?raw');
-    const rendered = mustache.render(html, {
+    const { default: html } = await import('./about.hbs?raw');
+    const compile = handlebars.compile(html);
+    const template = compile({
       copyright,
       description,
       name,
       version,
     });
-    this.dom = $(rendered);
+    this.dom = $(template);
   }
 }
 
