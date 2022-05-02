@@ -9,6 +9,7 @@ class SettingsView {
     await this.setData();
     await this.setDom();
     this.appendDom();
+    this.afterSetDom();
   }
 
   private async setData() {
@@ -21,6 +22,12 @@ class SettingsView {
       data: this.settingsData,
     });
     this.dom = $(rendered);
+  }
+
+  private afterSetDom() {
+    this.dom
+      .find('select[name="httpsRejectUnauthorized"]')
+      .val(this.settingsData!.httpsRejectUnauthorized.toString());
   }
 
   private appendDom() {

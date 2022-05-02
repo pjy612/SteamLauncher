@@ -35,6 +35,9 @@ contextBridge.exposeInMainWorld('api', {
     async getVersion() {
       return ipc.invoke('app-get-version');
     },
+    async openLudusavi() {
+      return ipc.invoke('app-open-ludusavi');
+    },
     notify(message: string) {
       ipc.invoke('app-notify', message).catch(() => {
         //

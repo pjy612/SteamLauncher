@@ -94,13 +94,13 @@ ipc.on('game-contextmenu', (event, appId: string) => {
     {
       label: 'Manually backup saves to cloud',
       async click() {
-        await SteamCloud.backupByAppId(appId);
+        await SteamCloud.backup(data.name);
       },
     },
     {
       label: 'Manually restore saves from cloud',
       async click() {
-        await SteamCloud.restoreByAppId(appId);
+        await SteamCloud.restore(data.name);
       },
     },
     {

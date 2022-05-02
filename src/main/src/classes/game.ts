@@ -187,7 +187,7 @@ class Game {
     await Game.clientLoader(dataGame);
 
     // after the game is closed, I make backups of the saves
-    await SteamCloud.backupByAppId(dataGameAppId);
+    await SteamCloud.backup(dataGameName);
   }
 
   public static async launchFromCommandsLine(appCommandsLine: string[]) {
@@ -282,7 +282,7 @@ class Game {
 
   public static createDesktopShortcut(appId: string) {
     const data: StoreGameDataType = storage.get(`games.${appId}`);
-    const name = data.name.replace(/[^\w\s]/gu, '');
+    const name = Game.removeSpecialChars(data.name);
     const toPath = join(app.getPath('desktop'), `Launch ${name}.lnk`);
     const writeShortcutLink = shell.writeShortcutLink(toPath, {
       args: data.appId,
@@ -295,6 +295,10 @@ class Game {
     } else {
       notify('Unknown error with creating shortcut!');
     }
+  }
+
+  public static removeSpecialChars(string_: string) {
+    return string_.replace(/[^\w\s]/gu, '');
   }
 }
 

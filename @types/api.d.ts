@@ -32,6 +32,7 @@ declare global {
         getDescription: () => Promise<string>;
         getName: () => Promise<string>;
         getVersion: () => Promise<string>;
+        openLudusavi: () => Promise<void>;
         notify: (message: string) => void;
       };
       game: {

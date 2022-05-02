@@ -5,6 +5,8 @@ import readme from '../../../../README.md?raw';
 import { author as packageAuthor } from '../../../../package.json';
 import notify from '../functions/notify';
 import { getWindow } from '../functions/window';
+import execFile from '../node/exec-file-promisify';
+import paths from '../paths';
 
 const markdown = new MarkDownIt({
   html: true,
@@ -42,3 +44,7 @@ ipc.handle('app-chose-file', () =>
     properties: ['openFile'],
   })
 );
+
+ipc.handle('app-open-ludusavi', async () => {
+  await execFile(paths.files.ludusaviFilePath);
+});

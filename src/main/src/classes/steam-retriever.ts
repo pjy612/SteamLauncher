@@ -318,7 +318,7 @@ class SteamRetriever {
       notify(oo);
       this.console(oo);
 
-      await SteamCloud.restoreByAppId(inputs.appId);
+      await SteamCloud.restore(inputs.name);
     }
 
     storage.set(`games.${inputs.appId}`, inputs);

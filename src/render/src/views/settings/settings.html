@@ -12,14 +12,26 @@
       </div>
       <div class="modal-body text-center">
         <div class="card">
+          <div class="card-title border-b border-solid border-primary">
+            <span class="mdi mdi-cloud mdi-18px"></span>
+            <span class="ml-1">SteamCloud</span>
+          </div>
+          <div class="card-body !p-2">
+            <p class="text-xs mb-2">
+              To add support for game save backups, SteamLauncher uses an external tool which is <a href="https://github.com/mtkennerly/ludusavi" target="_blank" class="link">ludusavi</a> and by entering you can set custom paths and change settings.<br /><b class="text-red-500">Warning: Do not use backup and restore of saves directly from <a href="https://github.com/mtkennerly/ludusavi" target="_blank" class="link">ludusavi</a>, SteamLauncher uses a different logic. When adding a custom path, set the name without special characters ("Homefront®: The Revolution" to "Homefront: The Revolution").</b>
+            </p>
+            <button type="button" class="btn btn-block btn-neutral" data-sk="open-ludusavi">Open ludusavi</button>
+          </div>
+        </div>
+        <div class="card">
           <div class="card-title">
             <span class="mdi mdi-lock-check mdi-18px"></span>
             <span class="ml-1">SSL Certificate Verification</span>
           </div>
           <div class="card-body">
             <select class="form-select !rounded-none" name="httpsRejectUnauthorized" required>
-              <option value="true" {{#data.httpsRejectUnauthorized}}selected{{/data.httpsRejectUnauthorized}}>Enabled</option>
-              <option value="false" {{^data.httpsRejectUnauthorized}}selected{{/data.httpsRejectUnauthorized}}>Disabled</option>
+              <option value="true">Enabled</option>
+              <option value="false">Disabled</option>
             </select>
           </div>
           <div class="form-text text-center p-2">If you encounter the "unable to verify the first certificate" error, try disabling the ssl certificate verification. If this value is changed, restart the app.</div>
