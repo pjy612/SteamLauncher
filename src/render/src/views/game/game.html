@@ -14,57 +14,85 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="card">
-          <div class="card-title">
-            <span class="mdi mdi-identifier mdi-18px"></span>
-            <span class="ml-1">AppId</span>
-          </div>
-          <div class="card-body">
-            <input type="number" class="form-control {{#isEditMode}}disabled{{/isEditMode}}" name="appId"
-              value="{{#isEditMode}}{{data.appId}}{{/isEditMode}}" placeholder="example: 1593500"
-              {{#isEditMode}}readonly{{/isEditMode}} required>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">
-            <span class="mdi mdi-directions-fork mdi-18px"></span>
-            <span class="ml-1">Exe File Path</span>
-          </div>
-          <div class="card-body">
-            <div class="input-group">
-              <input type="text" class="form-control disabled" name="executableFilePath"
-                value="{{^isEditMode}}{{parameters.fullPath}}{{/isEditMode}}{{#isEditMode}}{{data.executableFilePath}}{{/isEditMode}}"
-                placeholder="example: C:\Games\GodOfWar\GoW.exe" required readonly>
-              <button type="button" class="btn btn-gray" data-sk="choseDirFile" data-sk-what="file">
-                <span class="mdi mdi-paperclip mdi-18px"></span>
-              </button>
+        <ul class="nav nav-tabs nav-justified mb-3">
+          <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#executable" type="button">Executable</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#networkOther" type="button">Network & Other</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#account" type="button">Account</button>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="executable">
+            <div class="card">
+              <div class="card-title">
+                <span class="mdi mdi-identifier mdi-18px"></span>
+                <span class="ml-1">AppId</span>
+              </div>
+              <div class="card-body">
+                <input type="number" class="form-control {{#isEditMode}}disabled{{/isEditMode}}" name="appId"
+                  value="{{#isEditMode}}{{data.appId}}{{/isEditMode}}" placeholder="example: 1593500"
+                  {{#isEditMode}}readonly{{/isEditMode}} required>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">
+                <span class="mdi mdi-directions-fork mdi-18px"></span>
+                <span class="ml-1">Executable File Path</span>
+              </div>
+              <div class="card-body">
+                <div class="input-group">
+                  <input type="text" class="form-control disabled" name="executableFilePath"
+                    value="{{^isEditMode}}{{parameters.fullPath}}{{/isEditMode}}{{#isEditMode}}{{data.executableFilePath}}{{/isEditMode}}"
+                    placeholder="example: C:\Games\GodOfWar\GoW.exe" required readonly>
+                  <button type="button" class="btn btn-gray" data-sk="choseDirFile" data-sk-what="file">
+                    <span class="mdi mdi-paperclip mdi-18px"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">
+                <span class="mdi mdi-directions-fork mdi-18px"></span>
+                <span class="ml-1">Executable Working Directory</span>
+              </div>
+              <div class="card-body">
+                <div class="input-group">
+                  <input type="text" class="form-control disabled" name="executableWorkingDirectory"
+                    value="{{^isEditMode}}{{parameters.dir}}{{/isEditMode}}{{#isEditMode}}{{data.executableWorkingDirectory}}{{/isEditMode}}"
+                    placeholder="example: C:\Games\GodOfWar\" required readonly>
+                  <button type="button" class="btn btn-gray" data-sk="choseDirFile">
+                    <span class="mdi mdi-paperclip mdi-18px"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">
+                <span class="mdi mdi-playlist-plus mdi-18px"></span>
+                <span class="ml-1">Command Line</span>
+              </div>
+              <div class="card-body">
+                <input type="text" class="form-control" name="commandLine"
+                  value="{{#isEditMode}}{{data.commandLine}}{{/isEditMode}}" placeholder="example: -steam">
+              </div>
             </div>
           </div>
-        </div>
+          <div class="tab-pane fade" id="networkOther">
+
         <div class="card">
           <div class="card-title">
-            <span class="mdi mdi-directions-fork mdi-18px"></span>
-            <span class="ml-1">Dir Run Path</span>
+            <span class="mdi mdi-stack-overflow mdi-18px"></span>
+            <span class="ml-1">Disable Networking</span>
           </div>
           <div class="card-body">
-            <div class="input-group">
-              <input type="text" class="form-control disabled" name="executableWorkingDirectory"
-                value="{{^isEditMode}}{{parameters.dir}}{{/isEditMode}}{{#isEditMode}}{{data.executableWorkingDirectory}}{{/isEditMode}}"
-                placeholder="example: C:\Games\GodOfWar\" required readonly>
-              <button type="button" class="btn btn-gray" data-sk="choseDirFile">
-                <span class="mdi mdi-paperclip mdi-18px"></span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">
-            <span class="mdi mdi-playlist-plus mdi-18px"></span>
-            <span class="ml-1">Command Line</span>
-          </div>
-          <div class="card-body">
-            <input type="text" class="form-control" name="commandLine"
-              value="{{#isEditMode}}{{data.commandLine}}{{/isEditMode}}" placeholder="example: -steam">
+            <select class="form-select" name="disableNetworking" required>
+              <option value="true" {{#data.disableNetworking}}selected{{/data.disableNetworking}}>True</option>
+              <option value="false" {{^data.disableNetworking}}selected{{/data.disableNetworking}}>False</option>
+            </select>
           </div>
         </div>
         <div class="card">
@@ -82,18 +110,6 @@
         <div class="card">
           <div class="card-title">
             <span class="mdi mdi-stack-overflow mdi-18px"></span>
-            <span class="ml-1">Disable Networking</span>
-          </div>
-          <div class="card-body">
-            <select class="form-select" name="disableNetworking" required>
-              <option value="true" {{#data.disableNetworking}}selected{{/data.disableNetworking}}>True</option>
-              <option value="false" {{^data.disableNetworking}}selected{{/data.disableNetworking}}>False</option>
-            </select>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">
-            <span class="mdi mdi-stack-overflow mdi-18px"></span>
             <span class="ml-1">Disable Lan Only</span>
           </div>
           <div class="card-body">
@@ -103,6 +119,9 @@
             </select>
           </div>
         </div>
+          </div>
+          <div class="tab-pane fade" id="account">
+
         <div class="card">
           <div class="card-title">
             <span class="mdi mdi-badge-account mdi-18px"></span>
@@ -140,6 +159,8 @@
           </div>
           <div class="card-body">
             <input type="number" class="form-control" name="forceAccountListenPort" value="{{#isEditMode}}{{data.forceAccountListenPort}}{{/isEditMode}}" placeholder="# use account settings #"/>
+          </div>
+        </div>
           </div>
         </div>
       </div>

@@ -1,11 +1,11 @@
 @layer components {
-  form.modal-content .modal-body {
-    & > * {
+  form.modal-content {
+    & .card {
       @apply m-0 mb-3;
-    }
 
-    & > *:last-child {
-      @apply m-0;
+      &:last-child {
+        @apply mb-0;
+      }
     }
 
     & .card-title {

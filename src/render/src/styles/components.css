@@ -13,6 +13,7 @@
 @import './components/forms';
 @import './components/buttons';
 @import './components/transitions';
+@import './components/nav';
 @import './components/navbar';
 @import './components/card';
 @import './components/modal';
