@@ -25,9 +25,7 @@ ipc.on('game-edit', functionGameAddEdit);
 
 ipc.handle('game-paths-by-appid', (_event, appId: string) => Game.paths(appId));
 
-ipc.handle('game-data', (_event, appId: string): StoreGameDataType | undefined =>
-  storage.get(`games.${appId}`)
-);
+ipc.handle('game-data', (_event, appId: string): StoreGameDataType | undefined => storage.get(`games.${appId}`));
 
 ipc.handle('games-data', () => storage.get('games'));
 

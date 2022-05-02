@@ -16,17 +16,7 @@ module.exports = defineConfig({
     es2022: true,
     jquery: true,
   },
-  plugins: [
-    'node',
-    'import',
-    'unicorn',
-    'eslint-comments',
-    'sonarjs',
-    'compat',
-    'promise',
-    'regexp',
-    'prettier',
-  ],
+  plugins: ['node', 'import', 'unicorn', 'eslint-comments', 'sonarjs', 'compat', 'promise', 'regexp', 'prettier'],
   extends: [
     'eslint:recommended',
     'plugin:node/recommended-script',

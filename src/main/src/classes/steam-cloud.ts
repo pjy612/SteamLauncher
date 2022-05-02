@@ -16,13 +16,7 @@ class SteamCloud {
     const exe = paths.files.ludusaviFilePath;
     const gamePaths = Game.paths(nname);
     try {
-      const spawn = await execFile(exe, [
-        'backup',
-        '--force',
-        `--path`,
-        gamePaths.appIdSavesCloudPath,
-        nname,
-      ]);
+      const spawn = await execFile(exe, ['backup', '--force', `--path`, gamePaths.appIdSavesCloudPath, nname]);
       log.debug(`SteamCloud Backup: \n${spawn.stdout}`);
       notify('SteamCloud Backup: The backups of the saves were successful.');
       return true;
@@ -44,13 +38,7 @@ class SteamCloud {
     const gamePaths = Game.paths(nname);
     try {
       if (await pathExists(gamePaths.appIdSavesCloudPath)) {
-        const spawn = await execFile(exe, [
-          'restore',
-          '--force',
-          `--path`,
-          gamePaths.appIdSavesCloudPath,
-          nname,
-        ]);
+        const spawn = await execFile(exe, ['restore', '--force', `--path`, gamePaths.appIdSavesCloudPath, nname]);
         log.debug(`SteamCloud Restore: \n${spawn.stdout}`);
         notify('SteamCloud Restore: The restore of the saves were successful.');
       } else {

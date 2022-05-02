@@ -21,10 +21,7 @@ class MrGoldBergEmulator {
       const responseHtml = response.data as string;
       const regex =
         /https:\/\/gitlab\.com\/Mr_Goldberg\/goldberg_emulator\/-\/jobs\/(?<jobid>.*)\/artifacts\/download/gu;
-      const match = [...responseHtml.matchAll(regex)].map((match) => [
-        match[0],
-        match.groups?.jobid,
-      ]);
+      const match = [...responseHtml.matchAll(regex)].map((match) => [match[0], match.groups?.jobid]);
       const downloadUrl = match[0][0];
       const downloadJobId = match[0][1];
 
@@ -64,18 +61,8 @@ class MrGoldBergEmulator {
       }
 
       const zip = new AdmZip(pathZip);
-      zip.extractEntryTo(
-        'experimental_steamclient/steamclient.dll',
-        paths.emulator.rootPath,
-        false,
-        true
-      );
-      zip.extractEntryTo(
-        'experimental_steamclient/steamclient64.dll',
-        paths.emulator.rootPath,
-        false,
-        true
-      );
+      zip.extractEntryTo('experimental_steamclient/steamclient.dll', paths.emulator.rootPath, false, true);
+      zip.extractEntryTo('experimental_steamclient/steamclient64.dll', paths.emulator.rootPath, false, true);
 
       log.info(`MrGoldBergEmulator: The emulator has been successfully updated.`);
 

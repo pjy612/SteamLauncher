@@ -58,11 +58,7 @@ class SteamRetriever {
       log.error(`SteamRetriever: ${nContent.message}`);
     }
 
-    this.ipcEvent.send(
-      'console-add',
-      typeof nContent === 'string' ? nContent : nContent.message,
-      space
-    );
+    this.ipcEvent.send('console-add', typeof nContent === 'string' ? nContent : nContent.message, space);
   }
 
   private consoleHide(isOk = false) {
@@ -124,10 +120,7 @@ class SteamRetriever {
           true
         );
       } else {
-        this.console(
-          'The creation date of the dll is less than May 2016, i create steam_interfaces.txt.',
-          true
-        );
+        this.console('The creation date of the dll is less than May 2016, i create steam_interfaces.txt.', true);
         await this.writeSteamApiInterfaces(searchDlls[0]);
       }
     } else {
@@ -274,9 +267,7 @@ class SteamRetriever {
       url = `https://api.steampowered.com/IGameInventory/GetItemDefArchive/v1/?digest=${digest}&appid=${this.gameAppId}`;
       response = await axios.get(url);
       // NOTE: the last character is a finger in the ass
-      response.data = JSON.parse(
-        (response.data as string).slice(0, -1)
-      ) as SteamRetrieverGetItemDefArchive;
+      response.data = JSON.parse((response.data as string).slice(0, -1)) as SteamRetrieverGetItemDefArchive;
 
       const resultItems: Record<string, unknown> = {};
       const resultDefaultItems: Record<string, number> = {};
@@ -433,9 +424,7 @@ class SteamRetriever {
       result = [...result, ...matches];
     }
 
-    if (
-      this.findSteamApiInterface(content, 'STEAMCONTROLLER_INTERFACE_VERSION\\d{3}').length === 0
-    ) {
+    if (this.findSteamApiInterface(content, 'STEAMCONTROLLER_INTERFACE_VERSION\\d{3}').length === 0) {
       const matches = this.findSteamApiInterface(content, 'STEAMCONTROLLER_INTERFACE_VERSION');
       result = [...result, ...matches];
     }

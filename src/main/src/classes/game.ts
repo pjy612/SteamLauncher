@@ -38,14 +38,12 @@ class Game {
 
       const hkcuValveSteamActiveProcessKey = 'HKCU\\SOFTWARE\\Valve\\Steam\\ActiveProcess';
       const hkcuValveSteamActiveProcess = await regedit.list([hkcuValveSteamActiveProcessKey]);
-      const hkcuValveSteamActiveProcessData =
-        hkcuValveSteamActiveProcess[hkcuValveSteamActiveProcessKey];
+      const hkcuValveSteamActiveProcessData = hkcuValveSteamActiveProcess[hkcuValveSteamActiveProcessKey];
 
       if (hkcuValveSteamActiveProcessData.exists) {
         origSteam = true;
         origSteamClientDll = hkcuValveSteamActiveProcessData.values.SteamClientDll.value as string;
-        origSteamClientDll64 = hkcuValveSteamActiveProcessData.values.SteamClientDll64
-          .value as string;
+        origSteamClientDll64 = hkcuValveSteamActiveProcessData.values.SteamClientDll64.value as string;
       } else {
         await regedit.createKey([hkcuValveSteamActiveProcessKey]);
       }
@@ -162,10 +160,7 @@ class Game {
 
     // steam_settings/force_listen_port.txt
     if (dataGameForceAccountListenPort.length > 0) {
-      await writeFile(
-        paths.emulator.settingsForceListenPortFilePath,
-        dataGameForceAccountListenPort
-      );
+      await writeFile(paths.emulator.settingsForceListenPortFilePath, dataGameForceAccountListenPort);
     }
 
     // steam_settings/disable_overlay.txt
