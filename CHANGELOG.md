@@ -3,11 +3,47 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.2.0.test-changelog3"></a>
+## [v0.2.0.test-changelog3] (2022-05-03)
+
 #### _All_
 - ci: probably fixed
-
 #### _By type_
 ### CI
+- probably fixed
+
+<a name="v0.2.0.test-changelog2"></a>
+## [v0.2.0.test-changelog2] (2022-05-03)
+
+#### _All_
+- ci: probably fixed
+- Merge branch 'main' of https://github.com/Sak32009/SteamLauncher
+- docs: updated CHANGELOG.md
+#### _By type_
+### CI
+- probably fixed
+### Docs
+- updated CHANGELOG.md
+
+<a name="v0.2.0.test-changelog1"></a>
+## [v0.2.0.test-changelog1] (2022-05-03)
+
+#### _All_
+- ci: probably fixed
+#### _By type_
+### CI
+- probably fixed
+
+<a name="v0.2.0.test-changelog"></a>
+## [v0.2.0.test-changelog] (2022-05-03)
+
+#### _All_
+- ci: probably fixed
+- ci: probably fixed
+#### _By type_
+### CI
+- probably fixed
 - probably fixed
 
 <a name="v0.2.0"></a>
@@ -278,7 +314,11 @@
 - upload
 - Initial commit
 
-[Unreleased]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.0.test-changelog3...HEAD
+[v0.2.0.test-changelog3]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.0.test-changelog2...v0.2.0.test-changelog3
+[v0.2.0.test-changelog2]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.0.test-changelog1...v0.2.0.test-changelog2
+[v0.2.0.test-changelog1]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.0.test-changelog...v0.2.0.test-changelog1
+[v0.2.0.test-changelog]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.0...v0.2.0.test-changelog
 [v0.2.0]: https://github.com/Sak32009/SteamLauncher/compare/v0.1.9...v0.2.0
 [v0.1.9]: https://github.com/Sak32009/SteamLauncher/compare/v0.1.8...v0.1.9
 [v0.1.8]: https://github.com/Sak32009/SteamLauncher/compare/v0.1.7...v0.1.8
