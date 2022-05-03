@@ -4,13 +4,39 @@
 ## [Unreleased]
 
 #### _All_
-- ci: test
-- ci: test
+- ci: probably fixed
 
 #### _By type_
 ### CI
+- probably fixed
+
+<a name="v0.2.0"></a>
+## [v0.2.0] (2022-05-03)
+
+#### _All_
+- v0.2.0
+- fix: incorrect "open save location" [#155](https://github.com/Sak32009/SteamLauncher/issues/155)
+- fix: SteamCloud now tries to search for appid otherwise the game name is used
+- feat: added SmartSteamLoader and its 3 settings in settings page (fix: failed to launch game [#154](https://github.com/Sak32009/SteamLauncher/issues/154))
+- refactor: pretty code
+- ci: probably fixed
+- docs: updated CHANGELOG.md
+- ci: test
+- ci: test
+#### _By type_
+### Bug Fixes
+- incorrect "open save location" [#155](https://github.com/Sak32009/SteamLauncher/issues/155)
+- SteamCloud now tries to search for appid otherwise the game name is used
+### CI
+- probably fixed
 - test
 - test
+### Code Refactoring
+- pretty code
+### Docs
+- updated CHANGELOG.md
+### Features
+- added SmartSteamLoader and its 3 settings in settings page (fix: failed to launch game [#154](https://github.com/Sak32009/SteamLauncher/issues/154))
 
 <a name="v0.1.9"></a>
 ## [v0.1.9] (2022-05-02)
@@ -252,7 +278,8 @@
 - upload
 - Initial commit
 
-[Unreleased]: https://github.com/Sak32009/SteamLauncher/compare/v0.1.9...HEAD
+[Unreleased]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.0...HEAD
+[v0.2.0]: https://github.com/Sak32009/SteamLauncher/compare/v0.1.9...v0.2.0
 [v0.1.9]: https://github.com/Sak32009/SteamLauncher/compare/v0.1.8...v0.1.9
 [v0.1.8]: https://github.com/Sak32009/SteamLauncher/compare/v0.1.7...v0.1.8
 [v0.1.7]: https://github.com/Sak32009/SteamLauncher/compare/v0.1.6...v0.1.7
