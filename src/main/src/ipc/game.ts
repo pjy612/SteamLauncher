@@ -30,18 +30,18 @@ ipc.handle('game-data', (_event, appId: string): StoreGameDataType | undefined =
 ipc.handle('games-data', () => storage.get('games'));
 
 ipc.on('game-contextmenu', (event, appId: string) => {
-  const data: StoreGameDataType = storage.get(`games.${appId}`);
+  const dataGame: StoreGameDataType = storage.get(`games.${appId}`);
   const menu = Menu.buildFromTemplate([
     {
       label: 'Launch',
       async click() {
-        await Game.launch(data);
+        await Game.launch(dataGame);
       },
     },
     {
       label: 'Launch without emulator',
       async click() {
-        await Game.launch(data, true);
+        await Game.launch(dataGame, true);
       },
     },
     {
@@ -81,7 +81,7 @@ ipc.on('game-contextmenu', (event, appId: string) => {
       label: 'Rebase DLCs, Items, etc...',
       async click() {
         if (await promptYesNo('Are you sure? The data will be overwritten!')) {
-          const steamRetriever = new SteamRetriever(data);
+          const steamRetriever = new SteamRetriever(dataGame);
           await steamRetriever.run();
         }
       },
@@ -92,13 +92,13 @@ ipc.on('game-contextmenu', (event, appId: string) => {
     {
       label: 'Manually backup saves to cloud',
       async click() {
-        await SteamCloud.backup(data.name);
+        await SteamCloud.backup(dataGame);
       },
     },
     {
       label: 'Manually restore saves from cloud',
       async click() {
-        await SteamCloud.restore(data.name);
+        await SteamCloud.restore(dataGame);
       },
     },
     {

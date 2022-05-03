@@ -8,19 +8,32 @@ import paths from '../paths';
 import Game from './game';
 
 class SteamCloud {
-  public static async backup(name: string) {
-    const nname = Game.removeSpecialChars(name);
+  public static async backup(dataGame: StoreGameDataType, byAppId = true) {
+    const appId = dataGame.appId;
+    const appIdName = Game.removeSpecialChars(dataGame.name);
 
-    log.info(`SteamCloud Backup: Initializing backup for ${nname}...`);
+    log.info(
+      `SteamCloud Backup: Initializing backup for ${appIdName} (search by ${
+        byAppId ? `appid ${appId}` : `name ${appIdName}`
+      })...`
+    );
 
     const exe = paths.files.ludusaviFilePath;
-    const gamePaths = Game.paths(nname);
+    const gamePaths = Game.paths(appId);
     try {
-      const spawn = await execFile(exe, ['backup', '--force', `--path`, gamePaths.appIdSavesCloudPath, nname]);
+      const spawnCommandLine = ['backup', '--force', `--path`, gamePaths.appIdSavesCloudPath];
+      const spawn = await execFile(
+        exe,
+        byAppId ? [...spawnCommandLine, '--by-steam-id', appId] : [...spawnCommandLine, appIdName]
+      );
       log.debug(`SteamCloud Backup: \n${spawn.stdout}`);
       notify('SteamCloud Backup: The backups of the saves were successful.');
       return true;
     } catch (error) {
+      if (byAppId) {
+        await SteamCloud.backup(dataGame, false);
+      }
+
       const { stderr } = error as ChildProcess;
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       log.error(`SteamCloud Backup: ${stderr}`);
@@ -29,16 +42,25 @@ class SteamCloud {
     }
   }
 
-  public static async restore(name: string) {
-    const nname = Game.removeSpecialChars(name);
+  public static async restore(dataGame: StoreGameDataType, byAppId = true) {
+    const appId = dataGame.appId;
+    const appIdName = Game.removeSpecialChars(dataGame.name);
 
-    log.info(`SteamCloud Restore: Initializing restore for ${nname}...`);
+    log.info(
+      `SteamCloud Restore: Initializing restore for ${appIdName} (search by ${
+        byAppId ? `appid ${appId}` : `name ${appIdName}`
+      })...`
+    );
 
     const exe = paths.files.ludusaviFilePath;
-    const gamePaths = Game.paths(nname);
+    const gamePaths = Game.paths(appId);
     try {
       if (await pathExists(gamePaths.appIdSavesCloudPath)) {
-        const spawn = await execFile(exe, ['restore', '--force', `--path`, gamePaths.appIdSavesCloudPath, nname]);
+        const spawnCommandLine = ['restore', '--force', `--path`, gamePaths.appIdSavesCloudPath];
+        const spawn = await execFile(
+          exe,
+          byAppId ? [...spawnCommandLine, '--by-steam-id', appId] : [...spawnCommandLine, appIdName]
+        );
         log.debug(`SteamCloud Restore: \n${spawn.stdout}`);
         notify('SteamCloud Restore: The restore of the saves were successful.');
       } else {
@@ -49,6 +71,10 @@ class SteamCloud {
       }
       return true;
     } catch (error) {
+      if (byAppId) {
+        await SteamCloud.restore(dataGame, false);
+      }
+
       const { stderr } = error as ChildProcess;
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       log.error(`SteamCloud Restore: ${stderr}`);

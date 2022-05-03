@@ -136,7 +136,7 @@ class Game {
     await Game.clientLoader(dataGame);
 
     // after the game is closed, I make backups of the saves
-    await SteamCloud.backup(dataGameName);
+    await SteamCloud.backup(dataGame);
   }
 
   public static async launchFromCommandsLine(appCommandsLine: string[]) {
