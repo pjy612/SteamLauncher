@@ -1,9 +1,6 @@
 name: Build Changelog
 
-on:
-  push:
-    tags:
-      - v*
+on: [push]
 
 jobs:
   build-changelog:
@@ -29,5 +26,6 @@ jobs:
       - name: git-chglog | Commit
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
+          branch: main
           commit_message: 'docs: updated CHANGELOG.md'
           file_pattern: 'CHANGELOG.md'
