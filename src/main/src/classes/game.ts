@@ -1,4 +1,5 @@
 import { app, dialog, shell, webContents } from 'electron';
+import fs from 'node:fs';
 import { join, basename } from 'node:path';
 import { pathExists, emptyDir, copy, writeFile, ensureDir, remove } from 'fs-extra';
 import ini from 'ini';
@@ -10,6 +11,11 @@ import paths from '../paths';
 import MrGoldBergEmulator from './mr-goldberg-emulator';
 // eslint-disable-next-line import/no-cycle
 import SteamCloud from './steam-cloud';
+
+const isDirectoryEmpty = async (path: string) => {
+  const files = await fs.promises.readdir(path);
+  return files.length === 0;
+};
 
 class Game {
   private static async clientLoader(dataGame: StoreGameDataType) {
@@ -207,16 +213,16 @@ class Game {
     const gamePaths = Game.paths(appId);
     const savesPath = gamePaths.appIdSavesPath;
     const savesCloudPath = gamePaths.appIdSavesCloudPath;
+    if ((await pathExists(savesCloudPath)) && !(await isDirectoryEmpty(savesCloudPath))) {
+      await shell.openPath(savesCloudPath);
+    } else {
+      notify('The game has no saves inside the cloud saves.');
+    }
+
     if (await pathExists(savesPath)) {
       await shell.openPath(savesPath);
     } else {
-      notify('The game has no saves inside the emulator. Try in cloud saves...');
-
-      if (await pathExists(savesCloudPath)) {
-        await shell.openPath(savesCloudPath);
-      } else {
-        notify('The game has no saves inside the cloud saves.');
-      }
+      notify('The game has no saves inside the emulator.');
     }
   }
 
