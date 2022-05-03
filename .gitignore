@@ -1,6 +1,7 @@
 # SteamLauncher
 /bin/win/ludusavi/config.yaml
 /bin/win/ludusavi/manifest.yaml
+/bin/win/SmartSteamLoader/SmartSteamEmu.ini
 /data
 /build/release
 /src/main/dist/

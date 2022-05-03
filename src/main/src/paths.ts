@@ -9,10 +9,6 @@ const appDataPath = join(appIsInstalled ? app.getPath('userData') : appRootPath,
 
 const appBinPath = join(appResourcePath, 'bin');
 
-const appRegeditVbsPath = app.isPackaged
-  ? join(appBinPath, 'win/regedit/vbs')
-  : join(appResourcePath, 'node_modules/regedit/vbs');
-
 const appEmuPath = join(appDataPath, 'steam_emulator');
 const appEmuSteamSettings = join(appEmuPath, 'steam_settings');
 const appEmuSteamSaves = join(appEmuPath, 'steam_saves');
@@ -20,10 +16,11 @@ const appEmuSteamSettingsSaves = join(appEmuSteamSaves, 'settings');
 
 const paths = {
   appDataPath,
-  appRegeditVbsPath,
   appLogsPath: join(appDataPath, 'logs'),
   emulator: {
     rootPath: appEmuPath,
+    loaderFilePath: join(appBinPath, 'win/SmartSteamLoader/SmartSteamLoader_x64.exe'),
+    loaderConfigFilePath: join(appBinPath, 'win/SmartSteamLoader/SmartSteamEmu.ini'),
     jobsPath: join(appEmuPath, 'jobs'),
     steamClientFilePath: join(appEmuPath, 'steamclient.dll'),
     steamClient64FilePath: join(appEmuPath, 'steamclient64.dll'),

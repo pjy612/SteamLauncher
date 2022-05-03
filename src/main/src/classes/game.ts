@@ -1,9 +1,9 @@
 import { app, dialog, shell, webContents } from 'electron';
 import { join, basename } from 'node:path';
 import { pathExists, emptyDir, copy, writeFile, ensureDir, remove } from 'fs-extra';
+import ini from 'ini';
 import notify from '../functions/notify';
 import log from '../instances/log';
-import regedit from '../instances/regedit';
 import storage from '../instances/storage';
 import execFile from '../node/exec-file-promisify';
 import paths from '../paths';
@@ -13,75 +13,29 @@ import SteamCloud from './steam-cloud';
 
 class Game {
   private static async clientLoader(dataGame: StoreGameDataType) {
-    try {
-      notify(`Launch ${dataGame.name}`);
+    // loader
+    const loaderConfig = {
+      Launcher: {
+        Target: dataGame.executableFilePath,
+        StartIn: dataGame.executableWorkingDirectory,
+        CommandLine: dataGame.commandLine,
+        SteamClientPath: paths.emulator.steamClientFilePath,
+        SteamClientPath64: paths.emulator.steamClient64FilePath,
+        Persist: storage.get('settings.ssePersist') ? 1 : 0,
+        InjectDll: storage.get('settings.sseInjectDll') ? 1 : 0,
+        ParanoidMode: storage.get('settings.sseParanoidMode') ? 1 : 0,
+      },
+      SmartSteamEmu: {
+        AppId: dataGame.appId,
+      },
+    };
 
-      if (!(await pathExists(paths.emulator.steamClientFilePath))) {
-        throw new Error(`${paths.emulator.steamClientFilePath} does not exist!`);
-      }
+    await writeFile(paths.emulator.loaderConfigFilePath, ini.stringify(loaderConfig));
 
-      if (!(await pathExists(paths.emulator.steamClient64FilePath))) {
-        throw new Error(`${paths.emulator.steamClientFilePath} does not exist!`);
-      }
+    // exec
+    notify(`Launch ${dataGame.name}`);
 
-      if (!(await pathExists(dataGame.executableFilePath))) {
-        throw new Error(`${dataGame.executableFilePath} does not exist!`);
-      }
-
-      if (!(await pathExists(dataGame.executableWorkingDirectory))) {
-        throw new Error(`${dataGame.executableWorkingDirectory} does not exist!`);
-      }
-
-      let origSteam = false;
-      let origSteamClientDll = '';
-      let origSteamClientDll64 = '';
-
-      const hkcuValveSteamActiveProcessKey = 'HKCU\\SOFTWARE\\Valve\\Steam\\ActiveProcess';
-      const hkcuValveSteamActiveProcess = await regedit.list([hkcuValveSteamActiveProcessKey]);
-      const hkcuValveSteamActiveProcessData = hkcuValveSteamActiveProcess[hkcuValveSteamActiveProcessKey];
-
-      if (hkcuValveSteamActiveProcessData.exists) {
-        origSteam = true;
-        origSteamClientDll = hkcuValveSteamActiveProcessData.values.SteamClientDll.value as string;
-        origSteamClientDll64 = hkcuValveSteamActiveProcessData.values.SteamClientDll64.value as string;
-      } else {
-        await regedit.createKey([hkcuValveSteamActiveProcessKey]);
-      }
-
-      await regedit.putValue({
-        'HKCU\\SOFTWARE\\Valve\\Steam\\ActiveProcess': {
-          SteamClientDll: {
-            value: paths.emulator.steamClientFilePath,
-            type: 'REG_SZ',
-          },
-          SteamClientDll64: {
-            value: paths.emulator.steamClient64FilePath,
-            type: 'REG_SZ',
-          },
-        },
-      });
-
-      await execFile(dataGame.executableFilePath, dataGame.commandLine.split(' '), {
-        cwd: dataGame.executableWorkingDirectory,
-      });
-
-      if (origSteam) {
-        await regedit.putValue({
-          'HKCU\\SOFTWARE\\Valve\\Steam\\ActiveProcess': {
-            SteamClientDll: {
-              value: origSteamClientDll,
-              type: 'REG_SZ',
-            },
-            SteamClientDll64: {
-              value: origSteamClientDll64,
-              type: 'REG_SZ',
-            },
-          },
-        });
-      }
-    } catch (error) {
-      dialog.showErrorBox(`${app.getName()} Client Loader`, (error as Error).message);
-    }
+    await execFile(paths.emulator.loaderFilePath);
   }
 
   public static async launch(dataGame: StoreGameDataType, withoutEmu = false) {

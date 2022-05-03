@@ -10,10 +10,6 @@
     {
       "from": "bin",
       "to": "bin"
-    },
-    {
-      "from": "node_modules/regedit/vbs",
-      "to": "bin/win/regedit/vbs"
     }
   ],
   "win": {
