@@ -5,11 +5,14 @@ import GameView from './game/view';
 import HomeView from './home/view';
 import SettingsView from './settings/view';
 import NavPartialView from './partials/nav/view';
+import ConsolePartialView from './partials/console/view';
 
 const homeController = new HomeView();
 const navPartialController = new NavPartialView();
+const consolePartialController = new ConsolePartialView();
 $(async () => {
   await navPartialController.show();
+  await consolePartialController.show();
   await homeController.show();
 });
 
