@@ -30,18 +30,21 @@ class HomeView {
     if (typeof gamesData !== 'undefined' && Object.keys(gamesData).length > 0) {
       const $gamesGrid = $('<div class="games-grid"></div>');
       $.each(gamesData, async (appId: string, { name }) => {
-        const paths = await window.api.game.getPaths(appId);
-        const headerPath = paths.appIdHeaderPath;
-        const gameContainer = $(
-          `<div data-appId="${appId}" title="To open the context menu click on the right mouse button!">
-          <img src="https://api.lorem.space/image/shoes?w=400&h=225" alt="${name}" />
-          <div class="card-footer text-truncate text-center">${name}</div>
+        const gamePaths = await window.api.game.getPaths(appId);
+        const headerPath = gamePaths.appIdHeaderPath;
+
+        const $gameCard = $(
+          `<div class="card text-bg-st-secondary">
+  <img class="card-img-top" src="${headerPath}" alt="${name}" />
+  <div class="card-footer text-truncate text-center">${name}</div>
 </div>`
         );
 
-        const aa = $('<div>').attr('class', 'game-container').append(gameContainer);
+        const $gameContainer = $(
+          `<div class="game-container" data-appId="${appId}" title="To open the context menu click on the right mouse button!">`
+        ).append($gameCard);
 
-        $gamesGrid.append(aa);
+        $gamesGrid.append($gameContainer);
       });
       $gamesList.append($gamesGrid);
     } else {
@@ -51,7 +54,7 @@ class HomeView {
 
   private setEvents() {
     this.dom.on('contextmenu', '.game-container', (event) => {
-      const appId = $(event.currentTarget).find('> div').attr('data-appId') as string;
+      const appId = $(event.currentTarget).attr('data-appId')!;
       window.api.game.openContextMenu(appId);
     });
 
