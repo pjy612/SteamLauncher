@@ -5,8 +5,8 @@ import appRootPath from './functions/app-root-path';
 
 const appResourceAsarPath = app.getAppPath();
 const appResourcePath = app.isPackaged ? dirname(appResourceAsarPath) : appResourceAsarPath;
-const appDataPath = join(appIsInstalled ? app.getPath('userData') : appRootPath, 'data');
 
+const appDataPath = join(appIsInstalled ? app.getPath('userData') : appRootPath, 'data');
 const appBinPath = join(appResourcePath, 'bin');
 
 const appEmuPath = join(appDataPath, 'steam_emulator');

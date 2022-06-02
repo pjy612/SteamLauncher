@@ -1,7 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import axios from 'axios';
 
-const download = async (url: string, saveTo: string) => {
+const appDownload = async (url: string, saveTo: string) => {
   const response = await axios.get(url, {
     responseType: 'arraybuffer',
   });
@@ -9,4 +9,4 @@ const download = async (url: string, saveTo: string) => {
   return writeFile(saveTo, data);
 };
 
-export default download;
+export default appDownload;

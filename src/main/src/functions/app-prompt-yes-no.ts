@@ -1,6 +1,6 @@
 import { dialog } from 'electron';
 
-const promptYesNo = async (message: string) => {
+const appPromptYesNo = async (message: string) => {
   const prompt = await dialog.showMessageBox({
     buttons: ['Yes', 'No'],
     cancelId: 1,
@@ -11,4 +11,4 @@ const promptYesNo = async (message: string) => {
   return prompt.response === 0;
 };
 
-export default promptYesNo;
+export default appPromptYesNo;

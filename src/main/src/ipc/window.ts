@@ -1,18 +1,30 @@
 import { ipcMain as ipc } from 'electron';
-import { getWindow } from '../functions/window';
+import { getWindow } from '../functions/app-window';
 
 ipc.on('window-close', () => {
-  getWindow()?.close();
+  const window = getWindow();
+  if (typeof window !== 'undefined') {
+    window.close();
+  }
 });
 
 ipc.on('window-minimize', () => {
-  getWindow()?.minimize();
+  const window = getWindow();
+  if (typeof window !== 'undefined') {
+    window.minimize();
+  }
 });
 
 ipc.on('window-maximize', () => {
-  getWindow()?.maximize();
+  const window = getWindow();
+  if (typeof window !== 'undefined') {
+    window.maximize();
+  }
 });
 
 ipc.on('window-restore', () => {
-  getWindow()?.restore();
+  const window = getWindow();
+  if (typeof window !== 'undefined') {
+    window.restore();
+  }
 });

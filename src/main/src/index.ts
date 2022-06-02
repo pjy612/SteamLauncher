@@ -1,18 +1,18 @@
 import { app, session } from 'electron';
 import { appId } from '../../../electron-builder.json';
 import { appCommandsLine, appIsInstalled } from './app';
-import Game from './classes/game';
-import { allowedWillNavigateUrls } from './config';
-import { createWindow, openUrlExternallyWindow } from './functions/window';
+import SteamGame from './classes/steam-game';
+import allowedWillNavigateUrls from './configs/allowed-will-navigate-urls';
+import { createWindow, openUrlExternallyWindow } from './functions/app-window';
 import autoUpdater from './instances/autoupdater';
 import log from './instances/log';
-import './node';
+import './node/node';
 import './ipc/_ipcs';
 
 log.info(`${app.getName()} is booting up... (mode: ${appIsInstalled ? 'installer' : 'portable'})`);
 
 if (appCommandsLine.length > 0) {
-  Game.launchFromCommandsLine(appCommandsLine);
+  SteamGame.launchFromCommandsLine(appCommandsLine);
   app.quit();
 }
 

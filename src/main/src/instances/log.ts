@@ -10,7 +10,6 @@ const logFormatTimestamp = 'YYYY-MM-DD hh:mm:ss.SSS';
 const logFilePath = join(paths.appLogsPath, `${app.getName()}.log`);
 
 const log = createLogger({
-  // max level
   level: 'silly',
   transports: [
     new transports.File({

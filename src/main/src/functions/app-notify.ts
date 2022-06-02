@@ -1,16 +1,16 @@
 import { Notification } from 'electron';
 import log from '../instances/log';
 
-const notify = (message: string) => {
+const appNotify = (message: string) => {
   if (Notification.isSupported()) {
     const nn = new Notification({
       body: message,
     });
     nn.show();
   } else {
-    log.error("Notifications system isn't supported! Message:");
+    // log.error('Notifications system is not supported! Message:');
     log.info(message);
   }
 };
 
-export default notify;
+export default appNotify;

@@ -1,15 +1,16 @@
-import { app, BrowserWindow, Rectangle, shell } from 'electron';
-import { allowedExternalUrls } from '../config';
+import { BrowserWindow, Rectangle, shell } from 'electron';
+import allowedExternalUrls from '../configs/allowed-external-urls';
+// eslint-disable-next-line import/no-cycle
 import storage from '../instances/storage';
 import paths from '../paths';
+
+let createdWindow: BrowserWindow | undefined;
 
 const stateChangeHandler = (win: BrowserWindow) => {
   storage.set('window.bounds', win.getBounds());
   storage.set('window.isMaximized', win.isMaximized());
   storage.set('window.isFullScreen', win.isFullScreen());
 };
-
-let createdWindow: BrowserWindow | undefined;
 
 export const getWindow = () => createdWindow;
 

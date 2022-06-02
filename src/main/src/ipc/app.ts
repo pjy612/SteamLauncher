@@ -3,8 +3,8 @@ import { parse } from 'node:path';
 import MarkDownIt from 'markdown-it';
 import readme from '../../../../README.md?raw';
 import { author as packageAuthor } from '../../../../package.json';
-import notify from '../functions/notify';
-import { getWindow } from '../functions/window';
+import appNotify from '../functions/app-notify';
+import { getWindow } from '../functions/app-window';
 import execFile from '../node/exec-file-promisify';
 import paths from '../paths';
 import handlebars from '../instances/handlebars';
@@ -25,7 +25,7 @@ ipc.handle('app-get-description', () => markdownReadmeRendered);
 const appGetCopyright = `Copyright © ${new Date().getUTCFullYear()} ${packageAuthor.name}`;
 ipc.handle('app-get-copyright', () => appGetCopyright);
 
-ipc.on('app-notify', (_event, message: string) => notify(message));
+ipc.on('app-notify', (_event, message: string) => appNotify(message));
 
 ipc.handle('app-file-path-parse', (_event, filePath: string) => ({
   ...parse(filePath),

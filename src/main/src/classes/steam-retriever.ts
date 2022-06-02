@@ -1,37 +1,31 @@
 import type { AxiosError } from 'axios';
-import { webContents } from 'electron';
 import { readFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import axios from 'axios';
 import glob from 'fast-glob';
 import { ensureDir, pathExists, writeFile, writeJson } from 'fs-extra';
 import signVerify from '../bin/sign-verify';
-import download from '../functions/download';
-import notify from '../functions/notify';
+import appDownload from '../functions/app-download';
+import appNotify from '../functions/app-notify';
 import log from '../instances/log';
 import storage from '../instances/storage';
-import Game from './game';
+import { getWindow } from '../functions/app-window';
+import SteamGame from './steam-game';
 import SteamCloud from './steam-cloud';
 
 class SteamRetriever {
   private accountSteamWebApiKey: string = storage.get('account.steamWebApiKey');
-
   private accountLanguage: string = storage.get('account.language');
-
-  private ipcEvent = webContents.getFocusedWebContents();
-
+  private ipcEvent = getWindow()!;
   private gameData = {} as SteamRetrieverGameData;
-
   private readonly gameAppId: string;
-
   private readonly gamePaths;
-
   private readonly gameInputs;
 
   public constructor(inputs: StoreGameDataType) {
     this.gameInputs = inputs;
     this.gameAppId = inputs.appId;
-    this.gamePaths = Game.paths(inputs.appId);
+    this.gamePaths = SteamGame.paths(inputs.appId);
   }
 
   private console(content: AxiosError | Error | string, space = false) {
@@ -58,15 +52,15 @@ class SteamRetriever {
       log.error(`SteamRetriever: ${nContent.message}`);
     }
 
-    this.ipcEvent.send('console-add', typeof nContent === 'string' ? nContent : nContent.message, space);
+    this.ipcEvent.webContents.send('console-add', typeof nContent === 'string' ? nContent : nContent.message, space);
   }
 
   private consoleHide(isOk = false) {
-    this.ipcEvent.send('console-hide', isOk);
+    this.ipcEvent.webContents.send('console-hide', isOk);
   }
 
   private consoleShow() {
-    this.ipcEvent.send('console-show');
+    this.ipcEvent.webContents.send('console-show');
   }
 
   private async getAppType() {
@@ -167,7 +161,7 @@ class SteamRetriever {
     const url = `https://cdn.akamai.steamstatic.com/steam/apps/${this.gameAppId}/header.jpg?t=1581535048`;
 
     if (!(await pathExists(this.gamePaths.appIdHeaderPath))) {
-      await download(url, this.gamePaths.appIdHeaderPath).then(() => {
+      await appDownload(url, this.gamePaths.appIdHeaderPath).then(() => {
         this.console(`${url} was downloaded successfully!`);
       });
     } else {
@@ -207,7 +201,7 @@ class SteamRetriever {
         achievementsResult.push(achievement);
 
         if (!(await pathExists(iconNamePath))) {
-          await download(iconUrl, iconNamePath).then(() => {
+          await appDownload(iconUrl, iconNamePath).then(() => {
             this.console(`${iconName} was downloaded successfully!`, true);
           });
         } else {
@@ -215,7 +209,7 @@ class SteamRetriever {
         }
 
         if (!(await pathExists(iconGrayNamePath))) {
-          await download(iconGrayUrl, iconGrayNamePath).then(() => {
+          await appDownload(iconGrayUrl, iconGrayNamePath).then(() => {
             this.console(`${iconGrayName} was downloaded successfully!`, true);
           });
         } else {
@@ -302,11 +296,11 @@ class SteamRetriever {
 
     if (storage.has(`games.${inputs.appId}`)) {
       const oo = 'Game rebased successfully!';
-      notify(oo);
+      appNotify(oo);
       this.console(oo);
     } else {
       const oo = 'Game created successfully!';
-      notify(oo);
+      appNotify(oo);
       this.console(oo);
 
       await SteamCloud.restore(inputs);

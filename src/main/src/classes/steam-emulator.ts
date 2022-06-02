@@ -2,12 +2,12 @@ import { join } from 'node:path';
 import AdmZip from 'adm-zip';
 import axios from 'axios';
 import { ensureDir, pathExists } from 'fs-extra';
-import download from '../functions/download';
+import appDownload from '../functions/app-download';
 import log from '../instances/log';
 import storage from '../instances/storage';
 import paths from '../paths';
 
-class MrGoldBergEmulator {
+class SteamEmulator {
   public static async checkForUpdatesAndNotify() {
     const existsEmuFiles =
       (await pathExists(paths.emulator.steamClientFilePath)) &&
@@ -51,7 +51,7 @@ class MrGoldBergEmulator {
             downloadJobId as string
           })`
         );
-        await download(downloadUrl!, pathZip);
+        await appDownload(downloadUrl!, pathZip);
       } else {
         log.info(
           `MrGoldBergEmulator: I take the latest version of the emulator from the cache... (emulatorOnlineJobId: ${
@@ -77,4 +77,4 @@ class MrGoldBergEmulator {
   }
 }
 
-export default MrGoldBergEmulator;
+export default SteamEmulator;

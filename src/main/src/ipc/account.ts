@@ -2,18 +2,19 @@ import type { IpcMainEvent } from 'electron';
 import { ipcMain as ipc } from 'electron';
 import { customAlphabet } from 'nanoid/non-secure';
 import { fromIndividualAccountID } from 'steamid';
-import notify from '../functions/notify';
+import appModalsHide from '../functions/app-modals-hide';
+import appNotify from '../functions/app-notify';
 import storage from '../instances/storage';
 
-const functionAccountCreateEdit = (event: IpcMainEvent, inputs: StoreAccountType) => {
+const functionAccountCreateEdit = (_event: IpcMainEvent, inputs: StoreAccountType) => {
   if (!fromIndividualAccountID(inputs.steamId).isValidIndividual()) {
-    notify(`Invalid ${inputs.steamId} SteamId!`);
+    appNotify(`Invalid ${inputs.steamId} SteamId!`);
     return;
   }
 
-  notify(storage.has('account') ? 'Account edited successfully!' : 'Account created successfully!');
+  appNotify(storage.has('account') ? 'Account edited successfully!' : 'Account created successfully!');
   storage.set('account', inputs);
-  event.sender.send('app-modals-hide');
+  appModalsHide();
 };
 
 ipc.on('account-create', functionAccountCreateEdit);

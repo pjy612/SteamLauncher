@@ -2,7 +2,7 @@ import { app } from 'electron';
 import Conf from 'conf';
 import paths from '../paths';
 // eslint-disable-next-line import/no-cycle
-import { getWindow } from '../functions/window';
+import { getWindow } from '../functions/app-window';
 import migrations from './storage/migrations';
 
 const storage = new Conf<StoreType>({

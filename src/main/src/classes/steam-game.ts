@@ -1,14 +1,14 @@
-import { app, dialog, shell, webContents } from 'electron';
+import { app, dialog, shell } from 'electron';
 import fs from 'node:fs';
 import { join, basename } from 'node:path';
 import { pathExists, emptyDir, copy, writeFile, ensureDir, remove } from 'fs-extra';
 import ini from 'ini';
-import notify from '../functions/notify';
+import appNotify from '../functions/app-notify';
 import log from '../instances/log';
 import storage from '../instances/storage';
 import execFile from '../node/exec-file-promisify';
 import paths from '../paths';
-import MrGoldBergEmulator from './mr-goldberg-emulator';
+import SteamEmulator from './steam-emulator';
 // eslint-disable-next-line import/no-cycle
 import SteamCloud from './steam-cloud';
 
@@ -17,7 +17,7 @@ const isDirectoryEmpty = async (path: string) => {
   return files.length === 0;
 };
 
-class Game {
+class SteamGame {
   private static async clientLoader(dataGame: StoreGameDataType) {
     // loader
     const loaderConfig = {
@@ -39,7 +39,7 @@ class Game {
     await writeFile(paths.emulator.loaderConfigFilePath, ini.stringify(loaderConfig));
 
     // exec
-    notify(`Launch ${dataGame.name}`);
+    appNotify(`Launch ${dataGame.name}`);
 
     await execFile(paths.emulator.loaderFilePath);
   }
@@ -56,7 +56,7 @@ class Game {
     const dataGameForceAccountLanguage = dataGame.forceAccountLanguage;
     const dataGameForceAccountSteamId = dataGame.forceAccountSteamId;
     const dataGameForceAccountListenPort = dataGame.forceAccountListenPort;
-    const dataGamePaths = Game.paths(dataGameAppId);
+    const dataGamePaths = SteamGame.paths(dataGameAppId);
 
     const dataAccount = storage.get('account') as StoreAccountType;
 
@@ -64,13 +64,13 @@ class Game {
     const dataNetwork = dataSettings.network;
 
     if (withoutEmu) {
-      notify(`Launch normally ${dataGameName}`);
+      appNotify(`Launch normally ${dataGameName}`);
       await execFile(dataGameExecutableFilePath, dataGameCommandLine.split(' '));
       return;
     }
 
-    if (!(await MrGoldBergEmulator.checkForUpdatesAndNotify())) {
-      notify('Error with the verification of the emulator, check the logs.');
+    if (!(await SteamEmulator.checkForUpdatesAndNotify())) {
+      appNotify('Error with the verification of the emulator, check the logs.');
       return;
     }
 
@@ -139,7 +139,7 @@ class Game {
     }
 
     // clientLoader
-    await Game.clientLoader(dataGame);
+    await SteamGame.clientLoader(dataGame);
 
     // after the game is closed, I make backups of the saves
     await SteamCloud.backup(dataGame);
@@ -151,7 +151,7 @@ class Game {
       log.info(`Launched ${argumentAppId} from commands line...`);
       const data: StoreGameDataType | undefined = storage.get(`games.${argumentAppId}`);
       if (typeof data !== 'undefined') {
-        Game.launch(data).catch((error) => log.error((error as Error).message));
+        SteamGame.launch(data).catch((error) => log.error((error as Error).message));
       } else {
         dialog.showErrorBox('Error', `${argumentAppId} does not exist!`);
       }
@@ -164,7 +164,7 @@ class Game {
       const { name } = data[appId];
       delete data[appId];
       storage.set('games', data);
-      notify(`${name} removed successfully!`);
+      appNotify(`${name} removed successfully!`);
     }
   }
 
@@ -204,39 +204,39 @@ class Game {
     if (await pathExists(dataGame.executableFilePath)) {
       shell.showItemInFolder(dataGame.executableFilePath);
     } else {
-      notify('The game path does not exists!');
+      appNotify('The game path does not exists!');
     }
   }
 
   public static async openSaveLocation(appId: string) {
-    const gamePaths = Game.paths(appId);
+    const gamePaths = SteamGame.paths(appId);
     const savesPath = gamePaths.appIdSavesPath;
     const savesCloudPath = gamePaths.appIdSavesCloudPath;
     if ((await pathExists(savesCloudPath)) && !(await isDirectoryEmpty(savesCloudPath))) {
       await shell.openPath(savesCloudPath);
     } else {
-      notify('The game has no saves inside the cloud saves.');
+      appNotify('The game has no saves inside the cloud saves.');
     }
 
     if (await pathExists(savesPath)) {
       await shell.openPath(savesPath);
     } else {
-      notify('The game has no saves inside the emulator.');
+      appNotify('The game has no saves inside the emulator.');
     }
   }
 
   public static async openDataLocation(appId: string) {
-    const { appIdDataPath } = Game.paths(appId);
+    const { appIdDataPath } = SteamGame.paths(appId);
     if (await pathExists(appIdDataPath)) {
       await shell.openPath(appIdDataPath);
     } else {
-      notify('The game data does not exists!');
+      appNotify('The game data does not exists!');
     }
   }
 
   public static createDesktopShortcut(appId: string) {
     const data: StoreGameDataType = storage.get(`games.${appId}`);
-    const name = Game.removeSpecialChars(data.name);
+    const name = SteamGame.removeSpecialChars(data.name);
     const toPath = join(app.getPath('desktop'), `Launch ${name}.lnk`);
     const writeShortcutLink = shell.writeShortcutLink(toPath, {
       args: data.appId,
@@ -245,9 +245,9 @@ class Game {
       target: app.getPath('exe'),
     });
     if (writeShortcutLink) {
-      notify('Shortcut created successfully on desktop!');
+      appNotify('Shortcut created successfully on desktop!');
     } else {
-      notify('Unknown error with creating shortcut!');
+      appNotify('Unknown error with creating shortcut!');
     }
   }
 
@@ -256,4 +256,4 @@ class Game {
   }
 }
 
-export default Game;
+export default SteamGame;

@@ -1,19 +1,20 @@
 import type { IpcMainEvent } from 'electron';
 import { ipcMain as ipc, Menu } from 'electron';
-import Game from '../classes/game';
+import SteamGame from '../classes/steam-game';
 import SteamCloud from '../classes/steam-cloud';
 import SteamRetriever from '../classes/steam-retriever';
-import notify from '../functions/notify';
-import promptYesNo from '../functions/prompt-yes-no';
+import appModalsHide from '../functions/app-modals-hide';
+import appNotify from '../functions/app-notify';
+import appPromptYesNo from '../functions/app-prompt-yes-no';
 import storage from '../instances/storage';
 
-const functionGameAddEdit = async (event: IpcMainEvent, inputs: StoreGameDataType) => {
+const functionGameAddEdit = async (_event: IpcMainEvent, inputs: StoreGameDataType) => {
   const key = `games.${inputs.appId}`;
   const data: StoreGameDataType | undefined = storage.get(key);
   if (typeof data !== 'undefined') {
     storage.set(key, Object.assign(data, inputs));
-    notify('Game edited successfully!');
-    event.sender.send('app-modals-hide');
+    appNotify('Game edited successfully!');
+    appModalsHide();
   } else {
     const steamRetriever = new SteamRetriever(inputs);
     await steamRetriever.run();
@@ -23,7 +24,7 @@ const functionGameAddEdit = async (event: IpcMainEvent, inputs: StoreGameDataTyp
 ipc.on('game-add', functionGameAddEdit);
 ipc.on('game-edit', functionGameAddEdit);
 
-ipc.handle('game-paths', (_event, appId: string) => Game.paths(appId));
+ipc.handle('game-paths', (_event, appId: string) => SteamGame.paths(appId));
 
 ipc.handle('game-data', (_event, appId: string): StoreGameDataType | undefined => storage.get(`games.${appId}`));
 
@@ -35,13 +36,13 @@ ipc.on('game-contextmenu', (event, appId: string) => {
     {
       label: 'Launch',
       async click() {
-        await Game.launch(dataGame);
+        await SteamGame.launch(dataGame);
       },
     },
     {
       label: 'Launch without emulator',
       async click() {
-        await Game.launch(dataGame, true);
+        await SteamGame.launch(dataGame, true);
       },
     },
     {
@@ -50,7 +51,7 @@ ipc.on('game-contextmenu', (event, appId: string) => {
     {
       label: 'Create desktop shortcut',
       click() {
-        Game.createDesktopShortcut(appId);
+        SteamGame.createDesktopShortcut(appId);
       },
     },
     {
@@ -59,19 +60,19 @@ ipc.on('game-contextmenu', (event, appId: string) => {
     {
       label: 'Open file location',
       async click() {
-        await Game.openFileLocation(appId);
+        await SteamGame.openFileLocation(appId);
       },
     },
     {
       label: 'Open save location',
       async click() {
-        await Game.openSaveLocation(appId);
+        await SteamGame.openSaveLocation(appId);
       },
     },
     {
       label: 'Open data location',
       async click() {
-        await Game.openDataLocation(appId);
+        await SteamGame.openDataLocation(appId);
       },
     },
     {
@@ -80,7 +81,7 @@ ipc.on('game-contextmenu', (event, appId: string) => {
     {
       label: 'Rebase DLCs, Items, etc...',
       async click() {
-        if (await promptYesNo('Are you sure? The data will be overwritten!')) {
+        if (await appPromptYesNo('Are you sure? The data will be overwritten!')) {
           const steamRetriever = new SteamRetriever(dataGame);
           await steamRetriever.run();
         }
@@ -113,8 +114,8 @@ ipc.on('game-contextmenu', (event, appId: string) => {
     {
       label: 'Remove game',
       async click() {
-        if (await promptYesNo('Are you sure you want to remove the game?')) {
-          Game.remove(appId);
+        if (await appPromptYesNo('Are you sure you want to remove the game?')) {
+          SteamGame.remove(appId);
         }
       },
     },
