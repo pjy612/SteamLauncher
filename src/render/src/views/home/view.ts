@@ -1,4 +1,5 @@
 import router from '../../instances/router';
+import homeTemplate from './home.hbs?raw';
 
 class HomeView {
   private dom = $('');
@@ -18,9 +19,9 @@ class HomeView {
   }
 
   private async setDom() {
-    const { default: html } = await import('./home.hbs?raw');
-    const template = await window.api.app.handlebarsGenerate(html);
-    this.dom = $(template);
+    const generatedTemplate = await window.api.app.handlebarsGenerate(homeTemplate);
+
+    this.dom = $(generatedTemplate);
   }
 
   private async appendGamesList() {
@@ -28,39 +29,40 @@ class HomeView {
     const $gamesList = this.dom.find('#games-list .card-body').empty();
     if (typeof gamesData !== 'undefined' && Object.keys(gamesData).length > 0) {
       const $gamesGrid = $('<div class="games-grid"></div>');
-      $.each(gamesData, async (appId: string, values) => {
+      $.each(gamesData, async (appId: string, { name }) => {
         const paths = await window.api.game.getPaths(appId);
-        const header = paths.appIdHeaderPath;
-        const { name } = values;
-
-        const gameContainer = $(`<div class="game-container" data-appId="${appId}"></div>`).attr(
-          'title',
-          'To open the context menu click on the right mouse button!'
+        const headerPath = paths.appIdHeaderPath;
+        const gameContainer = $(
+          `<div data-appId="${appId}" title="To open the context menu click on the right mouse button!">
+          <img src="https://api.lorem.space/image/shoes?w=400&h=225" alt="${name}" />
+          <div class="card-footer text-truncate text-center">${name}</div>
+</div>`
         );
-        $('<img>').attr('src', header).appendTo(gameContainer);
-        $('<div>').text(name).appendTo(gameContainer);
 
-        $gamesGrid.append(gameContainer);
+        const aa = $('<div>').attr('class', 'game-container').append(gameContainer);
+
+        $gamesGrid.append(aa);
       });
       $gamesList.append($gamesGrid);
     } else {
-      $gamesList.html('<h1 class="text-center">You haven\'t entered any games yet!</h1>');
+      $gamesList.html('<div class="text-center">You have not added any games yet!</div>');
     }
   }
 
   private setEvents() {
     this.dom.on('contextmenu', '.game-container', (event) => {
-      const appId = $(event.currentTarget).attr('data-appId') as string;
+      const appId = $(event.currentTarget).find('> div').attr('data-appId') as string;
       window.api.game.openContextMenu(appId);
     });
 
-    this.dom.find('#file-drop').fileDrop((file) => {
+    this.dom.find('#game-drop').fileDrop((file) => {
       const searchParameters = `?${new URLSearchParams(file).toString()}`;
       router.navigate(`/game/add/${searchParameters}`);
     });
 
-    window.api.on('index-reload-games-list', () => {
-      void this.appendGamesList();
+    // TODO: IMPROVE THIS WHEN VALUES ARE AUTOMATICALLY CHANGED IN SETTINGS
+    window.api.on('index-reload-games-list', async () => {
+      await this.appendGamesList();
     });
   }
 

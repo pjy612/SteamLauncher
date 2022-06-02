@@ -1,18 +1,18 @@
 import { ipcMain as ipc } from 'electron';
 import { getWindow } from '../functions/window';
 
-ipc.handle('window-close', () => {
+ipc.on('window-close', () => {
   getWindow()?.close();
 });
 
-ipc.handle('window-minimize', () => {
+ipc.on('window-minimize', () => {
   getWindow()?.minimize();
 });
 
-ipc.handle('window-maximize', () => {
+ipc.on('window-maximize', () => {
   getWindow()?.maximize();
 });
 
-ipc.handle('window-restore', () => {
+ipc.on('window-restore', () => {
   getWindow()?.restore();
 });

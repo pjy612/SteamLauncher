@@ -1,3 +1,5 @@
+import aboutTemplate from './about.hbs?raw';
+
 class AboutView {
   private dom = $('');
 
@@ -16,14 +18,10 @@ class AboutView {
     const description = await window.api.app.getDescription();
     const copyright = await window.api.app.getCopyright();
 
-    const { default: html } = await import('./about.hbs?raw');
-    const template = await window.api.app.handlebarsGenerate(html, {
-      copyright,
-      description,
-      name,
-      version,
-    });
-    this.dom = $(template);
+    const contextTemplate = { name, version, description, copyright };
+    const generatedTemplate = await window.api.app.handlebarsGenerate(aboutTemplate, contextTemplate);
+
+    this.dom = $(generatedTemplate);
   }
 }
 

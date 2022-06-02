@@ -1,9 +1,10 @@
+import { app } from 'electron';
 import Conf from 'conf';
 import paths from '../paths';
 import migrations from './storage/migrations';
 
 const storage = new Conf<StoreType>({
-  configName: `config${import.meta.env.DEV ? '.dev' : ''}`,
+  configName: `config${app.isPackaged ? '' : '.dev'}`,
   cwd: paths.appDataPath,
   defaults: {
     settings: {

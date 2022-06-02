@@ -1,104 +1,151 @@
-<div class='modal fade' tabindex='-1'>
+<div class='modal fade'>
   <div class='modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg'>
-    <form class='modal-content' action='' data-sk-channel='settings-edit'>
+    <form class='modal-content text-bg-st-primary' action='' data-sk-channel='settings-edit'>
       <div class='modal-header'>
         <div class='modal-title'>
-          <span class='mdi mdi-cogs mdi-18px'></span>
-          <span class='ml-1'>Settings</span>
+          <span class='mdi mdi-cogs'></span>
+          <span class='ms-1'>Settings</span>
         </div>
-        <button type='button' class='btn-close' data-bs-dismiss='modal'>
-          <span class='mdi mdi-close'></span>
-        </button>
+        <button type='button' class='btn-close btn-close-white' data-bs-dismiss='modal'></button>
       </div>
       <div class='modal-body'>
-        <ul class="nav nav-tabs nav-justified mb-3">
-          <li class="nav-item">
-            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#general" type="button">General</button>
+        <ul class='nav nav-pills nav-justified'>
+          <li class='nav-item'>
+            <button
+              type='button'
+              class='nav-link active'
+              data-bs-toggle='tab'
+              data-bs-target='#general'
+            >General</button>
           </li>
-          <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#smartSteamLoader" type="button">SmartSteamLoader</button>
+          <li class='nav-item'>
+            <button
+              type='button'
+              class='nav-link'
+              data-bs-toggle='tab'
+              data-bs-target='#smartSteamLoader'
+            >SmartSteamLoader</button>
+          </li>
+          <li class='nav-item'>
+            <button type='button' class='nav-link' data-bs-toggle='tab' data-bs-target='#steamCloud'>SteamCloud</button>
           </li>
         </ul>
-        <div class="tab-content">
-          <div class="tab-pane fade show active" id="general">
-            <div class='card'>
-              <div class='card-title border-b border-solid border-primary'>
-                <span class='mdi mdi-cloud mdi-18px'></span>
-                <span class='ml-1'>SteamCloud</span>
-              </div>
-              <div class='card-body !p-2'>
-                <p class='text-xs mb-2 text-center'>
-                  To add support for game save backups, SteamLauncher uses an external tool which is
-                  <a href='https://github.com/mtkennerly/ludusavi' target='_blank' class='link'>ludusavi</a>
-                  and by entering you can set custom paths and change settings.<br /><b class='text-red-500'>Warning: Do not
-                    use backup and restore of saves directly from
-                    <a href='https://github.com/mtkennerly/ludusavi' target='_blank' class='link'>ludusavi</a>,
-                    SteamLauncher uses a different logic. When adding a custom path, set the name without special characters
-                    ("Homefront®: The Revolution" to "Homefront: The Revolution").</b>
-                </p>
-                <button type='button' class='btn btn-block btn-neutral uppercase' data-sk='open-ludusavi'>open ludusavi</button>
-              </div>
-            </div>
-            <div class='card'>
-              <div class='card-title'>
-                <span class='mdi mdi-lock-check mdi-18px'></span>
-                <span class='ml-1'>SSL Certificate Verification</span>
-              </div>
+        <div class='tab-content mt-2'>
+          <div class='tab-pane fade show active' id='general'>
+            <div class='card text-bg-st-primary'>
               <div class='card-body'>
-                <select class='form-select !rounded-none' name='httpsRejectUnauthorized' required>
-                  <option value='true' {{#if data.httpsRejectUnauthorized}}selected{{/if}}>Enabled</option>
-                  <option value='false' {{#unless data.httpsRejectUnauthorized}}selected{{/unless}}>Disabled</option>
-                </select>
+                <div class='form-floating'>
+                  <select
+                    id='floatingHttpsRejectUnauthorized'
+                    class='form-select text-bg-light'
+                    name='httpsRejectUnauthorized'
+                    required
+                  >
+                    {{#if settingsData.httpsRejectUnauthorized}}
+                      <option value='true' selected>Enabled</option>
+                      <option value='false'>Disabled</option>
+                    {{else}}
+                      <option value='true'>Enabled</option>
+                      <option value='false' selected>Disabled</option>
+                    {{/if}}
+                  </select>
+                  <label for='floatingHttpsRejectUnauthorized' class='text-dark'>
+                    <span class='mdi mdi-lock-check'></span>
+                    <span>SSL Certificate Verification [default. Enabled]</span>
+                  </label>
+                  <div class='form-text text-light text-center'>If you encounter the "unable to verify the first
+                    certificate" error, try disabling the ssl certificate verification.<br />If this value is changed,
+                    restart the app.</div>
+                </div>
               </div>
-              <div class='form-text text-center p-2'>If you encounter the "unable to verify the first certificate" error,
-                try disabling the ssl certificate verification. If this value is changed, restart the app.</div>
             </div>
           </div>
-          <div class="tab-pane fade" id="smartSteamLoader">
-            <div class='card'>
-              <div class='card-title'>
-                <span class='mdi mdi-lock-check mdi-18px'></span>
-                <span class='ml-1'>SSE Persist</span>
-              </div>
+          <div class='tab-pane fade' id='smartSteamLoader'>
+            <div class='card text-bg-st-primary'>
               <div class='card-body'>
-                <select class='form-select !rounded-none' name='ssePersist' required>
-                  <option value='true' {{#if data.ssePersist}}selected{{/if}}>Enabled</option>
-                  <option value='false' {{#unless data.ssePersist}}selected{{/unless}}>Disabled</option>
-                </select>
+                <div class='form-floating'>
+                  <select id='floatingSsePersist' class='form-select text-bg-light' name='ssePersist' required>
+                    {{#if settingsData.ssePersist}}
+                      <option value='true' selected>Enabled</option>
+                      <option value='false'>Disabled</option>
+                    {{else}}
+                      <option value='true'>Enabled</option>
+                      <option value='false' selected>Disabled</option>
+                    {{/if}}
+                  </select>
+                  <label for='floatingSsePersist' class='text-dark'>
+                    <span class='mdi mdi-lock-check'></span>
+                    <span>SSE Persist [default. Disabled]</span>
+                  </label>
+                  <div class='form-text text-light text-center'>Don't exit the loader. Required for games that uses
+                    batch file (.bat) or which launch multiple executables.</div>
+                </div>
+                <div class='form-floating mt-2'>
+                  <select id='floatingSseInjectDll' class='form-select text-bg-light' name='sseInjectDll' required>
+                    {{#if settingsData.sseInjectDll}}
+                      <option value='true' selected>Enabled</option>
+                      <option value='false'>Disabled</option>
+                    {{else}}
+                      <option value='true'>Enabled</option>
+                      <option value='false' selected>Disabled</option>
+                    {{/if}}
+                  </select>
+                  <label for='floatingSseInjectDll' class='text-dark'>
+                    <span class='mdi mdi-lock-check'></span>
+                    <span>SSE Inject Dll [default. Disabled]</span>
+                  </label>
+                  <div class='form-text text-light text-center'>Inject steamclient(64).dll module into process instead
+                    of waiting for game to load it itself. If the game uses steam.dll you might need this to be turned
+                    on.</div>
+                </div>
+                <div class='form-floating mt-2'>
+                  <select
+                    id='floatingSseParanoidMode'
+                    class='form-select text-bg-light'
+                    name='sseParanoidMode'
+                    required
+                  >
+                    {{#if settingsData.sseParanoidMode}}
+                      <option value='true' selected>Enabled</option>
+                      <option value='false'>Disabled</option>
+                    {{else}}
+                      <option value='true'>Enabled</option>
+                      <option value='false' selected>Disabled</option>
+                    {{/if}}
+                  </select>
+                  <label for='floatingSseParanoidMode' class='text-dark'>
+                    <span class='mdi mdi-lock-check'></span>
+                    <span>SSE Paranoid Mode [default. Disabled]</span>
+                  </label>
+                  <div class='form-text text-light text-center'>Warn you first if the steam client process is running
+                    before launching the game.</div>
+                </div>
               </div>
-              <div class='form-text text-center p-2'>Don't exit the loader. Required for games that uses batch file (.bat) or which launch multiple executables.</div>
             </div>
-            <div class='card'>
-              <div class='card-title'>
-                <span class='mdi mdi-lock-check mdi-18px'></span>
-                <span class='ml-1'>SSE Inject Dll</span>
-              </div>
+          </div>
+          <div class='tab-pane fade' id='steamCloud'>
+            <div class='card text-bg-st-primary'>
               <div class='card-body'>
-                <select class='form-select !rounded-none' name='sseInjectDll' required>
-                  <option value='true' {{#if data.sseInjectDll}}selected{{/if}}>Enabled</option>
-                  <option value='false' {{#unless data.sseInjectDll}}selected{{/unless}}>Disabled</option>
-                </select>
+                <div class='text-center mb-2'>
+                  To add support for game save backups, SteamLauncher uses an external tool which is
+                  <a href='https://github.com/mtkennerly/ludusavi' target='_blank'>ludusavi</a>
+                  and by entering you can set custom paths and change settings.
+                </div>
+                <div class='alert alert-danger'>
+                  Do not use backup and restore of saves directly from
+                  <a href='https://github.com/mtkennerly/ludusavi' target='_blank'>ludusavi</a>, SteamLauncher uses a
+                  different logic. When adding a custom path, set the name without special characters ("Homefront®: The
+                  Revolution" to "Homefront: The Revolution").
+                </div>
+                <button type='button' class='btn btn-primary btn-sm text-uppercase w-100' data-sk='open-ludusavi'>open
+                  ludusavi</button>
               </div>
-              <div class='form-text text-center p-2'>Inject steamclient(64).dll module into process instead of waiting for game to load it itself. If the game uses steam.dll you might need this to be turned on.</div>
-            </div>
-            <div class='card'>
-              <div class='card-title'>
-                <span class='mdi mdi-lock-check mdi-18px'></span>
-                <span class='ml-1'>SSE Paranoid Mode</span>
-              </div>
-              <div class='card-body'>
-                <select class='form-select !rounded-none' name='sseParanoidMode' required>
-                  <option value='true' {{#if data.sseParanoidMode}}selected{{/if}}>Enabled</option>
-                  <option value='false' {{#unless data.sseParanoidMode}}selected{{/unless}}>Disabled</option>
-                </select>
-              </div>
-              <div class='form-text text-center p-2'>Warn you first if the steam client process is running before launching the game.</div>
             </div>
           </div>
         </div>
       </div>
       <div class='modal-footer'>
-        <button type='submit' class='btn btn-block btn-green'>Save</button>
+        <button type='submit' class='btn btn-success w-100'>Save</button>
       </div>
     </form>
   </div>

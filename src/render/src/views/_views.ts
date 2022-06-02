@@ -4,14 +4,17 @@ import AccountView from './account/view';
 import GameView from './game/view';
 import HomeView from './home/view';
 import SettingsView from './settings/view';
+import NavPartialView from './partials/nav/view';
 
 const homeController = new HomeView();
+const navPartialController = new NavPartialView();
 $(async () => {
+  await navPartialController.show();
   await homeController.show();
 });
 
 router.on('/', () => {
-  // await homeController.show();
+  // nada
 });
 
 const aboutController = new AboutView();

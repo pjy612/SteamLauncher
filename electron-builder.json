@@ -5,7 +5,7 @@
     "buildResources": "./build/resources/",
     "output": "./build/release/${version}/"
   },
-  "files": ["./src/*/dist/**/*", "./build/resources/icon.ico"],
+  "files": ["./src/*/dist/**/*"],
   "extraResources": [
     {
       "from": "bin",

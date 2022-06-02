@@ -9,22 +9,23 @@ import execFile from '../node/exec-file-promisify';
 import paths from '../paths';
 import handlebars from '../instances/handlebars';
 
+const appGetVersion = app.getVersion();
+ipc.handle('app-get-version', () => appGetVersion);
+
+const appGetName = app.getName();
+ipc.handle('app-get-name', () => appGetName);
+
 const markdown = new MarkDownIt({
   html: true,
   linkify: true,
 });
+const markdownReadmeRendered = markdown.render(readme);
+ipc.handle('app-get-description', () => markdownReadmeRendered);
 
-ipc.handle('app-get-version', () => app.getVersion());
+const appGetCopyright = `Copyright © ${new Date().getUTCFullYear()} ${packageAuthor.name}`;
+ipc.handle('app-get-copyright', () => appGetCopyright);
 
-ipc.handle('app-get-name', () => app.getName());
-
-ipc.handle('app-get-description', () => markdown.render(readme));
-
-ipc.handle('app-get-copyright', () => `Copyright © ${new Date().getUTCFullYear()} ${packageAuthor.name}`);
-
-ipc.handle('app-notify', (_event, message: string) => {
-  notify(message);
-});
+ipc.on('app-notify', (_event, message: string) => notify(message));
 
 ipc.handle('app-file-path-parse', (_event, filePath: string) => ({
   ...parse(filePath),
@@ -43,7 +44,7 @@ ipc.handle('app-chose-file', () =>
   })
 );
 
-ipc.handle('app-open-ludusavi', async () => {
+ipc.on('app-open-ludusavi', async () => {
   await execFile(paths.files.ludusaviFilePath);
 });
 

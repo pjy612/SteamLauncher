@@ -1,0 +1,9 @@
+#main {
+  @extend .overflow-auto;
+
+  & > div {
+    @extend .container;
+    @extend .mx-auto;
+    @extend .py-3;
+  }
+}

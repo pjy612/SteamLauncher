@@ -1,0 +1,16 @@
+.modal {
+  --bs-modal-margin: 3.5rem;
+}
+
+.modal-content {
+  &.text-bg-st-primary {
+    .modal-footer,
+    .modal-header {
+      @extend .border-st-secondary;
+    }
+
+    .modal-body {
+      @extend .bg-st-secondary;
+    }
+  }
+}

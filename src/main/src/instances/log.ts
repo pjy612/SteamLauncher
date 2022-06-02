@@ -24,7 +24,7 @@ const log = createLogger({
   ],
 });
 
-if (import.meta.env.DEV) {
+if (!app.isPackaged) {
   log.add(
     new transports.Console({
       format: format.combine(format.colorize(), format.timestamp({ format: logFormatTimestamp }), logFormatString),

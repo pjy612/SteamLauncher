@@ -18,7 +18,7 @@
     "url": "https://github.com/Sak32009/SteamLauncher.git"
   },
   "engines": {
-    "node": ">=v16.15.0"
+    "node": ">=v16.15.1"
   },
   "os": [
     "win32"
@@ -31,12 +31,16 @@
   "scripts": {
     "start-app": "yarn electron .",
     "dev-server": "yarn concurrently 'yarn:dev-server:*'",
+    "prod-server": "yarn concurrently 'yarn:prod-server:*'",
     "release": "yarn run-s 'release:*'",
     "portable": "yarn run-s 'portable:*'",
     "bundle": "yarn run-s 'bundle:*'",
     "dev-server:main": "yarn vite build --mode development -w -c ./src/main/vite.config.ts",
     "dev-server:preload": "yarn vite build --mode development -w -c ./src/preload/vite.config.ts",
     "dev-server:render": "yarn vite --mode development -c ./src/render/vite.config.ts",
+    "prod-server:main": "yarn vite build -w -c ./src/main/vite.config.ts",
+    "prod-server:preload": "yarn vite build -w -c ./src/preload/vite.config.ts",
+    "prod-server:render": "yarn vite build -w -c ./src/render/vite.config.ts",
     "bundle:main": "yarn vite build -c ./src/main/vite.config.ts",
     "bundle:preload": "yarn vite build -c ./src/preload/vite.config.ts",
     "bundle:render": "yarn vite build -c ./src/render/vite.config.ts",
@@ -48,43 +52,35 @@
     "postinstall": "yarn electron-builder install-app-deps"
   },
   "devDependencies": {
-    "@fontsource/cascadia-code": "^4.2.1",
-    "@fontsource/oswald": "^4.5.7",
-    "@mdi/font": "^6.6.96",
-    "@popperjs/core": "^2.11.5",
-    "@tailwindcss/aspect-ratio": "^0.4.0",
-    "@tailwindcss/forms": "^0.5.1",
-    "@tailwindcss/line-clamp": "^0.4.0",
-    "@tailwindcss/typography": "^0.5.2",
+    "@mdi/font": "^6.7.96",
     "@types/adm-zip": "^0.5.0",
-    "@types/bootstrap": "^5.1.10",
+    "@types/bootstrap": "^5.1.12",
     "@types/ini": "^1.3.31",
     "@types/jquery": "^3.5.14",
     "@types/markdown-it": "^12.2.3",
-    "@types/node": "^17.0.31",
+    "@types/node": "^17.0.38",
     "@types/steamid": "^2.0.1",
-    "@types/tailwindcss": "^3.0.10",
     "autoprefixer": "^10.4.7",
-    "bootstrap": "^5.1.3",
-    "concurrently": "^7.1.0",
-    "electron": "^18.2.0",
-    "electron-builder": "^23.0.8",
-    "eslint": "^8.14.0",
+    "bootstrap": "5.2.0-beta1",
+    "concurrently": "^7.2.1",
+    "electron": "^19.0.2",
+    "electron-builder": "^23.1.0",
+    "eslint": "^8.16.0",
     "eslint-config-sak32009": "https://github.com/sak32009/eslint-config-sak32009.git#commit=a17f3a4548d0d136aeacec25c4f8a2e99c054c1c",
     "github-markdown-css": "^5.1.0",
     "jquery": "^3.6.0",
     "npm-run-all": "^4.1.5",
-    "postcss": "^8.4.13",
+    "postcss": "^8.4.14",
     "prettier": "^2.6.2",
-    "tailwindcss": "^3.0.24",
-    "typescript": "^4.6.4",
-    "vite": "^2.9.7"
+    "sass": "^1.52.1",
+    "typescript": "^4.7.2",
+    "vite": "^2.9.9"
   },
   "dependencies": {
     "adm-zip": "^0.5.9",
     "axios": "^0.27.2",
     "conf": "^10.1.2",
-    "electron-updater": "^5.0.3",
+    "electron-updater": "^5.0.5",
     "fast-glob": "^3.2.11",
     "fs-extra": "^10.1.0",
     "handlebars": "^4.7.7",
@@ -95,5 +91,5 @@
     "steamid": "^2.0.0",
     "winston": "^3.7.2"
   },
-  "packageManager": "yarn@3.2.0"
+  "packageManager": "yarn@3.2.1"
 }

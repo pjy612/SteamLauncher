@@ -1,9 +1,0 @@
-@layer components {
-  main {
-    @apply overflow-y-auto px-2;
-
-    & > .container {
-      @apply mx-auto;
-    }
-  }
-}

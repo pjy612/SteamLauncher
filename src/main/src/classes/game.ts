@@ -145,13 +145,13 @@ class Game {
     await SteamCloud.backup(dataGame);
   }
 
-  public static async launchFromCommandsLine(appCommandsLine: string[]) {
+  public static launchFromCommandsLine(appCommandsLine: string[]) {
     if (appCommandsLine.length > 0) {
       const { 0: argumentAppId } = appCommandsLine;
       log.info(`Launched ${argumentAppId} from commands line...`);
-      const data: StoreGameDataType = storage.get(`games.${argumentAppId}`);
+      const data: StoreGameDataType | undefined = storage.get(`games.${argumentAppId}`);
       if (typeof data !== 'undefined') {
-        await Game.launch(data);
+        Game.launch(data).catch((error) => log.error((error as Error).message));
       } else {
         dialog.showErrorBox('Error', `${argumentAppId} does not exist!`);
       }

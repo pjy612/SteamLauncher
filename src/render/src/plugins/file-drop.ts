@@ -34,13 +34,13 @@ $(() => {
               if (allowedExtensions.has(parsedFilePath.ext)) {
                 callback.call(this, parsedFilePath);
               } else {
-                window.api.app.notify("The file extension isn't allowed!");
+                window.api.app.notify('The file extension is not allowed!');
               }
             } else {
-              window.api.app.notify("The dropped item isn't a valid file!");
+              window.api.app.notify('The dropped item is not a valid file!');
             }
           } else {
-            window.api.app.notify("Isn't possible to add more than one file!");
+            window.api.app.notify('Is not possible to add more than one file!');
           }
         } else {
           window.api.app.notify('filedrop: unknown error');

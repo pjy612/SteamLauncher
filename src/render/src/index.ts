@@ -1,12 +1,9 @@
-import './styles/components.css';
+import './styles/bootstrap.scss';
 
 import './instances/jquery';
-import 'bootstrap/js/dist/modal';
-import 'bootstrap/js/dist/tab';
+import './instances/bootstrap';
 
-import './plugins/file-drop';
-import './plugins/chose-directory-file';
-
-import './ipc/_ipc';
+import './ipcs/_ipcs';
+import './plugins/_plugins';
 import './events/_events';
 import './views/_views';

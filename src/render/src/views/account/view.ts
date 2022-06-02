@@ -1,4 +1,5 @@
 import allowedLanguages from '../../configs/allowed-languages';
+import accountTemplate from './account.hbs?raw';
 
 class AccountView {
   private dom = $('');
@@ -13,28 +14,26 @@ class AccountView {
   }
 
   private async setDom() {
-    const view = {
+    const contextTemplate = {
       isEditMode: this.isEditMode,
       allowedLanguages,
     };
+    let accountData;
 
     if (this.isEditMode) {
-      const accountData = await window.api.account.getData();
-      Object.assign(view, {
-        data: accountData,
-      });
+      accountData = await window.api.account.getData();
     } else {
       const steamId = await window.api.account.getRandomSteamId();
-      Object.assign(view, {
-        data: {
-          steamId,
-        },
-      });
+      accountData = { steamId };
     }
 
-    const { default: html } = await import('./account.hbs?raw');
-    const template = await window.api.app.handlebarsGenerate(html, view);
-    this.dom = $(template);
+    Object.assign(contextTemplate, {
+      accountData,
+    });
+
+    const generatedTemplate = await window.api.app.handlebarsGenerate(accountTemplate, contextTemplate);
+
+    this.dom = $(generatedTemplate);
   }
 
   private appendDom() {

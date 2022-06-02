@@ -23,15 +23,16 @@ export const openUrlExternallyWindow = (url: string) => {
 };
 
 export const createWindow = async () => {
+  const widthWindow = 1000 + 10;
+  const heightWindow = 720 + 10;
+
   createdWindow = new BrowserWindow({
-    backgroundColor: '#161920',
-    frame: import.meta.env.DEV,
-    height: 720,
-    icon: paths.files.iconFilePath,
-    minHeight: 720,
-    minWidth: 800,
+    width: widthWindow,
+    minWidth: widthWindow,
+    height: heightWindow,
+    minHeight: heightWindow,
     show: false,
-    title: app.getName(),
+    frame: import.meta.env.DEV,
     webPreferences: {
       // SECURITY: disable devtools in production mode
       devTools: import.meta.env.DEV,
@@ -39,7 +40,6 @@ export const createWindow = async () => {
       // NOTE: local files are not displayed in developer mode
       webSecurity: import.meta.env.PROD,
     },
-    width: 800,
   });
 
   createdWindow.on('ready-to-show', () => {

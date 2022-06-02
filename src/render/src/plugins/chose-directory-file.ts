@@ -1,16 +1,4 @@
-import type { OpenDialogReturnValue } from 'electron';
-
-const fill = (dom: JQuery, values: OpenDialogReturnValue) => {
-  const { filePaths } = values;
-  if (typeof filePaths !== 'undefined') {
-    const inputGroup = dom.closest('.input-group');
-    const input = inputGroup.find('.form-control');
-    input.val(filePaths[0]);
-  }
-};
-
 const choseDirectory = () => window.api.app.choseDirectory();
-
 const choseFile = () => window.api.app.choseFile();
 
 $(() => {
@@ -35,6 +23,12 @@ $(() => {
       }
     }
 
-    fill(dom, chosed);
+    const { canceled, filePaths } = chosed;
+    if (!canceled) {
+      const path = filePaths[0];
+      dom.closest('.input-group').find('.form-control').val(path);
+    }
   });
 });
+
+export {};

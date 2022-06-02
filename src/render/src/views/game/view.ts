@@ -1,5 +1,6 @@
 import allowedLanguages from '../../configs/allowed-languages';
 import router from '../../instances/router';
+import gameTemplate from './game.hbs?raw';
 
 class GameView {
   private dom = $('');
@@ -14,7 +15,7 @@ class GameView {
   }
 
   private async setDom() {
-    const view = {
+    const contextTemplate = {
       isEditMode: this.isEditMode,
       allowedLanguages,
     };
@@ -24,18 +25,17 @@ class GameView {
       const appId = getCurrentLocationInfo?.data?.appId;
       const gameData = await window.api.game.getData(appId!);
 
-      Object.assign(view, {
-        data: gameData,
+      Object.assign(contextTemplate, {
+        gameData,
       });
     } else {
-      Object.assign(view, {
-        parameters: getCurrentLocationInfo?.search,
+      Object.assign(contextTemplate, {
+        gameDataFromExe: getCurrentLocationInfo?.search,
       });
     }
 
-    const { default: html } = await import('./game.hbs?raw');
-    const template = await window.api.app.handlebarsGenerate(html, view);
-    this.dom = $(template);
+    const generatedTemplate = await window.api.app.handlebarsGenerate(gameTemplate, contextTemplate);
+    this.dom = $(generatedTemplate);
   }
 
   private appendDom() {

@@ -1,0 +1,16 @@
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  @extend .mx-3;
+  @extend .bg-primary;
+
+  &:hover {
+    background-color: var(--st-scrollbar-hover-color) !important;
+  }
+}
+
+::-webkit-scrollbar-track {
+  @extend .bg-transparent;
+}

@@ -1,3 +1,4 @@
+// TODO: IMPROVE
 /* eslint-disable no-console */
 const iteratorToObject = (nn: URLSearchParams) => {
   const b: Record<string, string> = {};

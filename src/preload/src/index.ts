@@ -35,17 +35,15 @@ contextBridge.exposeInMainWorld('api', {
     async getVersion() {
       return ipc.invoke('app-get-version');
     },
-    async openLudusavi() {
-      return ipc.invoke('app-open-ludusavi');
+    openLudusavi() {
+      ipc.send('app-open-ludusavi');
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async handlebarsGenerate(template: string, context: Record<string, any> = {}) {
       return ipc.invoke('app-handlebars-generate', template, context);
     },
     notify(message: string) {
-      ipc.invoke('app-notify', message).catch(() => {
-        //
-      });
+      ipc.send('app-notify', message);
     },
   },
   game: {
@@ -53,7 +51,7 @@ contextBridge.exposeInMainWorld('api', {
       return ipc.invoke('game-data', appId);
     },
     async getPaths(appId: string) {
-      return ipc.invoke('game-paths-by-appid', appId);
+      return ipc.invoke('game-paths', appId);
     },
     openContextMenu(appId: string) {
       ipc.send('game-contextmenu', appId);
@@ -85,17 +83,17 @@ contextBridge.exposeInMainWorld('api', {
     },
   },
   window: {
-    async close() {
-      return ipc.invoke('window-close');
+    close() {
+      ipc.send('window-close');
     },
-    async maximize() {
-      return ipc.invoke('window-maximize');
+    maximize() {
+      ipc.send('window-maximize');
     },
-    async minimize() {
-      return ipc.invoke('window-minimize');
+    minimize() {
+      ipc.send('window-minimize');
     },
-    async restore() {
-      return ipc.invoke('window-restore');
+    restore() {
+      ipc.send('window-restore');
     },
   },
 });

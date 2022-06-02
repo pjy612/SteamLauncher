@@ -13,7 +13,7 @@ const functionGameAddEdit = async (event: IpcMainEvent, inputs: StoreGameDataTyp
   if (typeof data !== 'undefined') {
     storage.set(key, Object.assign(data, inputs));
     notify('Game edited successfully!');
-    event.sender.send('modal-hide');
+    event.sender.send('app-modals-hide');
   } else {
     const steamRetriever = new SteamRetriever(inputs);
     await steamRetriever.run();
@@ -23,7 +23,7 @@ const functionGameAddEdit = async (event: IpcMainEvent, inputs: StoreGameDataTyp
 ipc.on('game-add', functionGameAddEdit);
 ipc.on('game-edit', functionGameAddEdit);
 
-ipc.handle('game-paths-by-appid', (_event, appId: string) => Game.paths(appId));
+ipc.handle('game-paths', (_event, appId: string) => Game.paths(appId));
 
 ipc.handle('game-data', (_event, appId: string): StoreGameDataType | undefined => storage.get(`games.${appId}`));
 
@@ -107,7 +107,7 @@ ipc.on('game-contextmenu', (event, appId: string) => {
     {
       label: 'Edit game',
       click() {
-        event.sender.send('app-navigate-to', `/game/edit/${appId}`);
+        event.sender.send('app-navigate', `/game/edit/${appId}`);
       },
     },
     {

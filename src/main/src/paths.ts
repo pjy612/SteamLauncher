@@ -43,7 +43,6 @@ const paths = {
     savesSettingsUserSteamIdFilePath: join(appEmuSteamSettingsSaves, 'user_steam_id.txt'),
   },
   files: {
-    iconFilePath: join(appResourceAsarPath, '/build/resources/icon.ico'),
     preloadFilePath: join(appResourceAsarPath, '/src/preload/dist/preload.cjs.js'),
     renderFilePath: join(appResourceAsarPath, '/src/render/dist/index.html'),
     signToolFilePath: join(appBinPath, 'win/signtool/signtool.exe'),

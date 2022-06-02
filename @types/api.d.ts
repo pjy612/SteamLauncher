@@ -32,7 +32,7 @@ declare global {
         getDescription: () => Promise<string>;
         getName: () => Promise<string>;
         getVersion: () => Promise<string>;
-        openLudusavi: () => Promise<void>;
+        openLudusavi: () => void;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         handlebarsGenerate: (template: string, context: Record<string, any> = {}) => Promise<string>;
         notify: (message: string) => void;
@@ -53,15 +53,15 @@ declare global {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       send: (channel: string, ...arguments_: any[]) => void;
       settings: {
-        getData: () => Promise<StoreSettingsType | undefined>;
-        getNetworkStatus: () => Promise<boolean | undefined>;
-        setNetworkStatus: (to: boolean) => void;
+        getData: () => Promise<StoreSettingsType>;
+        getNetworkStatus: () => Promise<string>;
+        setNetworkStatus: (to: string) => void;
       };
       window: {
-        close: () => Promise<void>;
-        maximize: () => Promise<void>;
-        minimize: () => Promise<void>;
-        restore: () => Promise<void>;
+        close: () => void;
+        maximize: () => void;
+        minimize: () => void;
+        restore: () => void;
       };
     };
   }

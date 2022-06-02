@@ -1,83 +1,142 @@
-<div class="modal fade" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-    <form class="modal-content" action="" data-sk-channel="account-create">
-      <div class="modal-header">
-        <div class="modal-title">
+<div class='modal fade'>
+  <div class='modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg'>
+    <form class='modal-content text-bg-st-primary' action='' data-sk-channel='account-create'>
+      <div class='modal-header'>
+        <div class='modal-title'>
           {{#if isEditMode}}
-          <span class="mdi mdi-account-edit mdi-18px"></span>
-          <span class="ml-1">Edit account</span>
+            <span class='mdi mdi-account-edit'></span>
+            <span class='ms-1'>Edit Account</span>
           {{else}}
-          <span class="mdi mdi-account-plus mdi-18px"></span>
-          <span class="ml-1">Create account</span>
+            <span class='mdi mdi-account-plus'></span>
+            <span class='ms-1'>Create Account</span>
           {{/if}}
         </div>
         {{#if isEditMode}}
-        <button type="button" class="btn-close" data-bs-dismiss="modal">
-          <span class="mdi mdi-close"></span>
-        </button>
+          <button type='button' class='btn-close btn-close-white' data-bs-dismiss='modal'></button>
         {{/if}}
       </div>
-      <div class="modal-body">
+      <div class='modal-body'>
         {{#unless isEditMode}}
-        <div class="text-center mb-3">Before proceeding, please create your account!</div>
+          <div class='alert alert-info d-flex align-items-center p-1'>
+            <span class='mdi mdi-information'></span>
+            <span class='ms-1'>Before proceeding, please create your account!</span>
+          </div>
         {{/unless}}
-        <div class="card">
-          <div class="card-title">
-            <span class="mdi mdi-badge-account mdi-18px"></span>
-            <span class="ml-1">Name</span>
-          </div>
-          <div class="card-body">
-            <input type="text" class="form-control" name="name" value="{{#if isEditMode}}{{data.name}}{{else}}Player#{{data.steamId}}{{/if}}" placeholder="example: Player" required />
-          </div>
+        <div class='form-floating'>
+          {{#if isEditMode}}
+            <input
+              type='text'
+              id='floatingName'
+              class='form-control text-bg-light'
+              name='name'
+              placeholder='...'
+              value='{{accountData.name}}'
+              required
+            />
+          {{else}}
+            <input
+              type='text'
+              id='floatingName'
+              class='form-control text-bg-light'
+              name='name'
+              placeholder='...'
+              value='Player#{{accountData.steamId}}'
+              required
+            />
+          {{/if}}
+          <label for='floatingName' class='text-dark'>
+            <span class='mdi mdi-badge-account'></span>
+            <span>Name [ex. Player#{{accountData.steamId}}]</span>
+          </label>
         </div>
-        <div class="card">
-          <div class="card-title">
-            <span class="mdi mdi-translate mdi-18px"></span>
-            <span class="ml-1">Language</span>
-          </div>
-          <div class="card-body">
-            <select class="form-select" name="language" required>
-              {{#each allowedLanguages}}
-              {{#if (eq ../data.language @key)}}
-              <option value="{{@key}}" selected>{{this}}</option>
+        <div class='form-floating mt-2'>
+          <select id='floatingLanguage' class='form-select text-bg-light' name='language' required>
+            {{#each allowedLanguages}}
+              <!-- NOTE: remove ../ because glimmer doesn't support it when format with prettier -->
+              {{#if (eq ../accountData.language @key)}}
+                <option value='{{@key}}' selected>{{this}}</option>
               {{else}}
-              <option value="{{@key}}">{{this}}</option>
+                <option value='{{@key}}'>{{this}}</option>
               {{/if}}
-              {{/each}}
-            </select>
-          </div>
+            {{/each}}
+          </select>
+          <label for='floatingLanguage' class='text-dark'>
+            <span class='mdi mdi-translate'></span>
+            <span>Language</span>
+          </label>
         </div>
-        <div class="card">
-          <div class="card-title">
-            <span class="mdi mdi-identifier mdi-18px"></span>
-            <span class="ml-1">SteamID</span>
-          </div>
-          <div class="card-body">
-            <input type="number" class="form-control" name="steamId" value="{{data.steamId}}" placeholder="example: 76596712918662909" required />
-          </div>
+        <div class='form-floating mt-2'>
+          <input
+            type='number'
+            id='floatingSteamId'
+            class='form-control text-bg-light'
+            name='steamId'
+            placeholder='...'
+            value='{{accountData.steamId}}'
+            required
+          />
+          <label for='floatingSteamId' class='text-dark'>
+            <span class='mdi mdi-identifier'></span>
+            <span>SteamID [ex. 76596712918662909]</span>
+          </label>
         </div>
-        <div class="card">
-          <div class="card-title">
-            <span class="mdi mdi-ip mdi-18px"></span>
-            <span class="ml-1">Listen Port</span>
-          </div>
-          <div class="card-body">
-            <input type="number" class="form-control" name="listenPort" value="{{#if isEditMode}}{{data.listenPort}}{{else}}47584{{/if}}" placeholder="example: 47584" required />
-          </div>
+        <div class='form-floating mt-2'>
+          {{#if isEditMode}}
+            <input
+              type='number'
+              id='floatingListenPort'
+              class='form-control text-bg-light'
+              name='listenPort'
+              placeholder='...'
+              value='{{accountData.listenPort}}'
+              required
+            />
+          {{else}}
+            <input
+              type='number'
+              id='floatingListenPort'
+              class='form-control text-bg-light'
+              name='listenPort'
+              placeholder='...'
+              value='47584'
+              required
+            />
+          {{/if}}
+          <label for='floatingListenPort' class='text-dark'>
+            <span class='mdi mdi-ip'></span>
+            <span>Listen Port [ex. 47584]</span>
+          </label>
         </div>
-        <div class="card">
-          <div class="card-title">
-            <span class="mdi mdi-key mdi-18px"></span>
-            <span class="ml-1">Steam WebAPI Key</span>
-          </div>
-          <div class="card-body">
-            <input type="text" class="form-control !rounded-none" name="steamWebApiKey" placeholder="..." value="{{#if isEditMode}}{{data.steamWebApiKey}}{{/if}}" />
-          </div>
-          <div class="form-text text-center p-2">To get achievements, stats and items get WebApi Key from <a class="link" href="https://steamcommunity.com/dev/apikey" target="_blank">here</a>. If no WebAPI Key is given, it will only get games infos and dlcs.</div>
+        <div class='form-floating mt-2'>
+          {{#if isEditMode}}
+            <input
+              type='text'
+              id='floatingSteamWebApiKey'
+              class='form-control text-bg-light'
+              name='steamWebApiKey'
+              placeholder='...'
+              value='{{accountData.steamWebApiKey}}'
+            />
+          {{else}}
+            <input
+              type='text'
+              id='floatingSteamWebApiKey'
+              class='form-control text-bg-light'
+              name='steamWebApiKey'
+              placeholder='...'
+            />
+          {{/if}}
+          <label for='floatingSteamWebApiKey' class='text-dark'>
+            <span class='mdi mdi-key'></span>
+            <span>Steam WebAPI Key [ex. TL0U8ANCN35WP0E1AHRKMVQCARA7D0UV]</span>
+          </label>
+          <div class='form-text text-light text-center'>To get achievements, stats and items get WebApi Key from
+            <a href='https://steamcommunity.com/dev/apikey' target='_blank'>here</a>.<br>If no WebAPI Key is given, it will
+            only get games infos and dlcs.</div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-block btn-green">Save</button>
+      <div class='modal-footer'>
+        <button type='submit' class='btn btn-success w-100'>Save</button>
       </div>
     </form>
   </div>
