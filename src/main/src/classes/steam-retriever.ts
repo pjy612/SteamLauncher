@@ -185,12 +185,16 @@ class SteamRetriever {
     ) {
       const achievementsData = responseData.game.availableGameStats.achievements;
       const achievementsResult = [];
+      let achievementIndex = 0;
+
       for (const achievement of achievementsData) {
+        const achievementName = achievement.name;
+
         const iconUrl = achievement.icon;
         const iconGrayUrl = achievement.icongray;
 
-        const iconName = `${achievement.name}.jpg`;
-        const iconGrayName = `${achievement.name}_locked.jpg`;
+        const iconName = `ACH_${achievementIndex}.jpg`;
+        const iconGrayName = `ACH_${achievementIndex}_locked.jpg`;
 
         const iconNamePath = join(this.gamePaths.appIdAchievementsPath, iconName);
         const iconGrayNamePath = join(this.gamePaths.appIdAchievementsPath, iconGrayName);
@@ -199,6 +203,8 @@ class SteamRetriever {
         achievement.icongray = `achievements/${iconGrayName}`;
 
         achievementsResult.push(achievement);
+
+        this.console(`${achievementName} Achievement`);
 
         if (!(await pathExists(iconNamePath))) {
           await appDownload(iconUrl, iconNamePath).then(() => {
@@ -215,6 +221,8 @@ class SteamRetriever {
         } else {
           this.console(`${iconGrayName} already exists, skip...`, true);
         }
+
+        achievementIndex++;
       }
 
       await writeJson(this.gamePaths.appIdAchievementsInfoPath, achievementsResult, {
