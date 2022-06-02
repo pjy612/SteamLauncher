@@ -165,7 +165,6 @@ class Game {
       delete data[appId];
       storage.set('games', data);
       notify(`${name} removed successfully!`);
-      webContents.getFocusedWebContents().send('index-reload-games-list');
     }
   }
 

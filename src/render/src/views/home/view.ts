@@ -60,8 +60,7 @@ class HomeView {
       router.navigate(`/game/add/${searchParameters}`);
     });
 
-    // TODO: IMPROVE THIS WHEN VALUES ARE AUTOMATICALLY CHANGED IN SETTINGS
-    window.api.on('index-reload-games-list', async () => {
+    window.api.on('app-home-reload-games-list', async () => {
       await this.appendGamesList();
     });
   }

@@ -314,8 +314,6 @@ class SteamRetriever {
 
     storage.set(`games.${inputs.appId}`, inputs);
 
-    this.ipcEvent.send('index-reload-games-list');
-
     this.consoleHide(true);
   }
 
