@@ -1,85 +1,92 @@
-import type { ChildProcess } from 'node:child_process';
-import { pathExists } from 'fs-extra';
+import glob from 'fast-glob';
 import appNotify from '../functions/app-notify';
+import appSpawn from '../functions/app-spawn';
 import log from '../instances/log';
-import execFile from '../node/exec-file-promisify';
-import paths from '../paths';
+import paths from '../configs/paths';
 // eslint-disable-next-line import/no-cycle
 import SteamGame from './steam-game';
 
 class SteamCloud {
-  public static async backup(dataGame: StoreGameDataType, byAppId = true) {
-    const appId = dataGame.appId;
-    const appIdName = SteamGame.removeSpecialChars(dataGame.name);
-
-    log.info(
-      `SteamCloud Backup: Initializing backup for ${appIdName} (search by ${
-        byAppId ? `appid ${appId}` : `name ${appIdName}`
-      })...`
-    );
-
-    const exe = paths.files.ludusaviFilePath;
-    const gamePaths = SteamGame.paths(appId);
+  private static invokeLudusavi(commandsLine: string[]) {
     try {
-      const spawnCommandLine = ['backup', '--force', `--path`, gamePaths.appIdSavesCloudPath];
-      const spawn = await execFile(
-        exe,
-        byAppId ? [...spawnCommandLine, '--by-steam-id', appId] : [...spawnCommandLine, appIdName]
+      const spawn = appSpawn(paths.ludusavi.filePath, commandsLine, paths.ludusavi.rootPath);
+      const parse = JSON.parse(spawn.stdout) as Record<string, unknown>;
+      return !(
+        typeof parse.errors !== 'undefined' &&
+        typeof (parse.errors as Record<string, string>).unknownGames !== 'undefined' &&
+        (parse.errors as Record<string, string>).unknownGames.length > 0
       );
-      log.debug(`SteamCloud Backup: \n${spawn.stdout}`);
-      appNotify('SteamCloud Backup: The backups of the saves were successful.');
-      return true;
-    } catch (error) {
-      if (byAppId) {
-        await SteamCloud.backup(dataGame, false);
-      }
-
-      const { stderr } = error as ChildProcess;
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      log.error(`SteamCloud Backup: ${stderr}`);
-      appNotify('SteamCloud Backup: The backup of the saves was not successful, check the logs.');
+    } catch {
       return false;
     }
   }
 
-  public static async restore(dataGame: StoreGameDataType, byAppId = true) {
+  private static checkIfGameSaveToRemote(appId: string) {
+    const { appIdSavesRemotePath } = SteamGame.paths(appId);
+    return glob.sync('*', { cwd: appIdSavesRemotePath, onlyFiles: true }).length > 0;
+  }
+
+  public static backup(dataGame: StoreGameDataType) {
     const appId = dataGame.appId;
-    const appIdName = SteamGame.removeSpecialChars(dataGame.name);
+    const appIdName = dataGame.name;
+    const logHeader = 'SteamCloud Backup:';
 
-    log.info(
-      `SteamCloud Restore: Initializing restore for ${appIdName} (search by ${
-        byAppId ? `appid ${appId}` : `name ${appIdName}`
-      })...`
-    );
+    if (SteamCloud.checkIfGameSaveToRemote(appId)) {
+      log.info(`${logHeader} I don't initialize the backup because the saves are saved in the emulator folder.`);
+      return;
+    }
 
-    const exe = paths.files.ludusaviFilePath;
-    const gamePaths = SteamGame.paths(appId);
-    try {
-      if (await pathExists(gamePaths.appIdSavesCloudPath)) {
-        const spawnCommandLine = ['restore', '--force', `--path`, gamePaths.appIdSavesCloudPath];
-        const spawn = await execFile(
-          exe,
-          byAppId ? [...spawnCommandLine, '--by-steam-id', appId] : [...spawnCommandLine, appIdName]
-        );
-        log.debug(`SteamCloud Restore: \n${spawn.stdout}`);
-        appNotify('SteamCloud Restore: The restore of the saves were successful.');
-      } else {
-        log.debug('SteamCloud Restore: The game does not contain any save backups.');
-        appNotify(
-          'SteamCloud Restore: The restore of the saves was not successful, the game does not contain any save backups.'
-        );
-      }
-      return true;
-    } catch (error) {
-      if (byAppId) {
-        await SteamCloud.restore(dataGame, false);
-      }
+    let ludusaviResponse = false;
+    const ludusaviCommandsLine = ['backup', '--merge', '--try-update', '--api', `--path`, paths.cloud.rootPath];
 
-      const { stderr } = error as ChildProcess;
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      log.error(`SteamCloud Restore: ${stderr}`);
-      appNotify('SteamCloud Restore: The restore of the saves was not successful, check the logs.');
-      return false;
+    log.info(`${logHeader} Initializing backup for ${appIdName}`);
+    log.info(`${logHeader} I try to search by appId ${appId}...`);
+    ludusaviResponse = SteamCloud.invokeLudusavi([...ludusaviCommandsLine, '--by-steam-id', appId]);
+    if (!ludusaviResponse) {
+      log.info(`${logHeader} I try to search by appIdName ${appIdName}...`);
+      ludusaviResponse = SteamCloud.invokeLudusavi([...ludusaviCommandsLine, appIdName]);
+    }
+
+    if (ludusaviResponse) {
+      const ok = `${logHeader} The backups of the saves were successful.`;
+      log.info(ok);
+      appNotify(ok);
+    } else {
+      const notOk = `${logHeader} The backup of the saves was not successful.`;
+      log.info(notOk);
+      appNotify(notOk);
+    }
+  }
+
+  public static restore(dataGame: StoreGameDataType) {
+    const appId = dataGame.appId;
+    const appIdName = dataGame.name;
+    const logHeader = 'SteamCloud Restore:';
+
+    if (SteamCloud.checkIfGameSaveToRemote(appId)) {
+      log.info(`${logHeader} I don't initialize the restore because the saves are saved in the emulator folder.`);
+      return;
+    }
+
+    let ludusaviResponse = false;
+    const ludusaviCommandsLine = ['restore', '--force', '--api', `--path`, paths.cloud.rootPath];
+
+    log.info(`${logHeader} Initializing restore for ${appIdName}`);
+    log.info(`${logHeader} I try to search by appId ${appId}...`);
+    ludusaviResponse = SteamCloud.invokeLudusavi([...ludusaviCommandsLine, '--by-steam-id', appId]);
+    if (!ludusaviResponse) {
+      log.info(`${logHeader} I try to search by appIdName ${appIdName}...`);
+      ludusaviResponse = SteamCloud.invokeLudusavi([...ludusaviCommandsLine, appIdName]);
+    }
+
+    if (ludusaviResponse) {
+      const ok = `${logHeader} The restore of the saves were successful.`;
+      log.info(ok);
+      appNotify(ok);
+    } else {
+      const notOk = `${logHeader} The restore of the saves was not successful.`;
+      log.info(notOk);
+      appNotify(notOk);
     }
   }
 }

@@ -5,7 +5,7 @@ import { ensureDir, pathExists } from 'fs-extra';
 import appDownload from '../functions/app-download';
 import log from '../instances/log';
 import storage from '../instances/storage';
-import paths from '../paths';
+import paths from '../configs/paths';
 
 class SteamEmulator {
   public static async checkForUpdatesAndNotify() {

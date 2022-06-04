@@ -4,14 +4,24 @@ import { join } from 'node:path';
 import axios from 'axios';
 import glob from 'fast-glob';
 import { ensureDir, pathExists, writeFile, writeJson } from 'fs-extra';
-import signVerify from '../bin/sign-verify';
 import appDownload from '../functions/app-download';
 import appNotify from '../functions/app-notify';
 import log from '../instances/log';
 import storage from '../instances/storage';
 import { getWindow } from '../functions/app-window';
+import appSpawn from '../functions/app-spawn';
+import paths from '../configs/paths';
 import SteamGame from './steam-game';
 import SteamCloud from './steam-cloud';
+
+const signToolVerify = (filePath: string) => {
+  try {
+    const spawn = appSpawn(paths.signTool.filePath, ['verify', '/pa', filePath], paths.signTool.rootPath);
+    return spawn.status === 0;
+  } catch {
+    return false;
+  }
+};
 
 class SteamRetriever {
   private accountSteamWebApiKey: string = storage.get('account.steamWebApiKey');
@@ -95,7 +105,7 @@ class SteamRetriever {
     });
     if (searchDlls.length > 0) {
       for (const dll of searchDlls) {
-        const isSigned = await signVerify(dll);
+        const isSigned = signToolVerify(dll);
 
         if (isSigned) {
           this.console(`${dll} is signed, keep on...`, true);
@@ -296,7 +306,7 @@ class SteamRetriever {
     }
   }
 
-  private async addGame() {
+  private addGame() {
     const inputs: StoreGameDataType = {
       ...this.gameInputs,
       ...this.gameData,
@@ -311,7 +321,7 @@ class SteamRetriever {
       appNotify(oo);
       this.console(oo);
 
-      await SteamCloud.restore(inputs);
+      SteamCloud.restore(inputs);
     }
 
     storage.set(`games.${inputs.appId}`, inputs);
@@ -357,7 +367,7 @@ class SteamRetriever {
       }
 
       try {
-        await this.addGame();
+        this.addGame();
       } catch (error: unknown) {
         this.console(error as Error, true);
         this.consoleHide();

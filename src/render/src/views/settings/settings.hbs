@@ -127,15 +127,18 @@
             <div class='card text-bg-st-primary'>
               <div class='card-body'>
                 <div class='text-center mb-2'>
-                  To add support for game save backups, SteamLauncher uses an external tool which is
-                  <a href='https://github.com/mtkennerly/ludusavi' target='_blank'>ludusavi</a>
-                  and by entering you can set custom paths and change settings.
+                  Support for backup and restoring game saves is guaranteed through
+                  <a href='https://github.com/mtkennerly/ludusavi' target='_blank'>ludusavi</a>.<br />
+                  By opening ludusavi, you can change the settings, add new locations to search for saves and also add
+                  games that ludusavi does not support.<br />
+                  If you want to use the backup and restore directly from ludusavi, just in the backup mode insert in
+                  the input "Back up to:" the folder "steam_cloud" inside the SteamLauncher path in "data" folder, same
+                  thing for the restore mode in the input "Restore from:".
                 </div>
-                <div class='alert alert-danger'>
-                  Do not use backup and restore of saves directly from
-                  <a href='https://github.com/mtkennerly/ludusavi' target='_blank'>ludusavi</a>, SteamLauncher uses a
-                  different logic. When adding a custom path, set the name without special characters ("Homefront®: The
-                  Revolution" to "Homefront: The Revolution").
+                <div class='alert alert-danger text-center'>
+                  When you add a custom game set the name of the game exactly as it is also called in the steam store.
+                  For example if you want to add a custom save folder for "Homefront®: The Revolution", don't write
+                  "Homefront: The Revolution".<br />This allows SteamLauncher to work properly with ludusavi.
                 </div>
                 <button type='button' class='btn btn-primary btn-sm text-uppercase w-100' data-sk='open-ludusavi'>open
                   ludusavi</button>

@@ -2,7 +2,7 @@ import { BrowserWindow, Rectangle, shell } from 'electron';
 import allowedExternalUrls from '../configs/allowed-external-urls';
 // eslint-disable-next-line import/no-cycle
 import storage from '../instances/storage';
-import paths from '../paths';
+import paths from '../configs/paths';
 
 let createdWindow: BrowserWindow | undefined;
 
@@ -24,8 +24,9 @@ export const openUrlExternallyWindow = (url: string) => {
 };
 
 export const createWindow = async () => {
-  const widthWindow = 1000 + 10;
-  const heightWindow = 720 + 10;
+  const padding = 10;
+  const widthWindow = 1000 + padding;
+  const heightWindow = 720 + padding;
 
   createdWindow = new BrowserWindow({
     width: widthWindow,

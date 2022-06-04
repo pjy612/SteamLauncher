@@ -1,7 +1,7 @@
 import { app } from 'electron';
 import { join } from 'node:path';
 import { transports, format, createLogger } from 'winston';
-import paths from '../paths';
+import paths from '../configs/paths';
 
 const logFormatString = format.printf(
   ({ level, timestamp, message }) => `[${timestamp as string}] [${level}]: ${message}`

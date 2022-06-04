@@ -5,9 +5,9 @@ import readme from '../../../../README.md?raw';
 import { author as packageAuthor } from '../../../../package.json';
 import appNotify from '../functions/app-notify';
 import { getWindow } from '../functions/app-window';
-import execFile from '../node/exec-file-promisify';
-import paths from '../paths';
+import paths from '../configs/paths';
 import handlebars from '../instances/handlebars';
+import appExec from '../functions/app-exec';
 
 const appGetVersion = app.getVersion();
 ipc.handle('app-get-version', () => appGetVersion);
@@ -45,7 +45,7 @@ ipc.handle('app-chose-file', () =>
 );
 
 ipc.on('app-open-ludusavi', async () => {
-  await execFile(paths.files.ludusaviFilePath);
+  await appExec(paths.ludusavi.filePath, [], paths.ludusavi.rootPath);
 });
 
 ipc.handle('app-handlebars-generate', (_event, template: string, context: Record<string, string> = {}) => {

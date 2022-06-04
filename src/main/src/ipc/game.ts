@@ -64,9 +64,15 @@ ipc.on('game-contextmenu', (event, appId: string) => {
       },
     },
     {
-      label: 'Open save location',
+      label: 'Open saves location',
       async click() {
-        await SteamGame.openSaveLocation(appId);
+        await SteamGame.openSavesLocation(appId);
+      },
+    },
+    {
+      label: 'Open cloud saves location',
+      click() {
+        SteamGame.openCloudSavesLocation();
       },
     },
     {
@@ -92,14 +98,14 @@ ipc.on('game-contextmenu', (event, appId: string) => {
     },
     {
       label: 'Manually backup saves to cloud',
-      async click() {
-        await SteamCloud.backup(dataGame);
+      click() {
+        SteamCloud.backup(dataGame);
       },
     },
     {
       label: 'Manually restore saves from cloud',
-      async click() {
-        await SteamCloud.restore(dataGame);
+      click() {
+        SteamCloud.restore(dataGame);
       },
     },
     {

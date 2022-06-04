@@ -1,6 +1,6 @@
 import { app } from 'electron';
 import Conf from 'conf';
-import paths from '../paths';
+import paths from '../configs/paths';
 // eslint-disable-next-line import/no-cycle
 import { getWindow } from '../functions/app-window';
 import migrations from './storage/migrations';

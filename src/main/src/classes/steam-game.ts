@@ -1,25 +1,17 @@
 import { app, dialog, shell } from 'electron';
-import fs from 'node:fs';
 import { join, basename } from 'node:path';
 import { pathExists, emptyDir, copy, writeFile, ensureDir, remove } from 'fs-extra';
 import ini from 'ini';
 import appNotify from '../functions/app-notify';
-import log from '../instances/log';
 import storage from '../instances/storage';
-import execFile from '../node/exec-file-promisify';
-import paths from '../paths';
+import paths from '../configs/paths';
+import appExec from '../functions/app-exec';
 import SteamEmulator from './steam-emulator';
 // eslint-disable-next-line import/no-cycle
 import SteamCloud from './steam-cloud';
 
-const isDirectoryEmpty = async (path: string) => {
-  const files = await fs.promises.readdir(path);
-  return files.length === 0;
-};
-
 class SteamGame {
   private static async clientLoader(dataGame: StoreGameDataType) {
-    // loader
     const loaderConfig = {
       Launcher: {
         Target: dataGame.executableFilePath,
@@ -35,20 +27,16 @@ class SteamGame {
         AppId: dataGame.appId,
       },
     };
+    await writeFile(paths.clientLoader.configFilePath, ini.stringify(loaderConfig));
 
-    await writeFile(paths.emulator.loaderConfigFilePath, ini.stringify(loaderConfig));
-
-    // exec
-    appNotify(`Launch ${dataGame.name}`);
-
-    await execFile(paths.emulator.loaderFilePath);
+    await appExec(paths.clientLoader.filePath, [], paths.clientLoader.rootPath);
   }
 
   public static async launch(dataGame: StoreGameDataType, withoutEmu = false) {
     const dataGameExecutableFilePath = dataGame.executableFilePath;
+    const dataGameExecutableWorkingDirectory = dataGame.executableWorkingDirectory;
     const dataGameCommandLine = dataGame.commandLine;
     const dataGameAppId = dataGame.appId;
-    const dataGameName = dataGame.name;
     const dataGameDisableOverlay = dataGame.disableOverlay;
     const dataGameDisableNetworking = dataGame.disableNetworking;
     const dataGameDisableLanOnly = dataGame.disableLanOnly;
@@ -57,20 +45,17 @@ class SteamGame {
     const dataGameForceAccountSteamId = dataGame.forceAccountSteamId;
     const dataGameForceAccountListenPort = dataGame.forceAccountListenPort;
     const dataGamePaths = SteamGame.paths(dataGameAppId);
-
     const dataAccount = storage.get('account') as StoreAccountType;
-
     const dataSettings = storage.get('settings');
     const dataNetwork = dataSettings.network;
 
     if (withoutEmu) {
-      appNotify(`Launch normally ${dataGameName}`);
-      await execFile(dataGameExecutableFilePath, dataGameCommandLine.split(' '));
+      await appExec(dataGameExecutableFilePath, dataGameCommandLine.split(' '), dataGameExecutableWorkingDirectory);
       return;
     }
 
     if (!(await SteamEmulator.checkForUpdatesAndNotify())) {
-      appNotify('Error with the verification of the emulator, check the logs.');
+      appNotify('SteamEmulator: Error with the verification of the emulator, check the logs.');
       return;
     }
 
@@ -138,40 +123,37 @@ class SteamGame {
       await writeFile(paths.emulator.settingsOfflineFilePath, '');
     }
 
-    // clientLoader
     await SteamGame.clientLoader(dataGame);
-
-    // after the game is closed, I make backups of the saves
-    await SteamCloud.backup(dataGame);
+    SteamCloud.backup(dataGame);
   }
 
-  public static launchFromCommandsLine(appCommandsLine: string[]) {
+  public static launchFromAppCommandsLine(appCommandsLine: string[]) {
     if (appCommandsLine.length > 0) {
       const { 0: argumentAppId } = appCommandsLine;
-      log.info(`Launched ${argumentAppId} from commands line...`);
       const data: StoreGameDataType | undefined = storage.get(`games.${argumentAppId}`);
       if (typeof data !== 'undefined') {
-        SteamGame.launch(data).catch((error) => log.error((error as Error).message));
+        void SteamGame.launch(data);
       } else {
-        dialog.showErrorBox('Error', `${argumentAppId} does not exist!`);
+        dialog.showErrorBox('Error', `The game with appId ${argumentAppId} does not exist!`);
       }
     }
   }
 
   public static remove(appId: string) {
-    const data = storage.get('games');
-    if (typeof data !== 'undefined') {
-      const { name } = data[appId];
-      delete data[appId];
-      storage.set('games', data);
-      appNotify(`${name} removed successfully!`);
+    const dataGames = storage.get('games');
+    if (typeof dataGames !== 'undefined') {
+      const { name: dataGameName } = dataGames[appId];
+      delete dataGames[appId];
+      storage.set('games', dataGames);
+      appNotify(`${dataGameName} removed successfully!`);
     }
   }
 
   public static paths(appId: string) {
     const steamRetrieverPath = join(paths.appDataPath, 'steam_retriever');
-    const steamCloudPath = join(paths.appDataPath, 'steam_cloud');
-    const appIdSavesCloudPath = join(steamCloudPath, appId);
+
+    const appIdSavesPath = join(paths.emulator.savesPath, appId);
+    const appIdSavesRemotePath = join(appIdSavesPath, 'remote');
     const appIdDataPath = join(steamRetrieverPath, appId);
     const appIdAchievementsPath = join(appIdDataPath, 'achievements');
     const appIdAchievementsInfoPath = join(appIdDataPath, 'achievements.json');
@@ -181,48 +163,45 @@ class SteamGame {
     const appIdDlcsInfoPath = join(appIdDataPath, 'DLC.txt');
     const appIdSteamInterfacesPath = join(appIdDataPath, 'steam_interfaces.txt');
     const appIdHeaderPath = join(appIdDataPath, 'header.jpg');
-    const appIdSavesPath = join(paths.emulator.savesPath, appId);
 
     return {
-      steamRetrieverPath,
+      appIdDataPath,
       appIdSavesPath,
+      appIdSavesRemotePath,
       appIdAchievementsInfoPath,
       appIdAchievementsPath,
-      appIdDataPath,
       appIdDefaultItemsInfoPath,
       appIdDlcsInfoPath,
       appIdHeaderPath,
       appIdItemsInfoPath,
       appIdStatsInfoPath,
       appIdSteamInterfacesPath,
-      appIdSavesCloudPath,
     };
   }
 
   public static async openFileLocation(appId: string) {
     const dataGame: StoreGameDataType = storage.get(`games.${appId}`);
-    if (await pathExists(dataGame.executableFilePath)) {
-      shell.showItemInFolder(dataGame.executableFilePath);
+    const dataGameExecutableFilePath = dataGame.executableFilePath;
+    if (await pathExists(dataGameExecutableFilePath)) {
+      shell.showItemInFolder(dataGameExecutableFilePath);
     } else {
       appNotify('The game path does not exists!');
     }
   }
 
-  public static async openSaveLocation(appId: string) {
-    const gamePaths = SteamGame.paths(appId);
-    const savesPath = gamePaths.appIdSavesPath;
-    const savesCloudPath = gamePaths.appIdSavesCloudPath;
-    if ((await pathExists(savesCloudPath)) && !(await isDirectoryEmpty(savesCloudPath))) {
-      await shell.openPath(savesCloudPath);
-    } else {
-      appNotify('The game has no saves inside the cloud saves.');
-    }
-
-    if (await pathExists(savesPath)) {
-      await shell.openPath(savesPath);
+  public static async openSavesLocation(appId: string) {
+    const dataGamePaths = SteamGame.paths(appId);
+    const dataGameSavesPath = dataGamePaths.appIdSavesPath;
+    if (await pathExists(dataGameSavesPath)) {
+      await shell.openPath(dataGameSavesPath);
     } else {
       appNotify('The game has no saves inside the emulator.');
     }
+  }
+
+  public static openCloudSavesLocation() {
+    // TODO: You have to find the game folders by the name that pcgamingwiki gives to the game.
+    appNotify('function not available yet');
   }
 
   public static async openDataLocation(appId: string) {
@@ -230,28 +209,26 @@ class SteamGame {
     if (await pathExists(appIdDataPath)) {
       await shell.openPath(appIdDataPath);
     } else {
-      appNotify('The game data does not exists!');
+      appNotify('The game has no data inside the launcher!');
     }
   }
 
   public static createDesktopShortcut(appId: string) {
-    const data: StoreGameDataType = storage.get(`games.${appId}`);
-    const name = SteamGame.removeSpecialChars(data.name);
-    const toPath = join(app.getPath('desktop'), `Launch ${name}.lnk`);
-    const writeShortcutLink = shell.writeShortcutLink(toPath, {
-      args: data.appId,
-      icon: data.executableFilePath,
+    const dataGame: StoreGameDataType = storage.get(`games.${appId}`);
+    const dataGameName = SteamGame.removeSpecialCharsName(dataGame.name);
+    const shortcutPath = join(app.getPath('desktop'), `Launch ${dataGameName}.lnk`);
+    const writeShortcut = shell.writeShortcutLink(shortcutPath, {
+      args: dataGame.appId,
+      icon: dataGame.executableFilePath,
       iconIndex: 0,
       target: app.getPath('exe'),
     });
-    if (writeShortcutLink) {
-      appNotify('Shortcut created successfully on desktop!');
-    } else {
+    if (!writeShortcut) {
       appNotify('Unknown error with creating shortcut!');
     }
   }
 
-  public static removeSpecialChars(string_: string) {
+  public static removeSpecialCharsName(string_: string) {
     return string_.replace(/[^\w\s]/gu, '');
   }
 }

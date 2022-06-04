@@ -6,18 +6,17 @@ import allowedWillNavigateUrls from './configs/allowed-will-navigate-urls';
 import { createWindow, openUrlExternallyWindow } from './functions/app-window';
 import autoUpdater from './instances/autoupdater';
 import log from './instances/log';
-import './node/node';
+import './node';
 import './ipc/_ipcs';
 
 log.info(`${app.getName()} is booting up... (mode: ${appIsInstalled ? 'installer' : 'portable'})`);
 
 if (appCommandsLine.length > 0) {
-  SteamGame.launchFromCommandsLine(appCommandsLine);
+  SteamGame.launchFromAppCommandsLine(appCommandsLine);
   app.quit();
 }
 
 if (!app.requestSingleInstanceLock()) {
-  log.error('Only one instance is allowed.');
   app.quit();
 }
 
@@ -58,9 +57,7 @@ app.on('second-instance', () => {
 
 app.on('ready', async () => {
   // SECURITY: https://www.electronjs.org/docs/latest/tutorial/security/#5-handle-session-permission-requests-from-remote-content
-  session.defaultSession.setPermissionRequestHandler((_webContents, permission, callback) => {
-    log.debug(`${permission} permission is not granted.`);
-
+  session.defaultSession.setPermissionRequestHandler((_webContents, _permission, callback) => {
     callback(false);
   });
 
