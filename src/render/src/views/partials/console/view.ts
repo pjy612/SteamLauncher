@@ -8,7 +8,6 @@ class ConsolePartialView {
   public async show() {
     await this.setDom();
     this.setEvents();
-    this.appendDom();
   }
 
   private async setDom() {
@@ -31,10 +30,14 @@ class ConsolePartialView {
     textarea.val(textareaNewValue).scrollTop(textareaScrollTo);
   }
 
+  private appendDom() {
+    this.dom.appendTo(document.body).modal('show');
+  }
+
   private setEvents() {
     window.api.on('console-show', () => {
       this.dom.find('textarea').val('');
-      this.dom.modal('show');
+      this.appendDom();
     });
 
     window.api.on('console-hide', (_event, isOk: boolean) => {
@@ -60,10 +63,6 @@ class ConsolePartialView {
         }
       }
     });
-  }
-
-  private appendDom() {
-    this.dom.appendTo(document.body);
   }
 }
 
