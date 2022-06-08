@@ -10,10 +10,23 @@ import storage from '../instances/storage';
 
 const functionGameAddEdit = async (_event: IpcMainEvent, inputs: StoreGameDataType) => {
   const key = `games.${inputs.appId}`;
-  const data: StoreGameDataType | undefined = storage.get(key);
-  if (typeof data !== 'undefined') {
-    storage.set(key, Object.assign(data, inputs));
+  if (storage.has(key)) {
     appNotify('Game edited successfully!');
+
+    storage.set(`${key}.appId`, inputs.appId);
+    storage.set(`${key}.executableFilePath`, inputs.executableFilePath);
+    storage.set(`${key}.executableWorkingDirectory`, inputs.executableWorkingDirectory);
+    storage.set(`${key}.commandLine`, inputs.commandLine);
+
+    storage.set(`${key}.disableNetworking`, inputs.disableNetworking);
+    storage.set(`${key}.disableOverlay`, inputs.disableOverlay);
+    storage.set(`${key}.disableLanOnly`, inputs.disableLanOnly);
+
+    storage.set(`${key}.forceAccountName`, inputs.forceAccountName);
+    storage.set(`${key}.forceAccountLanguage`, inputs.forceAccountLanguage);
+    storage.set(`${key}.forceAccountSteamId`, inputs.forceAccountSteamId);
+    storage.set(`${key}.forceAccountListenPort`, inputs.forceAccountListenPort);
+
     appModalsHide();
   } else {
     const steamRetriever = new SteamRetriever(inputs);
@@ -24,108 +37,108 @@ const functionGameAddEdit = async (_event: IpcMainEvent, inputs: StoreGameDataTy
 ipc.on('game-add', functionGameAddEdit);
 ipc.on('game-edit', functionGameAddEdit);
 
-ipc.handle('game-paths', (_event, appId: string) => SteamGame.paths(appId));
-
-ipc.handle('game-data', (_event, appId: string): StoreGameDataType | undefined => storage.get(`games.${appId}`));
-
-ipc.handle('games-data', () => storage.get('games'));
-
 ipc.on('game-contextmenu', (event, appId: string) => {
-  const dataGame: StoreGameDataType = storage.get(`games.${appId}`);
-  const menu = Menu.buildFromTemplate([
-    {
-      label: 'Launch',
-      async click() {
-        await SteamGame.launch(dataGame);
+  const dataGame = SteamGame.getData(appId);
+  if (typeof dataGame !== 'undefined') {
+    const menu = Menu.buildFromTemplate([
+      {
+        label: 'Launch',
+        async click() {
+          await SteamGame.launch(dataGame);
+        },
       },
-    },
-    {
-      label: 'Launch without emulator',
-      async click() {
-        await SteamGame.launch(dataGame, true);
+      {
+        label: 'Launch without emulator',
+        async click() {
+          await SteamGame.launch(dataGame, true);
+        },
       },
-    },
-    {
-      type: 'separator',
-    },
-    {
-      label: 'Create desktop shortcut',
-      click() {
-        SteamGame.createDesktopShortcut(appId);
+      {
+        type: 'separator',
       },
-    },
-    {
-      type: 'separator',
-    },
-    {
-      label: 'Open file location',
-      async click() {
-        await SteamGame.openFileLocation(appId);
+      {
+        label: 'Create desktop shortcut',
+        click() {
+          SteamGame.createDesktopShortcut(dataGame);
+        },
       },
-    },
-    {
-      label: 'Open saves location',
-      async click() {
-        await SteamGame.openSavesLocation(appId);
+      {
+        type: 'separator',
       },
-    },
-    {
-      label: 'Open cloud saves location',
-      click() {
-        SteamGame.openCloudSavesLocation();
+      {
+        label: 'Open file location',
+        async click() {
+          await SteamGame.openFileLocation(dataGame);
+        },
       },
-    },
-    {
-      label: 'Open data location',
-      async click() {
-        await SteamGame.openDataLocation(appId);
+      {
+        label: 'Open saves location',
+        async click() {
+          await SteamGame.openSavesLocation(dataGame);
+        },
       },
-    },
-    {
-      type: 'separator',
-    },
-    {
-      label: 'Rebase DLCs, Items, etc...',
-      async click() {
-        if (await appPromptYesNo('Are you sure? The data will be overwritten!')) {
-          const steamRetriever = new SteamRetriever(dataGame);
-          await steamRetriever.run();
-        }
+      {
+        label: 'Open cloud saves location',
+        click() {
+          SteamGame.openCloudSavesLocation();
+        },
       },
-    },
-    {
-      type: 'separator',
-    },
-    {
-      label: 'Manually backup saves to cloud',
-      click() {
-        SteamCloud.backup(dataGame);
+      {
+        label: 'Open data location',
+        async click() {
+          await SteamGame.openDataLocation(dataGame);
+        },
       },
-    },
-    {
-      label: 'Manually restore saves from cloud',
-      click() {
-        SteamCloud.restore(dataGame);
+      {
+        type: 'separator',
       },
-    },
-    {
-      type: 'separator',
-    },
-    {
-      label: 'Edit game',
-      click() {
-        event.sender.send('app-navigate', `/game/edit/${appId}`);
+      {
+        label: 'Rebase DLCs, Items, etc...',
+        async click() {
+          if (await appPromptYesNo('Are you sure? The data will be overwritten!')) {
+            const steamRetriever = new SteamRetriever(dataGame);
+            await steamRetriever.run();
+          }
+        },
       },
-    },
-    {
-      label: 'Remove game',
-      async click() {
-        if (await appPromptYesNo('Are you sure you want to remove the game?')) {
-          SteamGame.remove(appId);
-        }
+      {
+        type: 'separator',
       },
-    },
-  ]);
+      {
+        label: 'Manually backup saves to cloud',
+        click() {
+          SteamCloud.backup(dataGame);
+        },
+      },
+      {
+        label: 'Manually restore saves from cloud',
+        click() {
+          SteamCloud.restore(dataGame);
+        },
+      },
+      {
+        type: 'separator',
+      },
+      {
+        label: 'Edit game',
+        click() {
+          event.sender.send('app-navigate', `/game/edit/${appId}`);
+        },
+      },
+      {
+        label: 'Remove game',
+        async click() {
+          if (await appPromptYesNo('Are you sure you want to remove the game?')) {
+            SteamGame.remove(appId);
+          }
+        },
+      },
+    ]);
 
-  menu.popup();
+    menu.popup();
+  }
 });
+
+ipc.handle('game-data', (_event, appId: string) => SteamGame.getData(appId));
+
+ipc.handle('games-data', () => SteamGame.getAllData());

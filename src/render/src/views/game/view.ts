@@ -4,7 +4,6 @@ import gameTemplate from './game.hbs?raw';
 
 class GameView {
   private dom = $('');
-
   private isEditMode = false;
 
   public async show(editMode = false) {

@@ -6,25 +6,28 @@ import appRootPath from '../functions/app-root-path';
 const appResourceAsarPath = app.getAppPath();
 const appResourcePath = app.isPackaged ? dirname(appResourceAsarPath) : appResourceAsarPath;
 
-const appDataPath = join(appIsInstalled ? app.getPath('userData') : appRootPath, 'data');
-const appBinPath = join(appResourcePath, 'bin');
-const appLogsPath = join(appDataPath, 'logs');
+const appDataRootPath = join(appIsInstalled ? app.getPath('userData') : appRootPath, 'data');
+const appBinRootPath = join(appResourcePath, 'bin');
+const appSteamCloudRootPath = join(appDataRootPath, 'steam_cloud');
+const appSteamRetrieverRootPath = join(appDataRootPath, 'steam_retriever');
 
-const emulatorRootPath = join(appDataPath, 'steam_emulator');
+const appLogsRootPath = join(appDataRootPath, 'logs');
+const appLogsFilePath = `${app.getName()}.%DATE%.log`;
+
+const emulatorRootPath = join(appDataRootPath, 'steam_emulator');
 const emulatorSteamSettingsRootPath = join(emulatorRootPath, 'steam_settings');
 const emulatorSteamSavesRootPath = join(emulatorRootPath, 'steam_saves');
 const emulatorSteamSettingsSavesRootPath = join(emulatorSteamSavesRootPath, 'settings');
 
-const signToolRootPath = join(appBinPath, 'win/signtool');
-const ludusaviRootPath = join(appBinPath, 'win/ludusavi');
+const signToolRootPath = join(appBinRootPath, 'win/signtool');
+const ludusaviRootPath = join(appBinRootPath, 'win/ludusavi');
 
-const clientLoaderRootPath = join(appBinPath, 'win/SmartSteamLoader');
-const clientLoaderFilePath = join(appBinPath, 'win/SmartSteamLoader/SmartSteamLoader_x64.exe');
-const clientLoaderConfigFilePath = join(appBinPath, 'win/SmartSteamLoader/SmartSteamEmu.ini');
+const clientLoaderRootPath = join(appBinRootPath, 'win/SmartSteamLoader');
+const clientLoaderFilePath = join(appBinRootPath, 'win/SmartSteamLoader/SmartSteamLoader_x64.exe');
+const clientLoaderConfigFilePath = join(appBinRootPath, 'win/SmartSteamLoader/SmartSteamEmu.ini');
 
 const paths = {
-  appDataPath,
-  appLogsPath,
+  appDataRootPath,
   emulator: {
     rootPath: emulatorRootPath,
     jobsPath: join(emulatorRootPath, 'jobs'),
@@ -48,8 +51,15 @@ const paths = {
     savesSettingsListenPortFilePath: join(emulatorSteamSettingsSavesRootPath, 'listen_port.txt'),
     savesSettingsUserSteamIdFilePath: join(emulatorSteamSettingsSavesRootPath, 'user_steam_id.txt'),
   },
+  logs: {
+    rootPath: appLogsRootPath,
+    filePath: appLogsFilePath,
+  },
   cloud: {
-    rootPath: join(appDataPath, 'steam_cloud'),
+    rootPath: appSteamCloudRootPath,
+  },
+  retriever: {
+    rootPath: appSteamRetrieverRootPath,
   },
   clientLoader: {
     rootPath: clientLoaderRootPath,

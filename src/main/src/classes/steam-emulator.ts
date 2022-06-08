@@ -3,18 +3,19 @@ import AdmZip from 'adm-zip';
 import axios from 'axios';
 import { ensureDir, pathExists } from 'fs-extra';
 import appDownload from '../functions/app-download';
-import log from '../instances/log';
+import logger from '../instances/logger';
 import storage from '../instances/storage';
 import paths from '../configs/paths';
 
 class SteamEmulator {
   public static async checkForUpdatesAndNotify() {
+    const logHeader = 'SteamEmulator:';
     const existsEmuFiles =
       (await pathExists(paths.emulator.steamClientFilePath)) &&
       (await pathExists(paths.emulator.steamClient64FilePath));
 
     try {
-      log.info('MrGoldBergEmulator: Check which is the latest version of the emulator...');
+      logger.info(`${logHeader} Check which is the latest version of the emulator...`);
 
       const url = 'https://mr_goldberg.gitlab.io/goldberg_emulator/';
       const response = await axios.get(url);
@@ -26,8 +27,8 @@ class SteamEmulator {
       const downloadJobId = match[0][1];
 
       if (typeof downloadUrl === 'undefined' && typeof downloadJobId === 'undefined') {
-        log.error(
-          'MrGoldBergEmulator: Unknown error, it was not possible to check which is the latest version of the emulator.'
+        logger.error(
+          `${logHeader} Unknown error, it was not possible to check which is the latest version of the emulator.`
         );
         // NOTE: i still continue if the emulator exists.
         return existsEmuFiles;
@@ -35,8 +36,8 @@ class SteamEmulator {
 
       const emulatorLocalJobId: string = storage.get('settings.emulatorLocalJobId');
       if (emulatorLocalJobId === downloadJobId && existsEmuFiles) {
-        log.info(
-          `MrGoldBergEmulator: Good job! You already have the latest version of the emulator. (emulatorLocalJobId: ${emulatorLocalJobId}, emulatorOnlineJobId: ${downloadJobId})`
+        logger.info(
+          `${logHeader} Good job! You already have the latest version of the emulator. (emulatorLocalJobId: ${emulatorLocalJobId}, emulatorOnlineJobId: ${downloadJobId})`
         );
         return true;
       }
@@ -46,15 +47,15 @@ class SteamEmulator {
       await ensureDir(paths.emulator.jobsPath);
 
       if (!(await pathExists(pathZip))) {
-        log.info(
-          `MrGoldBergEmulator: I'm downloading the latest version of the emulator... (emulatorOnlineJobId: ${
+        logger.info(
+          `${logHeader} I'm downloading the latest version of the emulator... (emulatorOnlineJobId: ${
             downloadJobId as string
           })`
         );
         await appDownload(downloadUrl!, pathZip);
       } else {
-        log.info(
-          `MrGoldBergEmulator: I take the latest version of the emulator from the cache... (emulatorOnlineJobId: ${
+        logger.info(
+          `${logHeader} I take the latest version of the emulator from the cache... (emulatorOnlineJobId: ${
             downloadJobId as string
           })`
         );
@@ -64,13 +65,13 @@ class SteamEmulator {
       zip.extractEntryTo('experimental_steamclient/steamclient.dll', paths.emulator.rootPath, false, true);
       zip.extractEntryTo('experimental_steamclient/steamclient64.dll', paths.emulator.rootPath, false, true);
 
-      log.info(`MrGoldBergEmulator: The emulator has been successfully updated.`);
+      logger.info(`${logHeader} The emulator has been successfully updated.`);
 
       storage.set('settings.emulatorLocalJobId', downloadJobId);
 
       return true;
     } catch (error) {
-      log.error(`MrGoldBergEmulator: ${(error as Error).message}`);
+      logger.error(`${logHeader} ${(error as Error).message}`);
       // NOTE: i still continue if the emulator exists.
       return existsEmuFiles;
     }

@@ -1,85 +1,78 @@
-import type { IpcRendererEvent } from 'electron';
 import { contextBridge, ipcRenderer as ipc } from 'electron';
 
-contextBridge.exposeInMainWorld('api', {
+const api: WindowApiType = {
+  on(channel, listener) {
+    ipc.on(channel, listener);
+  },
+  send(channel, ...arguments_) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    ipc.send(channel, ...arguments_);
+  },
   account: {
-    async exist() {
+    exist() {
       return ipc.invoke('account-exist');
     },
-    async getData() {
+    getData() {
       return ipc.invoke('account-data');
     },
-    async getRandomSteamId() {
+    getRandomSteamId() {
       return ipc.invoke('account-get-random-steamid');
     },
   },
   app: {
-    async choseDirectory() {
+    choseDirectory() {
       return ipc.invoke('app-chose-directory');
     },
-    async choseFile() {
+    choseFile() {
       return ipc.invoke('app-chose-file');
     },
-    async filePathParse(path: string) {
+    filePathParse(path) {
       return ipc.invoke('app-file-path-parse', path);
     },
-    async getCopyright() {
+    getCopyright() {
       return ipc.invoke('app-get-copyright');
     },
-    async getDescription() {
+    getDescription() {
       return ipc.invoke('app-get-description');
     },
-    async getName() {
+    getName() {
       return ipc.invoke('app-get-name');
     },
-    async getVersion() {
+    getVersion() {
       return ipc.invoke('app-get-version');
     },
     openLudusavi() {
       ipc.send('app-open-ludusavi');
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async handlebarsGenerate(template: string, context: Record<string, any> = {}) {
+    handlebarsGenerate(template, context) {
       return ipc.invoke('app-handlebars-generate', template, context);
     },
-    notify(message: string) {
+    notify(message) {
       ipc.send('app-notify', message);
     },
   },
   game: {
-    async getData(appId: string) {
+    getData(appId) {
       return ipc.invoke('game-data', appId);
     },
-    async getPaths(appId: string) {
-      return ipc.invoke('game-paths', appId);
-    },
-    openContextMenu(appId: string) {
+    openContextMenu(appId) {
       ipc.send('game-contextmenu', appId);
     },
   },
   games: {
-    async getData() {
+    getData() {
       return ipc.invoke('games-data');
     },
   },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  on(channel: string, listener: (event: IpcRendererEvent, ...arguments_: any[]) => void) {
-    ipc.on(channel, listener);
-  },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  send(channel: string, ...arguments_: any[]) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    ipc.send(channel, ...arguments_);
-  },
   settings: {
-    async getData() {
+    getData() {
       return ipc.invoke('settings-data');
     },
-    async getNetworkStatus() {
+    getNetworkStatus() {
       return ipc.invoke('settings-get-network-status');
     },
-    setNetworkStatus(to: boolean) {
-      ipc.send('settings-set-network', to);
+    setNetworkStatus(to) {
+      ipc.send('settings-set-network-status', to);
     },
   },
   window: {
@@ -96,4 +89,6 @@ contextBridge.exposeInMainWorld('api', {
       ipc.send('window-restore');
     },
   },
-});
+};
+
+contextBridge.exposeInMainWorld('api', api);

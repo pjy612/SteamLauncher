@@ -6,28 +6,19 @@ import glob from 'fast-glob';
 import { ensureDir, pathExists, writeFile, writeJson } from 'fs-extra';
 import appDownload from '../functions/app-download';
 import appNotify from '../functions/app-notify';
-import log from '../instances/log';
+import logger from '../instances/logger';
 import storage from '../instances/storage';
-import { getWindow } from '../functions/app-window';
+import { appGetWindow } from '../functions/app-window';
 import appSpawn from '../functions/app-spawn';
 import paths from '../configs/paths';
 import SteamGame from './steam-game';
 import SteamCloud from './steam-cloud';
 
-const signToolVerify = (filePath: string) => {
-  try {
-    const spawn = appSpawn(paths.signTool.filePath, ['verify', '/pa', filePath], paths.signTool.rootPath);
-    return spawn.status === 0;
-  } catch {
-    return false;
-  }
-};
-
 class SteamRetriever {
   private accountSteamWebApiKey: string = storage.get('account.steamWebApiKey');
   private accountLanguage: string = storage.get('account.language');
-  private ipcEvent = getWindow()!;
-  private gameData = {} as SteamRetrieverGameData;
+  private ipcEvent = appGetWindow()!;
+  private gameData = {} as SteamRetrieverGameDataType;
   private readonly gameAppId: string;
   private readonly gamePaths;
   private readonly gameInputs;
@@ -35,13 +26,13 @@ class SteamRetriever {
   public constructor(inputs: StoreGameDataType) {
     this.gameInputs = inputs;
     this.gameAppId = inputs.appId;
-    this.gamePaths = SteamGame.paths(inputs.appId);
+    this.gamePaths = SteamGame.getPaths(inputs.appId);
   }
 
   private console(content: AxiosError | Error | string, space = false) {
     let nContent = content;
     if (typeof nContent === 'string') {
-      log.info(`SteamRetriever: ${nContent}`);
+      logger.info(`SteamRetriever: ${nContent}`);
     } else if (axios.isAxiosError(nContent)) {
       const url = new URL(nContent.config.url!);
       const urlSearchParameters = url.searchParams;
@@ -57,9 +48,9 @@ class SteamRetriever {
 
       nContent = `${url.href}; response: ${nContent.message}`;
 
-      log.error(`SteamRetriever: ${nContent}`);
+      logger.error(`SteamRetriever: ${nContent}`);
     } else {
-      log.error(`SteamRetriever: ${nContent.message}`);
+      logger.error(`SteamRetriever: ${nContent.message}`);
     }
 
     this.ipcEvent.webContents.send('console-add', typeof nContent === 'string' ? nContent : nContent.message, space);
@@ -73,20 +64,29 @@ class SteamRetriever {
     this.ipcEvent.webContents.send('console-show');
   }
 
+  private signToolVerify(filePath: string) {
+    try {
+      const spawn = appSpawn(paths.signTool.filePath, ['verify', '/pa', filePath], paths.signTool.rootPath);
+      return spawn.status === 0;
+    } catch {
+      return false;
+    }
+  }
+
   private async getAppType() {
     this.console(`Trying to get type of ${this.gameAppId}...`);
 
     const url = `https://store.steampowered.com/api/appdetails/?appids=${this.gameAppId}&filters=basic`;
     const response = await axios.get(url);
-    const responseData = response.data as SteamRetrieverAppDetails;
+    const responseData = response.data as SteamRetrieverAppDetailsType;
 
     const data = responseData[this.gameAppId];
     if (data.success === true) {
       if (data.data.type === 'game') {
         this.console('The appid is the "game" type, keep on...', true);
 
-        await ensureDir(this.gamePaths.appIdDataPath);
-        await ensureDir(this.gamePaths.appIdAchievementsPath);
+        await ensureDir(this.gamePaths.dataRootPath);
+        await ensureDir(this.gamePaths.achievementsRootPath);
       } else {
         throw new Error('The appid is not a game.');
       }
@@ -105,7 +105,7 @@ class SteamRetriever {
     });
     if (searchDlls.length > 0) {
       for (const dll of searchDlls) {
-        const isSigned = signToolVerify(dll);
+        const isSigned = this.signToolVerify(dll);
 
         if (isSigned) {
           this.console(`${dll} is signed, keep on...`, true);
@@ -140,7 +140,7 @@ class SteamRetriever {
 
     const url = `https://store.steampowered.com/api/dlcforapp/?appid=${this.gameAppId}`;
     const response = await axios.get(url);
-    const responseData = response.data as SteamRetrieverDlcForApp;
+    const responseData = response.data as SteamRetrieverDlcForAppType;
 
     if (responseData.status === 1) {
       this.gameData.name = responseData.name;
@@ -156,8 +156,8 @@ class SteamRetriever {
           dlcsResult.push(`${appDlcAppId}=${appDlcMame}`);
         }
 
-        await writeFile(this.gamePaths.appIdDlcsInfoPath, dlcsResult.join('\r\n')).then(() => {
-          this.console(`${this.gamePaths.appIdDlcsInfoPath} was written successfully!`, true);
+        await writeFile(this.gamePaths.dlcsFilePath, dlcsResult.join('\r\n')).then(() => {
+          this.console(`${this.gamePaths.dlcsFilePath} was written successfully!`, true);
         });
       } else {
         this.console('The game does not contain dlcs.', true);
@@ -170,12 +170,12 @@ class SteamRetriever {
   private async downloadAppHeader() {
     const url = `https://cdn.akamai.steamstatic.com/steam/apps/${this.gameAppId}/header.jpg?t=1581535048`;
 
-    if (!(await pathExists(this.gamePaths.appIdHeaderPath))) {
-      await appDownload(url, this.gamePaths.appIdHeaderPath).then(() => {
+    if (!(await pathExists(this.gamePaths.headerFilePath))) {
+      await appDownload(url, this.gamePaths.headerFilePath).then(() => {
         this.console(`${url} was downloaded successfully!`);
       });
     } else {
-      this.console(`${this.gamePaths.appIdHeaderPath} already exists, skip...`);
+      this.console(`${this.gamePaths.headerFilePath} already exists, skip...`);
     }
   }
 
@@ -185,7 +185,7 @@ class SteamRetriever {
 
     const url = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=${this.accountSteamWebApiKey}&l=${this.accountLanguage}&appid=${this.gameAppId}`;
     const response = await axios.get(url);
-    const responseData = response.data as SteamRetrieverGetSchemaForGame;
+    const responseData = response.data as SteamRetrieverGetSchemaForGameType;
 
     if (
       typeof responseData.game !== 'undefined' &&
@@ -206,8 +206,8 @@ class SteamRetriever {
         const iconName = `ACH_${achievementIndex}.jpg`;
         const iconGrayName = `ACH_${achievementIndex}_locked.jpg`;
 
-        const iconNamePath = join(this.gamePaths.appIdAchievementsPath, iconName);
-        const iconGrayNamePath = join(this.gamePaths.appIdAchievementsPath, iconGrayName);
+        const iconNamePath = join(this.gamePaths.achievementsRootPath, iconName);
+        const iconGrayNamePath = join(this.gamePaths.achievementsRootPath, iconGrayName);
 
         achievement.icon = `achievements/${iconName}`;
         achievement.icongray = `achievements/${iconGrayName}`;
@@ -235,10 +235,10 @@ class SteamRetriever {
         achievementIndex++;
       }
 
-      await writeJson(this.gamePaths.appIdAchievementsInfoPath, achievementsResult, {
+      await writeJson(this.gamePaths.achievementsFilePath, achievementsResult, {
         spaces: 2,
       }).then(() => {
-        this.console(`${this.gamePaths.appIdAchievementsInfoPath} was written successfully!`, true);
+        this.console(`${this.gamePaths.achievementsFilePath} was written successfully!`, true);
       });
     } else {
       this.console('The game has no achievements.', true);
@@ -260,8 +260,8 @@ class SteamRetriever {
         statsResult.push(`${name}=${typeValue}=${defaultvalue}`);
       }
 
-      await writeFile(this.gamePaths.appIdStatsInfoPath, statsResult.join('\r\n')).then(() => {
-        this.console(`${this.gamePaths.appIdStatsInfoPath} was written successfully!`, true);
+      await writeFile(this.gamePaths.statsFilePath, statsResult.join('\r\n')).then(() => {
+        this.console(`${this.gamePaths.statsFilePath} was written successfully!`, true);
       });
     } else {
       this.console('The game has no stats.', true);
@@ -273,33 +273,33 @@ class SteamRetriever {
 
     let url = `https://api.steampowered.com/IInventoryService/GetItemDefMeta/v1/?key=${this.accountSteamWebApiKey}&appid=${this.gameAppId}`;
     let response = await axios.get(url);
-    const { digest } = (response.data as SteamRetrieverGetItemDefMeta).response;
+    const { digest } = (response.data as SteamRetrieverGetItemDefMetaType).response;
 
     if (typeof digest !== 'undefined') {
       url = `https://api.steampowered.com/IGameInventory/GetItemDefArchive/v1/?digest=${digest}&appid=${this.gameAppId}`;
       response = await axios.get(url);
       // NOTE: the last character is a finger in the ass
-      response.data = JSON.parse((response.data as string).slice(0, -1)) as SteamRetrieverGetItemDefArchive;
+      response.data = JSON.parse((response.data as string).slice(0, -1)) as SteamRetrieverGetItemDefArchiveType;
 
       const resultItems: Record<string, unknown> = {};
       const resultDefaultItems: Record<string, number> = {};
 
-      for (const item of response.data as SteamRetrieverGetItemDefArchive) {
+      for (const item of response.data as SteamRetrieverGetItemDefArchiveType) {
         const { itemdefid } = item;
         resultItems[itemdefid] = item;
         resultDefaultItems[itemdefid] = 1;
       }
 
-      await writeJson(this.gamePaths.appIdItemsInfoPath, resultItems, {
+      await writeJson(this.gamePaths.itemsFilePath, resultItems, {
         spaces: 2,
       }).then(() => {
-        this.console(`${this.gamePaths.appIdItemsInfoPath} was written successfully!`, true);
+        this.console(`${this.gamePaths.itemsFilePath} was written successfully!`, true);
       });
 
-      await writeJson(this.gamePaths.appIdDefaultItemsInfoPath, resultDefaultItems, {
+      await writeJson(this.gamePaths.defaultItemsFilePath, resultDefaultItems, {
         spaces: 2,
       }).then(() => {
-        this.console(`${this.gamePaths.appIdDefaultItemsInfoPath} was written successfully!`, true);
+        this.console(`${this.gamePaths.defaultItemsFilePath} was written successfully!`, true);
       });
     } else {
       this.console('The game has no items.', true);
@@ -378,8 +378,8 @@ class SteamRetriever {
   // BASED ON generate_interfaces_file.cpp BY Mr. GoldBerg
   private async writeSteamApiInterfaces(dll: string) {
     const interfaces = await this.findSteamApiInterfaces(dll);
-    await writeFile(this.gamePaths.appIdSteamInterfacesPath, interfaces.join('\r\n')).then(() => {
-      this.console(`${this.gamePaths.appIdSteamInterfacesPath} was written successfully!`, true);
+    await writeFile(this.gamePaths.steamInterfacesFilePath, interfaces.join('\r\n')).then(() => {
+      this.console(`${this.gamePaths.steamInterfacesFilePath} was written successfully!`, true);
     });
   }
 

@@ -10,7 +10,7 @@ class NavPartialView {
   }
 
   private async setDom() {
-    const contextTemplate = { networkStatusMode: await window.api.settings.getNetworkStatus() };
+    const contextTemplate = { networkStatus: await window.api.settings.getNetworkStatus() };
     const generatedTemplate = await window.api.app.handlebarsGenerate(navTemplate, contextTemplate);
 
     this.dom = $(generatedTemplate);
@@ -37,6 +37,7 @@ class NavPartialView {
 
     this.dom.on('click', 'button[data-sk="titlebar"]', (event) => {
       event.preventDefault();
+
       const function_ = $(event.currentTarget).attr('data-sk-fn')!;
       switch (function_) {
         case 'minimize':

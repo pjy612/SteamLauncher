@@ -1,15 +1,19 @@
-import { app, session } from 'electron';
+import { app, session, Notification } from 'electron';
 import { appId } from '../../../electron-builder.json';
 import { appCommandsLine, appIsInstalled } from './app';
 import SteamGame from './classes/steam-game';
 import allowedWillNavigateUrls from './configs/allowed-will-navigate-urls';
-import { createWindow, openUrlExternallyWindow } from './functions/app-window';
+import { createWindow, appOpenUrl } from './functions/app-window';
 import autoUpdater from './instances/autoupdater';
-import log from './instances/log';
+import logger from './instances/logger';
 import './node';
 import './ipc/_ipcs';
 
-log.info(`${app.getName()} is booting up... (mode: ${appIsInstalled ? 'installer' : 'portable'})`);
+logger.info(
+  `${app.getName()} is booting up... (mode: ${
+    appIsInstalled ? 'installer' : 'portable'
+  }, notifications: ${Notification.isSupported().toString()})`
+);
 
 if (appCommandsLine.length > 0) {
   SteamGame.launchFromAppCommandsLine(appCommandsLine);
@@ -38,12 +42,12 @@ app.on('web-contents-created', (_event, webContents) => {
       event.preventDefault();
     }
 
-    openUrlExternallyWindow(url);
+    appOpenUrl(url);
   });
 
   // SECURITY: https://www.electronjs.org/docs/latest/tutorial/security/#14-disable-or-limit-creation-of-new-windows
   webContents.setWindowOpenHandler(({ url }) => {
-    openUrlExternallyWindow(url);
+    appOpenUrl(url);
 
     return {
       action: 'deny',

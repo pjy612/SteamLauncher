@@ -3,7 +3,6 @@ import accountTemplate from './account.hbs?raw';
 
 class AccountView {
   private dom = $('');
-
   private isEditMode = false;
 
   public async show(editMode = false) {
@@ -23,8 +22,8 @@ class AccountView {
     if (this.isEditMode) {
       accountData = await window.api.account.getData();
     } else {
-      const steamId = await window.api.account.getRandomSteamId();
-      accountData = { steamId };
+      const accountRandomSteamId = await window.api.account.getRandomSteamId();
+      accountData = { steamId: accountRandomSteamId };
     }
 
     Object.assign(contextTemplate, {

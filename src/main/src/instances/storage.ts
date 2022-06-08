@@ -1,25 +1,26 @@
 import { app } from 'electron';
-import Conf from 'conf';
+import Conf, { Options } from 'conf';
 import paths from '../configs/paths';
 // eslint-disable-next-line import/no-cycle
-import { getWindow } from '../functions/app-window';
+import { appGetWindow } from '../functions/app-window';
 import migrations from './storage/migrations';
 
-const storage = new Conf<StoreType>({
-  configName: `config${app.isPackaged ? '' : '.dev'}`,
-  cwd: paths.appDataPath,
+const options: Options<StoreType> = {
+  cwd: paths.appDataRootPath,
   watch: true,
+  configName: `config${app.isPackaged ? '' : '.dev'}`,
   defaults: {
     settings: {
-      httpsRejectUnauthorized: true,
       network: true,
+      httpsRejectUnauthorized: true,
     },
   },
   migrations,
-});
+};
+const storage = new Conf<StoreType>(options);
 
 storage.onDidChange('games', () => {
-  const window = getWindow();
+  const window = appGetWindow();
   if (typeof window !== 'undefined') {
     window.webContents.send('app-home-reload-games-list');
   }

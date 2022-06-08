@@ -4,17 +4,17 @@ import allowedExternalUrls from '../configs/allowed-external-urls';
 import storage from '../instances/storage';
 import paths from '../configs/paths';
 
-let createdWindow: BrowserWindow | undefined;
+let appWindow: BrowserWindow | undefined;
 
-const stateChangeHandler = (win: BrowserWindow) => {
-  storage.set('window.bounds', win.getBounds());
-  storage.set('window.isMaximized', win.isMaximized());
-  storage.set('window.isFullScreen', win.isFullScreen());
+const windowStateChangeHandler = () => {
+  storage.set('window.bounds', appWindow?.getBounds());
+  storage.set('window.isMaximized', appWindow?.isMaximized());
+  storage.set('window.isFullScreen', appWindow?.isFullScreen());
 };
 
-export const getWindow = () => createdWindow;
+export const appGetWindow = () => appWindow;
 
-export const openUrlExternallyWindow = (url: string) => {
+export const appOpenUrl = (url: string) => {
   const parsedUrl = new URL(url);
   if (allowedExternalUrls.has(parsedUrl.hostname)) {
     setImmediate(async () => {
@@ -28,7 +28,7 @@ export const createWindow = async () => {
   const widthWindow = 1000 + padding;
   const heightWindow = 720 + padding;
 
-  createdWindow = new BrowserWindow({
+  appWindow = new BrowserWindow({
     width: widthWindow,
     minWidth: widthWindow,
     height: heightWindow,
@@ -44,65 +44,63 @@ export const createWindow = async () => {
     },
   });
 
-  createdWindow.on('ready-to-show', () => {
-    createdWindow?.show();
+  appWindow.on('ready-to-show', () => {
+    appWindow?.show();
 
     const windowIsMaximized = storage.get('window.isMaximized', false);
     if (windowIsMaximized) {
-      createdWindow?.maximize();
+      appWindow?.maximize();
     }
 
     const windowIsFullScreen = storage.get('window.isFullScreen', false);
     if (windowIsFullScreen) {
-      createdWindow?.setFullScreen(true);
+      appWindow?.setFullScreen(true);
     }
 
     const windowBounds = storage.get('window.bounds');
-    if (typeof windowBounds !== 'undefined' && createdWindow?.isNormal()) {
-      createdWindow.setBounds(windowBounds as Partial<Rectangle>);
+    if (typeof windowBounds !== 'undefined' && appWindow?.isNormal()) {
+      appWindow.setBounds(windowBounds as Partial<Rectangle>);
     }
   });
 
   const windowStateChangeName = 'window-state-change';
 
-  createdWindow.on('resized', () => {
-    stateChangeHandler(createdWindow!);
+  appWindow.on('resized', () => {
+    windowStateChangeHandler();
   });
 
-  createdWindow.on('moved', () => {
-    stateChangeHandler(createdWindow!);
+  appWindow.on('moved', () => {
+    windowStateChangeHandler();
   });
 
-  createdWindow.on('close', () => {
-    stateChangeHandler(createdWindow!);
+  appWindow.on('close', () => {
+    windowStateChangeHandler();
   });
 
-  createdWindow.on('maximize', () => {
-    stateChangeHandler(createdWindow!);
-    createdWindow?.webContents.send(windowStateChangeName, true);
+  appWindow.on('maximize', () => {
+    windowStateChangeHandler();
+    appWindow?.webContents.send(windowStateChangeName, true);
   });
 
-  createdWindow.on('unmaximize', () => {
-    stateChangeHandler(createdWindow!);
-    createdWindow?.webContents.send(windowStateChangeName, false);
+  appWindow.on('unmaximize', () => {
+    windowStateChangeHandler();
+    appWindow?.webContents.send(windowStateChangeName, false);
   });
 
-  createdWindow.webContents.on('did-finish-load', () => {
-    createdWindow?.webContents.send(windowStateChangeName, createdWindow.isMaximized());
+  appWindow.webContents.on('did-finish-load', () => {
+    appWindow?.webContents.send(windowStateChangeName, appWindow.isMaximized());
   });
 
   if (import.meta.env.PROD) {
-    createdWindow.removeMenu();
-    await createdWindow.loadFile(paths.files.renderFilePath);
+    appWindow.removeMenu();
+    await appWindow.loadFile(paths.files.renderFilePath);
   } else {
-    const viteServerUrl = 'http://localhost:3000/';
-
-    await createdWindow.loadURL(viteServerUrl);
+    await appWindow.loadURL('http://localhost:3000/');
   }
 
-  createdWindow.webContents.openDevTools({
+  appWindow.webContents.openDevTools({
     mode: 'undocked',
   });
 
-  return createdWindow;
+  return appWindow;
 };

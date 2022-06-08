@@ -11,13 +11,13 @@ const iteratorToObject = (nn: URLSearchParams) => {
 };
 
 class Navigare {
-  private routes: NavigareRoutes = {};
+  private routes: NavigareRoutesType = {};
 
   public constructor() {
     this._listen();
   }
 
-  public on(path: string, callback: (match: NavigareMatchData) => void) {
+  public on(path: string, callback: (match: NavigareMatchDataType) => void) {
     this.routes[path] = callback;
   }
 
@@ -30,7 +30,7 @@ class Navigare {
     $(window).trigger('hashchange');
   }
 
-  public getCurrentLocationInfo(): NavigareMatchData {
+  public getCurrentLocationInfo(): NavigareMatchDataType {
     const findRoute = this._findRoute(window.location.hash);
     return findRoute.exists
       ? {
@@ -59,7 +59,7 @@ class Navigare {
     });
   }
 
-  private _findRoute(path: string): NavigareMatch {
+  private _findRoute(path: string): NavigareMatchType {
     const cleanedPath = this._cleanPath(path);
     const fakeUrl = this._fakeUrl(path);
     const routes = Object.keys(this.routes)

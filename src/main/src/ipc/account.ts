@@ -7,13 +7,14 @@ import appNotify from '../functions/app-notify';
 import storage from '../instances/storage';
 
 const functionAccountCreateEdit = (_event: IpcMainEvent, inputs: StoreAccountType) => {
-  if (!fromIndividualAccountID(inputs.steamId).isValidIndividual()) {
-    appNotify(`Invalid ${inputs.steamId} SteamId!`);
-    return;
-  }
-
   appNotify(storage.has('account') ? 'Account edited successfully!' : 'Account created successfully!');
-  storage.set('account', inputs);
+
+  storage.set('account.name', inputs.name);
+  storage.set('account.language', inputs.language);
+  storage.set('account.steamId', inputs.steamId);
+  storage.set('account.listenPort', inputs.listenPort);
+  storage.set('account.steamWebApiKey', inputs.steamWebApiKey);
+
   appModalsHide();
 };
 

@@ -1,15 +1,14 @@
 import { Notification } from 'electron';
-import log from '../instances/log';
+import logger from '../instances/logger';
 
 const appNotify = (message: string) => {
   if (Notification.isSupported()) {
-    const nn = new Notification({
+    const notification = new Notification({
       body: message,
     });
-    nn.show();
+    notification.show();
   } else {
-    // log.error('Notifications system is not supported! Message:');
-    log.info(message);
+    logger.info(message);
   }
 };
 
