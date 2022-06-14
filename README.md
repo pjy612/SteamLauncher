@@ -28,7 +28,7 @@ For more information on the emulator: [gitlab](https://gitlab.com/Mr_Goldberg/go
 
 - **SteamRetriever** _(from v0.0.3)_
   - In a simple way: it is the one that extracts all the data from steam.
-- **Mr. GoldBerg Emulator Autodownload** _(from v0.1.5)_
+- **SteamEmulator** _(from v0.1.5)_
   - The first time you start the game, the emulator will be downloaded and extracted to the appropriate folder within SteamLauncher. This feature also includes auto updating of it.
 - **SteamCloud** _(from v0.1.5)_
   - It is not properly as Steam Cloud, the saves game data is not saved on Steam but they are saved all within the folder **"PATH_STEAMLAUNCHER/data/steam_cloud/"** in portable mode or **"%APPDATA%/SteamLauncher/data/steam_cloud/"** in installer mode.
@@ -70,7 +70,7 @@ When the application starts, you will be asked to create the account. Once done,
 - Set force_listen_port.txt
 - Set account_name.txt (inside steam_saves/settings)
 - Set language.txt (inside steam_saves/settings)
-- Set user_steam_id (inside steam_saves/settings)
+- Set user_steam_id.txt (inside steam_saves/settings)
 - Set listen_port.txt (inside steam_saves/settings)
 - Set steam_interfaces.txt (only if steam_api(64).dll is before May 2016)
 
@@ -78,7 +78,7 @@ When the application starts, you will be asked to create the account. Once done,
 
 - All those not listed.
 
-To solve this problem just go to the folder **"PATH_STEAMLAUNCHER/data/steam_retriever/APPID"** in portable mode or **"%APPDATA%/SteamLauncher/data/steam_retriever/"** in installer mode and enter the missing data.
+To solve this problem just go to the folder **"PATH_STEAMLAUNCHER/data/steam_retriever/APPID"** in portable mode or **"%APPDATA%/SteamLauncher/data/steam_retriever/APPID"** in installer mode and enter the missing data.
 
 **Attention! Supported features are always overwritten!**
 
