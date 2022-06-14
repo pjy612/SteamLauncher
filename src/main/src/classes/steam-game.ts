@@ -4,8 +4,9 @@ import { pathExists, emptyDir, copy, writeFile, ensureDir, remove } from 'fs-ext
 import ini from 'ini';
 import appNotify from '../functions/app-notify';
 import storage from '../instances/storage';
-import paths from '../configs/paths';
 import appExec from '../functions/app-exec';
+import logger from '../instances/logger';
+import paths from '../configs/paths';
 import SteamEmulator from './steam-emulator';
 // eslint-disable-next-line import/no-cycle
 import SteamCloud from './steam-cloud';
@@ -180,7 +181,9 @@ class SteamGame {
       const { 0: argumentAppId } = appCommandsLine;
       const dataGame = SteamGame.getData(argumentAppId);
       if (typeof dataGame !== 'undefined') {
-        void SteamGame.launch(dataGame);
+        SteamGame.launch(dataGame)
+          .then(() => app.quit())
+          .catch((error: Error) => logger.error(error.message));
       } else {
         dialog.showErrorBox('Error', `The game with appId ${argumentAppId} does not exist!`);
       }
