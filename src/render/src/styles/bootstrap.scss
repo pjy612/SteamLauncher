@@ -1,14 +1,6 @@
 @import 'github-markdown-css/github-markdown-dark.css';
 @import '@mdi/font/css/materialdesignicons.min.css';
 
-/*!
- * Bootstrap v5.2.0-beta1 (https://getbootstrap.com/)
- * Copyright 2011-2022 The Bootstrap Authors
- * Copyright 2011-2022 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
- */
-
-// scss-docs-start import-stack
 // Configuration
 @import 'bootstrap/scss/functions';
 @import './variables';
@@ -56,7 +48,6 @@
 
 // Utilities
 @import 'bootstrap/scss/utilities/api';
-// scss-docs-end import-stack
 
 @import './root';
 @import './img';

@@ -48,10 +48,16 @@ const migration019 = {
 };
 
 const migration020 = {
-  '0.1.9': (store: Conf<StoreType>) => {
+  '0.2.0': (store: Conf<StoreType>) => {
     store.set('settings.ssePersist', false);
     store.set('settings.sseInjectDll', false);
     store.set('settings.sseParanoidMode', false);
+  },
+};
+
+const migration021 = {
+  '0.2.1': (store: Conf<StoreType>) => {
+    store.set('settings.emulatorUpdater', true);
   },
 };
 
@@ -59,4 +65,5 @@ export default {
   ...migration012,
   ...migration019,
   ...migration020,
+  ...migration021,
 };

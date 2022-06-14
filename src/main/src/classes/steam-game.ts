@@ -80,10 +80,20 @@ class SteamGame {
   }
 
   public static async launch(dataGame: StoreGameDataType, withoutEmu = false) {
-    const dataGameAppId = dataGame.appId;
     const dataGameExecutableFilePath = dataGame.executableFilePath;
     const dataGameExecutableWorkingDirectory = dataGame.executableWorkingDirectory;
     const dataGameCommandLine = dataGame.commandLine;
+
+    if (withoutEmu) {
+      await appExec(dataGameExecutableFilePath, dataGameCommandLine.split(' '), dataGameExecutableWorkingDirectory);
+      return;
+    }
+
+    if (!(await new SteamEmulator().checkForUpdatesAndNotify())) {
+      return;
+    }
+
+    const dataGameAppId = dataGame.appId;
     const dataGameDisableOverlay = dataGame.disableOverlay;
     const dataGameDisableNetworking = dataGame.disableNetworking;
     const dataGameDisableLanOnly = dataGame.disableLanOnly;
@@ -96,16 +106,6 @@ class SteamGame {
     const dataAccount = storage.get('account') as StoreAccountType;
     const dataSettings = storage.get('settings') as StoreSettingsType;
     const dataNetwork = dataSettings.network;
-
-    if (withoutEmu) {
-      await appExec(dataGameExecutableFilePath, dataGameCommandLine.split(' '), dataGameExecutableWorkingDirectory);
-      return;
-    }
-
-    if (!(await SteamEmulator.checkForUpdatesAndNotify())) {
-      appNotify('SteamEmulator: Error with the verification of the emulator, check the logs.');
-      return;
-    }
 
     // root/disable_lan_only.txt
     await (dataGameDisableLanOnly

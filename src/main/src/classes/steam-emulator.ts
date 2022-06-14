@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import { join } from 'node:path';
 import AdmZip from 'adm-zip';
 import axios from 'axios';
@@ -6,75 +7,105 @@ import appDownload from '../functions/app-download';
 import logger from '../instances/logger';
 import storage from '../instances/storage';
 import paths from '../configs/paths';
+import appNotify from '../functions/app-notify';
 
 class SteamEmulator {
-  public static async checkForUpdatesAndNotify() {
-    const logHeader = 'SteamEmulator:';
-    const existsEmuFiles =
-      (await pathExists(paths.emulator.steamClientFilePath)) &&
-      (await pathExists(paths.emulator.steamClient64FilePath));
+  private loggerHeader = 'SteamEmulator:';
+  private emulatorUpdater = storage.get('settings.emulatorUpdater', true);
 
+  private async checkEmulatorFilesExists() {
+    return (
+      // eslint-disable-next-line no-return-await
+      (await pathExists(paths.emulator.steamClientFilePath)) && (await pathExists(paths.emulator.steamClient64FilePath))
+    );
+  }
+
+  private async getLatestVersion() {
     try {
-      logger.info(`${logHeader} Check which is the latest version of the emulator...`);
+      const emulatorLocalJobId: string | undefined = storage.get('settings.emulatorLocalJobId');
 
-      const url = 'https://mr_goldberg.gitlab.io/goldberg_emulator/';
-      const response = await axios.get(url);
+      const response = await axios.get('https://mr_goldberg.gitlab.io/goldberg_emulator/');
       const responseHtml = response.data as string;
-      const regex =
-        /https:\/\/gitlab\.com\/Mr_Goldberg\/goldberg_emulator\/-\/jobs\/(?<jobid>.*)\/artifacts\/download/gu;
-      const match = [...responseHtml.matchAll(regex)].map((match) => [match[0], match.groups?.jobid]);
-      const downloadUrl = match[0][0];
-      const downloadJobId = match[0][1];
+
+      // eslint-disable-next-line prefer-named-capture-group
+      const regex = /https:\/\/gitlab\.com\/Mr_Goldberg\/goldberg_emulator\/-\/jobs\/(\d+)\/artifacts\/download/gu;
+      const match = [...responseHtml.matchAll(regex)];
+
+      const firstMatch = match[0];
+      const downloadUrl = firstMatch[0];
+      const downloadJobId = firstMatch[1];
 
       if (typeof downloadUrl === 'undefined' && typeof downloadJobId === 'undefined') {
-        logger.error(
-          `${logHeader} Unknown error, it was not possible to check which is the latest version of the emulator.`
-        );
-        // NOTE: i still continue if the emulator exists.
-        return existsEmuFiles;
+        logger.error(`${this.loggerHeader} Unknown error, the emulator info could not be extracted.`);
+        return false;
       }
 
-      const emulatorLocalJobId: string = storage.get('settings.emulatorLocalJobId');
-      if (emulatorLocalJobId === downloadJobId && existsEmuFiles) {
-        logger.info(
-          `${logHeader} Good job! You already have the latest version of the emulator. (emulatorLocalJobId: ${emulatorLocalJobId}, emulatorOnlineJobId: ${downloadJobId})`
-        );
+      logger.info(
+        `${
+          this.loggerHeader
+        } Extracted info: emulatorLocalJobId -> "${emulatorLocalJobId!}"; emulatorOnlineJobId -> "${downloadJobId}"; emulatorUrlDownload -> "${downloadUrl}"...`
+      );
+
+      if (emulatorLocalJobId === downloadJobId && (await this.checkEmulatorFilesExists())) {
+        logger.info(`${this.loggerHeader} Good job! You already have the latest version of the emulator.`);
         return true;
       }
 
-      const pathZip = join(paths.emulator.jobsPath, `${downloadJobId!}.zip`);
-
       await ensureDir(paths.emulator.jobsPath);
 
-      if (!(await pathExists(pathZip))) {
-        logger.info(
-          `${logHeader} I'm downloading the latest version of the emulator... (emulatorOnlineJobId: ${
-            downloadJobId as string
-          })`
-        );
-        await appDownload(downloadUrl!, pathZip);
+      const emulatorJobZipFilePath = join(paths.emulator.jobsPath, `${downloadJobId}.zip`);
+      if (!(await pathExists(emulatorJobZipFilePath))) {
+        logger.info(`${this.loggerHeader} I'm downloading the latest version of the emulator...`);
+        await appDownload(downloadUrl, emulatorJobZipFilePath);
       } else {
-        logger.info(
-          `${logHeader} I take the latest version of the emulator from the cache... (emulatorOnlineJobId: ${
-            downloadJobId as string
-          })`
-        );
+        logger.info(`${this.loggerHeader} I take the latest version of the emulator from the cache...`);
       }
 
-      const zip = new AdmZip(pathZip);
-      zip.extractEntryTo('experimental_steamclient/steamclient.dll', paths.emulator.rootPath, false, true);
-      zip.extractEntryTo('experimental_steamclient/steamclient64.dll', paths.emulator.rootPath, false, true);
+      const emulatorJobZipFile = new AdmZip(emulatorJobZipFilePath);
+      emulatorJobZipFile.extractEntryTo(
+        'experimental_steamclient/steamclient.dll',
+        paths.emulator.rootPath,
+        false,
+        true
+      );
+      emulatorJobZipFile.extractEntryTo(
+        'experimental_steamclient/steamclient64.dll',
+        paths.emulator.rootPath,
+        false,
+        true
+      );
 
-      logger.info(`${logHeader} The emulator has been successfully updated.`);
-
+      logger.info(`${this.loggerHeader} The emulator has been successfully saved to disk.`);
       storage.set('settings.emulatorLocalJobId', downloadJobId);
-
       return true;
     } catch (error) {
-      logger.error(`${logHeader} ${(error as Error).message}`);
-      // NOTE: i still continue if the emulator exists.
-      return existsEmuFiles;
+      logger.info(`${this.loggerHeader} ${(error as Error).message}`);
+      return false;
     }
+  }
+
+  public async checkForUpdatesAndNotify() {
+    if (await this.checkEmulatorFilesExists()) {
+      logger.info(`${this.loggerHeader} The emulator files exist, check if automatic updates are enabled...`);
+      if (this.emulatorUpdater) {
+        logger.info(`${this.loggerHeader} Automatic updates are enabled...`);
+        await this.getLatestVersion();
+      } else {
+        logger.info(`${this.loggerHeader} Automatic updates are disabled...`);
+      }
+    } else {
+      logger.info(`${this.loggerHeader} The emulator files do not exist, I download the latest version...`);
+      // NOTE: if it does not exist, it is also correct to remove the trace of the last used version
+      storage.set('settings.emulatorLocalJobId', '');
+      await this.getLatestVersion();
+    }
+
+    const checkAfterExtractionOfFiles = this.checkEmulatorFilesExists();
+    if (!checkAfterExtractionOfFiles) {
+      appNotify(`${this.loggerHeader} Unknown error, check the logs!`);
+    }
+
+    return checkAfterExtractionOfFiles;
   }
 }
 

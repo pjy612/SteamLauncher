@@ -7,6 +7,7 @@ import appModalsHide from '../functions/app-modals-hide';
 import appNotify from '../functions/app-notify';
 import appPromptYesNo from '../functions/app-prompt-yes-no';
 import storage from '../instances/storage';
+import appNavigate from '../functions/app-navigate';
 
 const functionGameAddEdit = async (_event: IpcMainEvent, inputs: StoreGameDataType) => {
   const key = `games.${inputs.appId}`;
@@ -37,7 +38,7 @@ const functionGameAddEdit = async (_event: IpcMainEvent, inputs: StoreGameDataTy
 ipc.on('game-add', functionGameAddEdit);
 ipc.on('game-edit', functionGameAddEdit);
 
-ipc.on('game-contextmenu', (event, appId: string) => {
+ipc.on('game-contextmenu', (_event, appId: string) => {
   const dataGame = SteamGame.getData(appId);
   if (typeof dataGame !== 'undefined') {
     const menu = Menu.buildFromTemplate([
@@ -72,7 +73,7 @@ ipc.on('game-contextmenu', (event, appId: string) => {
         },
       },
       {
-        label: 'Open saves location',
+        label: 'Open emulator saves location',
         async click() {
           await SteamGame.openSavesLocation(dataGame);
         },
@@ -122,7 +123,7 @@ ipc.on('game-contextmenu', (event, appId: string) => {
       {
         label: 'Edit game',
         click() {
-          event.sender.send('app-navigate', `/game/edit/${appId}`);
+          appNavigate(`/game/edit/${appId}`);
         },
       },
       {

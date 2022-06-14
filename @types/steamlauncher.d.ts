@@ -137,6 +137,7 @@ declare global {
   interface StoreSettingsType {
     network: boolean;
     httpsRejectUnauthorized: boolean;
+    emulatorUpdater: boolean;
     emulatorLocalJobId?: string;
     ssePersist?: boolean;
     sseInjectDll?: boolean;

@@ -43,7 +43,7 @@ $(() => {
             window.api.app.notify('Is not possible to add more than one file!');
           }
         } else {
-          window.api.app.notify('filedrop: unknown error');
+          window.api.app.notify('Unknown Error');
         }
       });
     });

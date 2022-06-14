@@ -13,6 +13,7 @@ const options: Options<StoreType> = {
     settings: {
       network: true,
       httpsRejectUnauthorized: true,
+      emulatorUpdater: true,
     },
   },
   migrations,

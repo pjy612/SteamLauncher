@@ -7,6 +7,8 @@ ipc.on('settings-edit', (_event, inputs: StoreSettingsType) => {
   appNotify('Settings edited successfully!');
 
   storage.set('settings.httpsRejectUnauthorized', inputs.httpsRejectUnauthorized);
+  storage.set('settings.emulatorUpdater', inputs.emulatorUpdater);
+
   storage.set('settings.ssePersist', inputs.ssePersist);
   storage.set('settings.sseInjectDll', inputs.sseInjectDll);
   storage.set('settings.sseParanoidMode', inputs.sseParanoidMode);

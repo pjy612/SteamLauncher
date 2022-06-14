@@ -23,8 +23,8 @@
               type='button'
               class='nav-link'
               data-bs-toggle='tab'
-              data-bs-target='#smartSteamLoader'
-            >SmartSteamLoader</button>
+              data-bs-target='#steamEmulator'
+            >SteamEmulator</button>
           </li>
           <li class='nav-item'>
             <button type='button' class='nav-link' data-bs-toggle='tab' data-bs-target='#steamCloud'>SteamCloud</button>
@@ -54,15 +54,39 @@
                     <span>SSL Certificate Verification [default. Enabled]</span>
                   </label>
                   <div class='form-text text-light text-center'>If you encounter the "unable to verify the first
-                    certificate" error, try disabling the ssl certificate verification.<br />If this value is changed,
-                    restart the app.</div>
+                    certificate" error, try disabling the ssl certificate verification.<br />If you change this value,
+                    restart the application.</div>
                 </div>
               </div>
             </div>
           </div>
-          <div class='tab-pane fade' id='smartSteamLoader'>
+          <div class='tab-pane fade' id='steamEmulator'>
             <div class='card text-bg-st-primary'>
               <div class='card-body'>
+                <div class='form-floating'>
+                  <select
+                    id='floatingEmulatorUpdater'
+                    class='form-select text-bg-light'
+                    name='emulatorUpdater'
+                    required
+                  >
+                    {{#if settingsData.emulatorUpdater}}
+                      <option value='true' selected>Enabled</option>
+                      <option value='false'>Disabled</option>
+                    {{else}}
+                      <option value='true'>Enabled</option>
+                      <option value='false' selected>Disabled</option>
+                    {{/if}}
+                  </select>
+                  <label for='floatingEmulatorUpdater' class='text-dark'>
+                    <span class='mdi mdi-update'></span>
+                    <span>Updater [default. Enabled]</span>
+                  </label>
+                  <div class='form-text text-light text-center'>Automatically updates the steam emulator, if the
+                    function is disabled the emulator is no longer updated but downloaded only once if it is missing.</div>
+                </div>
+                <hr />
+                <h4 class='text-center'>SmartSteamLoader</h4>
                 <div class='form-floating'>
                   <select id='floatingSsePersist' class='form-select text-bg-light' name='ssePersist' required>
                     {{#if settingsData.ssePersist}}
