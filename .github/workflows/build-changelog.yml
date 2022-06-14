@@ -7,29 +7,37 @@ on:
 
 jobs:
   build-changelog:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
     steps:
       - name: Action / Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.0.2
         with:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
 
       - name: Action / Setup GO
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v3.2.0
         with:
-          go-version: '>=1.18.1'
-          check-latest: 'true'
-      - name: git-chglog | Download
+          go-version: '1.18.3'
+          cache: true
+
+      - name: git-chglog / Download
         run: |
           go install github.com/git-chglog/git-chglog/cmd/git-chglog@latest
-      - name: git-chglog | Update CHANGELOG.md
+
+      - name: git-chglog / Update CHANGELOG.md
         run: |
           git-chglog -o CHANGELOG.md
-      - name: git-chglog | Commit
-        uses: stefanzweifel/git-auto-commit-action@v4
+
+      - name: git-chglog / Auto Commit
+        uses: stefanzweifel/git-auto-commit-action@v4.14.1
         with:
-          branch: main
-          push_options: '--force'
           commit_message: 'docs: updated CHANGELOG.md'
           file_pattern: 'CHANGELOG.md'
+          push_options: '--force'
+          branch: 'main'
