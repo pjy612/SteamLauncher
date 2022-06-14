@@ -5,9 +5,7 @@ class HomeView {
   private dom = $('');
 
   public async show() {
-    if (await this.beforeHook()) {
-      return;
-    }
+    await this.beforeHook();
     await this.setDom();
     await this.appendGamesList();
     this.setEvents();
@@ -17,9 +15,7 @@ class HomeView {
   public async beforeHook() {
     if (!(await window.api.account.exist())) {
       router.navigate('/account/create');
-      return true;
     }
-    return false;
   }
 
   private async setDom() {

@@ -1,6 +1,6 @@
 # SteamLauncher (ALPHA (1.))
 
-**_SteamLauncher_** optimizes the setup process of each game in a simple and automatic way.
+**_SteamLauncher_** is a Windows application that optimizes the setup process of each game in a simple and automatic way.
 
 [forum cs.rin.ru support](https://cs.rin.ru/forum/viewtopic.php?f=20&t=116801)
 
@@ -18,7 +18,7 @@
 
 ## Introduction
 
-**_SteamLauncher_** is a windows application that optimizes the setup process of each game in a simple and automatic way.
+**_SteamLauncher_** is a Windows application that optimizes the setup process of each game in a simple and automatic way.
 
 Instead of manually configuring each game, **_SteamLauncher_** automatically performs all operations for **Mr. Goldberg's Steam Emulator**.
 
@@ -27,9 +27,9 @@ For more information on the emulator: [gitlab](https://gitlab.com/Mr_Goldberg/go
 ## Main Features
 
 - **SteamRetriever** _(from v0.0.3)_
-  - In a simple way: it is the one that extracts all the data from steam.
+  - In simple words: it is the one that extracts all the data from Steam.
 - **SteamEmulator** _(from v0.1.5)_
-  - The first time you start the game, the emulator will be downloaded and extracted to the appropriate folder within SteamLauncher. This feature also includes auto updating of it.
+  - The first time you start the game, the Steam Emulator will be downloaded and extracted to the appropriate folder within SteamLauncher. This feature also includes auto updating of it.
 - **SteamCloud** _(from v0.1.5)_
   - It is not properly as Steam Cloud, the saves game data is not saved on Steam but they are saved all within the folder **"PATH_STEAMLAUNCHER/data/steam_cloud/"** in portable mode or **"%APPDATA%/SteamLauncher/data/steam_cloud/"** in installer mode.
   - Backup and restore is done automatically or manually.
