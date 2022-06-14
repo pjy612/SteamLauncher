@@ -3,12 +3,23 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
-#### _All_
-- ci: fixed
 
+<a name="v0.2.2"></a>
+## [v0.2.2] (2022-06-14)
+
+#### _All_
+- v0.2.2
+- Merge branch 'main' of https://github.com/Sak32009/SteamLauncher
+- fix: oooops, fixed launch game from commands line
+- docs: updated CHANGELOG.md
+- ci: fixed
 #### _By type_
+### Bug Fixes
+- oooops, fixed launch game from commands line
 ### CI
 - fixed
+### Docs
+- updated CHANGELOG.md
 
 <a name="v0.2.1"></a>
 ## [v0.2.1] (2022-06-14)
@@ -343,7 +354,8 @@
 - upload
 - Initial commit
 
-[Unreleased]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.2...HEAD
+[v0.2.2]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.1...v0.2.2
 [v0.2.1]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.0...v0.2.1
 [v0.2.0]: https://github.com/Sak32009/SteamLauncher/compare/v0.1.9...v0.2.0
 [v0.1.9]: https://github.com/Sak32009/SteamLauncher/compare/v0.1.8...v0.1.9
