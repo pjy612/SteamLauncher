@@ -17,33 +17,31 @@ $(async () => {
 });
 
 router.on('/', () => {
-  // nada
+  // it is useful for modals
 });
 
-const aboutController = new AboutView();
 router.on('/about', async () => {
-  await aboutController.show();
+  await new AboutView().show();
 });
 
-const accountController = new AccountView();
 router.on('/account/create', async () => {
-  await accountController.show();
+  await new AccountView().show();
 });
 
 router.on('/account/edit', async () => {
-  await accountController.show(true);
+  await new AccountView().show(true);
 });
 
-const settingsController = new SettingsView();
 router.on('/settings', async () => {
-  await settingsController.show();
+  await new SettingsView().show();
 });
 
-const gameController = new GameView();
-router.on('/game/add', async () => {
-  await gameController.show();
+router.on('/game/add/:data', async () => {
+  await new GameView().show();
 });
 
 router.on('/game/edit/:appId', async () => {
-  await gameController.show(true);
+  await new GameView().show(true);
 });
+
+router.resolve();

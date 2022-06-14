@@ -18,18 +18,18 @@ class GameView {
       isEditMode: this.isEditMode,
       allowedLanguages,
     };
-    const getCurrentLocationInfo = router.getCurrentLocationInfo();
+    const getCurrentLocationInfo = router.getCurrentLocation();
 
     if (this.isEditMode) {
-      const appId = getCurrentLocationInfo?.data?.appId;
-      const gameData = await window.api.game.getData(appId!);
-
+      const parameterAppId = getCurrentLocationInfo?.params.appId;
+      const gameData = await window.api.game.getData(parameterAppId!);
       Object.assign(contextTemplate, {
         gameData,
       });
     } else {
+      const parameterData = getCurrentLocationInfo?.params.data;
       Object.assign(contextTemplate, {
-        gameDataFromExe: getCurrentLocationInfo?.search,
+        gameDataFromExe: JSON.parse(parameterData!) as Record<string, string>,
       });
     }
 

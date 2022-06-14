@@ -11,21 +11,14 @@ declare global {
     root: string;
   }
 
-  type NavigareMatchType = {
+  interface NavigareDataType {
     path: string;
-    data: Record<string, string> | undefined;
-    search: Record<string, string>;
-    exists: boolean;
-  };
+    params: Record<string, string>;
+  }
 
-  type NavigareMatchDataType =
-    | {
-        data: Record<string, string> | undefined;
-        search: Record<string, string>;
-      }
-    | undefined;
+  type NavigareMatchType = NavigareDataType | undefined;
 
-  type NavigareRoutesType = Record<string, (match: NavigareMatchDataType) => void>;
+  type NavigareRoutesType = Record<string, (match: NavigareMatchType) => void>;
 
   interface SteamRetrieverGameDataType {
     name: string;
@@ -192,7 +185,7 @@ declare global {
       getName: () => Promise<string>;
       getVersion: () => Promise<string>;
       openLudusavi: () => void;
-      handlebarsGenerate: (template: string, context: Record<string, string> = {}) => Promise<string>;
+      handlebarsGenerate: (template: string, context: Record<string, unknown> = {}) => Promise<string>;
       notify: (message: string) => void;
     };
     game: {
