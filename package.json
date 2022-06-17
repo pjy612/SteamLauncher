@@ -1,7 +1,7 @@
 {
   "name": "steamlauncher",
   "productName": "SteamLauncher",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "SteamLauncher is a Windows application that optimizes the setup process of each game in a simple and automatic way.",
   "homepage": "https://github.com/Sak32009/SteamLauncher/",
   "bugs": "https://github.com/Sak32009/SteamLauncher/issues/",
