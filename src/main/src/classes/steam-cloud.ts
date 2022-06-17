@@ -12,8 +12,6 @@ class SteamCloud {
       const spawn = appSpawn(paths.ludusavi.filePath, commandsLine, paths.ludusavi.rootPath);
       const parse = JSON.parse(spawn.stdout) as LudusaviType;
 
-      logger.debug(util.format(parse));
-
       if (typeof parse.errors !== 'undefined') {
         if (typeof parse.errors.unknownGames !== 'undefined') {
           logger.debug(util.format(loggerHeader, 'unknownGames', parse.errors.unknownGames));
