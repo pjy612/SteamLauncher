@@ -4,6 +4,26 @@
 ## [Unreleased]
 
 
+<a name="v0.2.3"></a>
+## [v0.2.3] (2022-06-17)
+
+#### _All_
+- v0.2.3
+- refactor: steam-cloud
+- refactor: steam-cloud
+- mixed: the generation of the interface for the steam_api dlls is done through that of Mr. Goldberg; added yargs to manage the app command line; i improved the logic of ludusavi for backup and restore mode, in restore mode it has a bug that does not allow you to recover through the appid, now i hope everything works perfectly; i solved the cycle dependency problem; i solved the problem of displaying notifications; i solved the problem of starting applications via command line, there should be no more problems; now the autoupdater asks for confirmation before updating the application; added cache for http requests, data will refresh every 4 hours; added dialog error box for application errors, updated dependency; general improvements.
+- docs: updated CHANGELOG.md
+#### _By type_
+### Code Refactoring
+- steam-cloud
+- steam-cloud
+### Docs
+- updated CHANGELOG.md
+### Mixed
+- the generation of the interface for the steam_api dlls is done through that of Mr. Goldberg; added yargs to manage the app command line; i improved the logic of ludusavi for backup and restore mode, in restore mode it has a bug that does not allow you to recover through the appid, now i hope everything works perfectly; i solved the cycle dependency problem; i solved the problem of displaying notifications; i solved the problem of starting applications via command line, there should be no more problems; now the autoupdater asks for confirmation before updating the application; added cache for http requests, data will refresh every 4 hours; added dialog error box for application errors, updated dependency; general improvements.
+### BREAKING CHANGE
+The game shortcuts on the desktop need to be recreated.
+
 <a name="v0.2.2"></a>
 ## [v0.2.2] (2022-06-14)
 
@@ -354,7 +374,8 @@
 - upload
 - Initial commit
 
-[Unreleased]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.2...HEAD
+[Unreleased]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.3...HEAD
+[v0.2.3]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.2...v0.2.3
 [v0.2.2]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.1...v0.2.2
 [v0.2.1]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.0...v0.2.1
 [v0.2.0]: https://github.com/Sak32009/SteamLauncher/compare/v0.1.9...v0.2.0
