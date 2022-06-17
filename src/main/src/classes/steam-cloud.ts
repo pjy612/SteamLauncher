@@ -1,9 +1,9 @@
 import util from 'node:util';
 import glob from 'fast-glob';
 import appNotify from '../functions/app-notify';
+import appSpawn from '../functions/app-spawn';
 import logger from '../instances/logger';
 import paths from '../configs/paths';
-import appSpawn from '../functions/app-spawn';
 
 class SteamCloud {
   private static invokeLudusavi(commandsLine: string[]) {
