@@ -29,7 +29,7 @@ class GameView {
     } else {
       const parameterData = getCurrentLocationInfo?.params.data;
       Object.assign(contextTemplate, {
-        gameDataFromExe: JSON.parse(parameterData!) as Record<string, string>,
+        gameDataFromExe: JSON.parse(parameterData!) as Record<string, unknown>,
       });
     }
 

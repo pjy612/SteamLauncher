@@ -1,4 +1,5 @@
 import type { IpcRendererEvent, OpenDialogReturnValue } from 'electron';
+import type { StorageValue, MaybePromise } from 'axios-cache-interceptor';
 
 declare global {
   interface FilePathInfoType {
@@ -9,6 +10,52 @@ declare global {
     fullPath: string;
     name: string;
     root: string;
+  }
+
+  type PCGamingWikiApiDataType = {
+    _pageName: string;
+  };
+
+  type PCGamingWikiApiType = PCGamingWikiApiDataType[];
+
+  interface AxiosStorageType {
+    [id: string]: MaybePromise<StorageValue | undefined>;
+  }
+
+  interface LudusaviErrorsType {
+    someGamesFailed?: boolean;
+    unknownGames?: string[];
+  }
+
+  interface LudusaviOverallType {
+    totalGames: number;
+    totalBytes: number;
+    processedGames: number;
+    processedBytes: number;
+  }
+
+  interface LudusaviGamesFilesType {
+    failed: boolean;
+    bytes: number;
+    originalPath?: string;
+    duplicatedBy: string[];
+  }
+
+  interface LudusaviGamesRegistryType {
+    failed?: boolean;
+    duplicatedBy?: string[];
+  }
+
+  interface LudusaviGamesType {
+    decision: 'Processed' | 'Ignored' | 'Cancelled';
+    files: LudusaviGamesFilesType;
+    registry: LudusaviGamesRegistryType;
+  }
+
+  interface LudusaviType {
+    errors?: LudusaviErrorsType;
+    overall: LudusaviOverallType;
+    games: LudusaviGamesType;
   }
 
   interface NavigareDataType {
@@ -106,6 +153,7 @@ declare global {
   interface StoreGameDataPathsType {
     dataRootPath: string;
     savesRemoteRootPath: string;
+    savesCloudRootPath: string | undefined;
     achievementsFilePath: string;
     achievementsRootPath: string;
     defaultItemsFilePath: string;
@@ -119,6 +167,7 @@ declare global {
   interface StoreGameDataType {
     appId: string;
     name: string;
+    pcGamingWikiName: string;
     executableFilePath: string;
     executableWorkingDirectory: string;
     commandLine: string;

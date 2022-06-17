@@ -13,12 +13,11 @@ class AboutView {
   }
 
   private async setDom() {
-    const name = await window.api.app.getName();
     const version = await window.api.app.getVersion();
     const description = await window.api.app.getDescription();
     const copyright = await window.api.app.getCopyright();
 
-    const contextTemplate = { name, version, description, copyright };
+    const contextTemplate = { version, description, copyright };
     const generatedTemplate = await window.api.app.handlebarsGenerate(aboutTemplate, contextTemplate);
 
     this.dom = $(generatedTemplate);

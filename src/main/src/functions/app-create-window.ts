@@ -1,34 +1,21 @@
-import { BrowserWindow, Rectangle, shell } from 'electron';
-import allowedExternalUrls from '../configs/allowed-external-urls';
-// eslint-disable-next-line import/no-cycle
+import { BrowserWindow, Rectangle } from 'electron';
+import autoUpdater from '../instances/autoupdater';
 import storage from '../instances/storage';
 import paths from '../configs/paths';
+import { appIsInstalled } from '../app';
 
-let appWindow: BrowserWindow | undefined;
-
-const windowStateChangeHandler = () => {
-  storage.set('window.bounds', appWindow?.getBounds());
-  storage.set('window.isMaximized', appWindow?.isMaximized());
-  storage.set('window.isFullScreen', appWindow?.isFullScreen());
+const windowStateChangeHandler = (appWindow: BrowserWindow) => {
+  storage.set('window.bounds', appWindow.getBounds());
+  storage.set('window.isMaximized', appWindow.isMaximized());
+  storage.set('window.isFullScreen', appWindow.isFullScreen());
 };
 
-export const appGetWindow = () => appWindow;
-
-export const appOpenUrl = (url: string) => {
-  const parsedUrl = new URL(url);
-  if (allowedExternalUrls.has(parsedUrl.hostname)) {
-    setImmediate(async () => {
-      await shell.openExternal(url);
-    });
-  }
-};
-
-export const createWindow = async () => {
+const appCreateWindow = async () => {
   const padding = 10;
   const widthWindow = 1000 + padding;
   const heightWindow = 720 + padding;
 
-  appWindow = new BrowserWindow({
+  const appWindow = new BrowserWindow({
     width: widthWindow,
     minWidth: widthWindow,
     height: heightWindow,
@@ -66,24 +53,24 @@ export const createWindow = async () => {
   const windowStateChangeName = 'window-state-change';
 
   appWindow.on('resized', () => {
-    windowStateChangeHandler();
+    windowStateChangeHandler(appWindow);
   });
 
   appWindow.on('moved', () => {
-    windowStateChangeHandler();
+    windowStateChangeHandler(appWindow);
   });
 
   appWindow.on('close', () => {
-    windowStateChangeHandler();
+    windowStateChangeHandler(appWindow);
   });
 
   appWindow.on('maximize', () => {
-    windowStateChangeHandler();
+    windowStateChangeHandler(appWindow);
     appWindow?.webContents.send(windowStateChangeName, true);
   });
 
   appWindow.on('unmaximize', () => {
-    windowStateChangeHandler();
+    windowStateChangeHandler(appWindow);
     appWindow?.webContents.send(windowStateChangeName, false);
   });
 
@@ -102,5 +89,11 @@ export const createWindow = async () => {
     mode: 'undocked',
   });
 
+  if (appIsInstalled) {
+    await autoUpdater.checkForUpdates();
+  }
+
   return appWindow;
 };
+
+export default appCreateWindow;

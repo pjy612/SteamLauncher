@@ -10,7 +10,10 @@ class NavPartialView {
   }
 
   private async setDom() {
-    const contextTemplate = { networkStatus: await window.api.settings.getNetworkStatus() };
+    const contextTemplate = {
+      networkStatus: await window.api.settings.getNetworkStatus(),
+      version: await window.api.app.getVersion(),
+    };
     const generatedTemplate = await window.api.app.handlebarsGenerate(navTemplate, contextTemplate);
 
     this.dom = $(generatedTemplate);

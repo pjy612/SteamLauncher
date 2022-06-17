@@ -26,6 +26,7 @@ ipc.handle('account-data', () => storage.get('account'));
 ipc.handle('account-exist', () => storage.has('account'));
 
 ipc.handle('account-get-random-steamid', () => {
-  const nanoid = customAlphabet('0123456789', 8);
+  // NOTE: it is probable that with size 6 the saving problem has been solved
+  const nanoid = customAlphabet('0123456789', 6);
   return fromIndividualAccountID(nanoid()).getSteamID64();
 });

@@ -1,11 +1,11 @@
 import router from '../instances/router';
-import AboutView from './about/view';
-import AccountView from './account/view';
-import GameView from './game/view';
-import HomeView from './home/view';
-import SettingsView from './settings/view';
-import NavPartialView from './partials/nav/view';
-import ConsolePartialView from './partials/console/view';
+import AboutView from './about/about';
+import AccountView from './account/account';
+import GameView from './game/game';
+import HomeView from './home/home';
+import SettingsView from './settings/settings';
+import NavPartialView from './partials/nav/nav';
+import ConsolePartialView from './partials/console/console';
 
 const homeController = new HomeView();
 const navPartialController = new NavPartialView();

@@ -1,8 +1,7 @@
 import { app } from 'electron';
 import Conf, { Options } from 'conf';
 import paths from '../configs/paths';
-// eslint-disable-next-line import/no-cycle
-import { appGetWindow } from '../functions/app-window';
+import appGetWindow from '../functions/app-get-window';
 import migrations from './storage/migrations';
 
 const options: Options<StoreType> = {

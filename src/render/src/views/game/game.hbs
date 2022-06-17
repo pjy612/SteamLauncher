@@ -65,6 +65,44 @@
                     <span>AppId [ex. 1593500] {{#if isEditMode}}<b class='text-danger'>[not editable]</b>{{/if}}</span>
                   </label>
                 </div>
+                {{#if isEditMode}}
+                  <div class='row'>
+                    <div class='col'>
+                      <div class='form-floating mt-2'>
+                        <input
+                          type='text'
+                          id='floatingName'
+                          class='form-control text-bg-light'
+                          name='name'
+                          placeholder='...'
+                          value='{{gameData.name}}'
+                          readonly
+                        />
+                        <label for='floatingName' class='text-dark'>
+                          <span class='mdi mdi-form-textbox'></span>
+                          <span>Name <b class='text-danger'>[not editable]</b></span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class='col'>
+                      <div class='form-floating mt-2'>
+                        <input
+                          type='text'
+                          id='floatingCloudName'
+                          class='form-control text-bg-light'
+                          name='pcGamingWikiName'
+                          placeholder='...'
+                          value='{{gameData.pcGamingWikiName}}'
+                          readonly
+                        />
+                        <label for='floatingCloudName' class='text-dark'>
+                          <span class='mdi mdi-form-textbox'></span>
+                          <span>PCGamingWiki Name <b class='text-danger'>[not editable]</b></span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                {{/if}}
                 <div class='input-group mt-2'>
                   <div class='form-floating form-floating-group flex-grow-1'>
                     {{#if isEditMode}}
@@ -180,12 +218,7 @@
                   </label>
                 </div>
                 <div class='form-floating mt-2'>
-                  <select
-                    id='floatingDisableOverlay'
-                    class='form-select text-bg-light'
-                    name='disableOverlay'
-                    required
-                  >
+                  <select id='floatingDisableOverlay' class='form-select text-bg-light' name='disableOverlay' required>
                     {{#if gameData.disableOverlay}}
                       <option value='true' selected>True</option>
                       <option value='false'>False</option>

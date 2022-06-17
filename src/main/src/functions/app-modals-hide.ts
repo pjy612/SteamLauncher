@@ -1,4 +1,4 @@
-import { appGetWindow } from './app-window';
+import appGetWindow from './app-get-window';
 
 const appModalsHide = () => {
   const window = appGetWindow();

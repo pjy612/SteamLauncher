@@ -3,8 +3,8 @@ import { parse } from 'node:path';
 import readme from '../../../../README.md?raw';
 import { author as packageAuthor } from '../../../../package.json';
 import paths from '../configs/paths';
+import appGetWindow from '../functions/app-get-window';
 import appNotify from '../functions/app-notify';
-import { appGetWindow } from '../functions/app-window';
 import appExec from '../functions/app-exec';
 import handlebars from '../instances/handlebars';
 import markdown from '../instances/markdown';
@@ -17,9 +17,10 @@ ipc.handle('app-get-version', () => app.getVersion());
 
 ipc.handle('app-get-name', () => app.getName());
 
-ipc.handle('app-get-description', () => markdown.render(readme));
+const readmeMdRendered = markdown.render(readme);
+ipc.handle('app-get-description', () => readmeMdRendered);
 
-ipc.handle('app-get-copyright', () => `Copyright © ${new Date().getUTCFullYear()} ${packageAuthor.name}`);
+ipc.handle('app-get-copyright', () => `Copyright © ${new Date().getUTCFullYear()} ${packageAuthor}`);
 
 ipc.handle(
   'app-file-path-parse',

@@ -1,5 +1,5 @@
 import { ipcMain as ipc } from 'electron';
-import { appGetWindow } from '../functions/app-window';
+import appGetWindow from '../functions/app-get-window';
 
 ipc.on('window-close', () => {
   const window = appGetWindow();

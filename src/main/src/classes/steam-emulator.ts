@@ -1,13 +1,13 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { join } from 'node:path';
 import AdmZip from 'adm-zip';
-import axios from 'axios';
 import { ensureDir, pathExists } from 'fs-extra';
+import axios from '../instances/axios-cache';
 import appDownload from '../functions/app-download';
+import appNotify from '../functions/app-notify';
 import logger from '../instances/logger';
 import storage from '../instances/storage';
 import paths from '../configs/paths';
-import appNotify from '../functions/app-notify';
 
 class SteamEmulator {
   private loggerHeader = 'SteamEmulator:';
@@ -24,23 +24,23 @@ class SteamEmulator {
     try {
       const emulatorLocalJobId: string | undefined = storage.get('settings.emulatorLocalJobId');
 
-      const response = await axios.get('https://mr_goldberg.gitlab.io/goldberg_emulator/');
+      const response = await axios.get('https://mr_goldberg.gitlab.io/goldberg_emulator/', {
+        id: 'mr_goldberg_emulator_gitlab_io',
+      });
       const responseHtml = response.data as string;
 
       // eslint-disable-next-line prefer-named-capture-group
       const regex = /https:\/\/gitlab\.com\/Mr_Goldberg\/goldberg_emulator\/-\/jobs\/(\d+)\/artifacts\/download/gu;
-      const match = [...responseHtml.matchAll(regex)];
-
-      const firstMatch = match[0];
-      const downloadUrl = firstMatch[0];
-      const downloadJobId = firstMatch[1];
+      const match = [...responseHtml.matchAll(regex)][0];
+      const downloadUrl = match[0];
+      const downloadJobId = match[1];
 
       if (typeof downloadUrl === 'undefined' && typeof downloadJobId === 'undefined') {
         logger.error(`${this.loggerHeader} Unknown error, the emulator info could not be extracted.`);
         return false;
       }
 
-      logger.info(
+      logger.debug(
         `${
           this.loggerHeader
         } Extracted info: emulatorLocalJobId -> "${emulatorLocalJobId!}"; emulatorOnlineJobId -> "${downloadJobId}"; emulatorUrlDownload -> "${downloadUrl}"...`
@@ -51,9 +51,9 @@ class SteamEmulator {
         return true;
       }
 
-      await ensureDir(paths.emulator.jobsPath);
+      await ensureDir(paths.emulator.steamJobsRootPath);
 
-      const emulatorJobZipFilePath = join(paths.emulator.jobsPath, `${downloadJobId}.zip`);
+      const emulatorJobZipFilePath = join(paths.emulator.steamJobsRootPath, `${downloadJobId}.zip`);
       if (!(await pathExists(emulatorJobZipFilePath))) {
         logger.info(`${this.loggerHeader} I'm downloading the latest version of the emulator...`);
         await appDownload(downloadUrl, emulatorJobZipFilePath);
@@ -79,7 +79,7 @@ class SteamEmulator {
       storage.set('settings.emulatorLocalJobId', downloadJobId);
       return true;
     } catch (error) {
-      logger.info(`${this.loggerHeader} ${(error as Error).message}`);
+      logger.error(`${this.loggerHeader} ${(error as Error).message}`);
       return false;
     }
   }

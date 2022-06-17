@@ -30,16 +30,16 @@ const functionGameAddEdit = async (_event: IpcMainEvent, inputs: StoreGameDataTy
 
     appModalsHide();
   } else {
-    const steamRetriever = new SteamRetriever(inputs);
-    await steamRetriever.run();
+    const steamRetriever = new SteamRetriever();
+    await steamRetriever.run(inputs);
   }
 };
 
 ipc.on('game-add', functionGameAddEdit);
 ipc.on('game-edit', functionGameAddEdit);
 
-ipc.on('game-contextmenu', (_event, appId: string) => {
-  const dataGame = SteamGame.getData(appId);
+ipc.on('game-contextmenu', async (_event, appId: string) => {
+  const dataGame = await SteamGame.getData(appId);
   if (typeof dataGame !== 'undefined') {
     const menu = Menu.buildFromTemplate([
       {
@@ -49,7 +49,7 @@ ipc.on('game-contextmenu', (_event, appId: string) => {
         },
       },
       {
-        label: 'Launch without emulator',
+        label: 'Launch without steam emulator',
         async click() {
           await SteamGame.launch(dataGame, true);
         },
@@ -80,8 +80,8 @@ ipc.on('game-contextmenu', (_event, appId: string) => {
       },
       {
         label: 'Open cloud saves location',
-        click() {
-          SteamGame.openCloudSavesLocation();
+        async click() {
+          await SteamGame.openCloudSavesLocation(dataGame);
         },
       },
       {
@@ -96,9 +96,9 @@ ipc.on('game-contextmenu', (_event, appId: string) => {
       {
         label: 'Rebase DLCs, Items, etc...',
         async click() {
-          if (await appPromptYesNo('Are you sure? The data will be overwritten!')) {
-            const steamRetriever = new SteamRetriever(dataGame);
-            await steamRetriever.run();
+          if (await appPromptYesNo(`Are you sure to rebase ${dataGame.name}? The data will be overwritten!`)) {
+            const steamRetriever = new SteamRetriever();
+            await steamRetriever.run(dataGame);
           }
         },
       },
@@ -107,14 +107,14 @@ ipc.on('game-contextmenu', (_event, appId: string) => {
       },
       {
         label: 'Manually backup saves to cloud',
-        click() {
-          SteamCloud.backup(dataGame);
+        async click() {
+          await SteamCloud.backup(dataGame);
         },
       },
       {
         label: 'Manually restore saves from cloud',
-        click() {
-          SteamCloud.restore(dataGame);
+        async click() {
+          await SteamCloud.restore(dataGame);
         },
       },
       {
@@ -129,8 +129,8 @@ ipc.on('game-contextmenu', (_event, appId: string) => {
       {
         label: 'Remove game',
         async click() {
-          if (await appPromptYesNo('Are you sure you want to remove the game?')) {
-            SteamGame.remove(appId);
+          if (await appPromptYesNo(`Are you sure you want to remove ${dataGame.name}?`)) {
+            await SteamGame.remove(appId);
           }
         },
       },

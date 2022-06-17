@@ -6,7 +6,13 @@ import { defineConfig } from 'vite';
 import { dependencies } from './package.json';
 
 const builtinModulesNodeProtocol = builtinModules.map((module) => `node:${module}`);
-const externalModules = [...Object.keys(dependencies), 'electron'];
+const externalModules = [
+  ...Object.keys(dependencies),
+  'electron',
+  // NOTE: it is important
+  'yargs/yargs',
+  'yargs/helpers',
+];
 
 export default function createConfig(packagePath: string) {
   return defineConfig(({ mode }) => {
