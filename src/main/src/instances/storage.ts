@@ -13,6 +13,8 @@ const options: Options<StoreType> = {
       network: true,
       httpsRejectUnauthorized: true,
       emulatorUpdater: true,
+      minimizeToTray: true,
+      minimizeToTrayWhenLaunchGame: true,
     },
   },
   migrations,

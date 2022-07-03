@@ -1,12 +1,20 @@
 .games-grid {
   @extend .row;
-  --bs-gutter-y: 0.5rem;
+  @extend .g-3;
 }
 
 .game-container {
-  @extend .col-lg-3;
+  @extend .col-2;
 
-  & > .card:hover {
-    outline: 2px dotted var(--bs-primary);
+  & .game-container-img {
+    @extend .img-fluid;
+    @extend .rounded;
+    @extend .border;
+    @extend .border-3;
+    @extend .border-st-border;
+
+    &:hover {
+      @extend .border-secondary;
+    }
   }
 }

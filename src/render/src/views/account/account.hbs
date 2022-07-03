@@ -1,13 +1,13 @@
-<div class='modal fade'>
+<div id='st-modal-account' class='modal fade'>
   <div class='modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg'>
     <form class='modal-content text-bg-st-primary' action='' data-sk-channel='account-create'>
       <div class='modal-header'>
         <div class='modal-title'>
           {{#if isEditMode}}
-            <span class='mdi mdi-account-edit'></span>
+            <span class='mdi mdi-account-edit mdi-18px'></span>
             <span class='ms-1'>Edit Account</span>
           {{else}}
-            <span class='mdi mdi-account-plus'></span>
+            <span class='mdi mdi-account-plus mdi-18px'></span>
             <span class='ms-1'>Create Account</span>
           {{/if}}
         </div>
@@ -18,121 +18,157 @@
       <div class='modal-body'>
         {{#unless isEditMode}}
           <div class='alert alert-info d-flex align-items-center p-1'>
-            <span class='mdi mdi-information'></span>
+            <span class='mdi mdi-information mdi-18px'></span>
             <span class='ms-1'>Before proceeding, please create your account!</span>
           </div>
         {{/unless}}
-        <div class='form-floating'>
-          {{#if isEditMode}}
-            <input
-              type='text'
-              id='floatingName'
-              class='form-control text-bg-light'
-              name='name'
-              placeholder='...'
-              value='{{accountData.name}}'
-              required
-            />
-          {{else}}
-            <input
-              type='text'
-              id='floatingName'
-              class='form-control text-bg-light'
-              name='name'
-              placeholder='...'
-              value='Player#{{accountData.steamId}}'
-              required
-            />
-          {{/if}}
-          <label for='floatingName' class='text-dark'>
-            <span class='mdi mdi-badge-account'></span>
-            <span>Name [ex. Player#{{accountData.steamId}}]</span>
+        <div class='row'>
+          <label for='floatingName' class='col-6 col-form-label'>
+            <span
+              class='mdi mdi-information mdi-18px text-danger'
+              data-bs-toggle='tooltip'
+              title='example. Player#{{accountData.steamId}}'
+            ></span>
+            <span class='mdi mdi-badge-account mdi-18px'></span>
+            <span>Name</span>
           </label>
+          <div class='col-6'>
+            {{#if isEditMode}}
+              <input
+                type='text'
+                id='floatingName'
+                class='form-control'
+                name='name'
+                placeholder='ex. Player#{{accountData.steamId}}'
+                value='{{accountData.name}}'
+                required
+              />
+            {{else}}
+              <input
+                type='text'
+                id='floatingName'
+                class='form-control'
+                name='name'
+                placeholder='ex. Player#{{accountData.steamId}}'
+                value='Player#{{accountData.steamId}}'
+                required
+              />
+            {{/if}}
+          </div>
         </div>
-        <div class='form-floating mt-2'>
-          <select id='floatingLanguage' class='form-select text-bg-light' name='language' required>
-            {{#each allowedLanguages}}
-              <!-- NOTE: remove ../ because glimmer doesn't support it when format with prettier -->
-              {{#if (eq ../accountData.language @key)}}
-                <option value='{{@key}}' selected>{{this}}</option>
-              {{else}}
-                <option value='{{@key}}'>{{this}}</option>
-              {{/if}}
-            {{/each}}
-          </select>
-          <label for='floatingLanguage' class='text-dark'>
-            <span class='mdi mdi-translate'></span>
+        <hr class='my-2' />
+        <div class='row'>
+          <label for='floatingLanguage' class='col-6 col-form-label'>
+            <span class='mdi mdi-translate mdi-18px'></span>
             <span>Language</span>
           </label>
+          <div class='col-6'>
+            <select id='floatingLanguage' class='form-select' name='language' required>
+              {{#each allowedLanguages}}
+                <!-- NOTE: remove ../ because glimmer doesn't support it when format with prettier -->
+                {{#if (eq ../accountData.language @key)}}
+                  <option value='{{@key}}' selected>{{this}}</option>
+                {{else}}
+                  <option value='{{@key}}'>{{this}}</option>
+                {{/if}}
+              {{/each}}
+            </select>
+          </div>
         </div>
-        <div class='form-floating mt-2'>
-          <input
-            type='number'
-            id='floatingSteamId'
-            class='form-control text-bg-light'
-            name='steamId'
-            placeholder='...'
-            value='{{accountData.steamId}}'
-            required
-          />
-          <label for='floatingSteamId' class='text-dark'>
-            <span class='mdi mdi-identifier'></span>
-            <span>SteamID [ex. 76596712918662909]</span>
+        <hr class='my-2' />
+        <div class='row'>
+          <label for='floatingSteamId' class='col-6 col-form-label'>
+            <span
+              class='mdi mdi-information mdi-18px text-danger'
+              data-bs-toggle='tooltip'
+              title='example. 76596712918662909'
+            ></span>
+            <span class='mdi mdi-identifier mdi-18px'></span>
+            <span>SteamID</span>
           </label>
-        </div>
-        <div class='form-floating mt-2'>
-          {{#if isEditMode}}
+          <div class='col-6'>
             <input
               type='number'
-              id='floatingListenPort'
-              class='form-control text-bg-light'
-              name='listenPort'
+              id='floatingSteamId'
+              class='form-control'
+              name='steamId'
               placeholder='...'
-              value='{{accountData.listenPort}}'
+              value='{{accountData.steamId}}'
               required
             />
-          {{else}}
-            <input
-              type='number'
-              id='floatingListenPort'
-              class='form-control text-bg-light'
-              name='listenPort'
-              placeholder='...'
-              value='47584'
-              required
-            />
-          {{/if}}
-          <label for='floatingListenPort' class='text-dark'>
-            <span class='mdi mdi-ip'></span>
-            <span>Listen Port [ex. 47584]</span>
-          </label>
+          </div>
         </div>
-        <div class='form-floating mt-2'>
-          {{#if isEditMode}}
-            <input
-              type='text'
-              id='floatingSteamWebApiKey'
-              class='form-control text-bg-light'
-              name='steamWebApiKey'
-              placeholder='...'
-              value='{{accountData.steamWebApiKey}}'
-            />
-          {{else}}
-            <input
-              type='text'
-              id='floatingSteamWebApiKey'
-              class='form-control text-bg-light'
-              name='steamWebApiKey'
-              placeholder='...'
-            />
-          {{/if}}
-          <label for='floatingSteamWebApiKey' class='text-dark'>
-            <span class='mdi mdi-key'></span>
-            <span>Steam WebAPI Key [ex. TL0U8ANCN35WP0E1AHRKMVQCARA7D0UV]</span>
+        <hr class='my-2' />
+        <div class='row'>
+          <label for='floatingListenPort' class='col-6 col-form-label'>
+            <span
+              class='mdi mdi-information mdi-18px text-danger'
+              data-bs-toggle='tooltip'
+              title='example. 47584'
+            ></span>
+            <span class='mdi mdi-ip mdi-18px'></span>
+            <span>Listen Port</span>
           </label>
-          <div class='form-text text-light text-center'>To get achievements, stats and items get WebApi Key from
-            <a href='https://steamcommunity.com/dev/apikey' target='_blank'>here</a>.<br>If no WebAPI Key is given, it will
-            only get games infos and dlcs.</div>
+          <div class='col-6'>
+            {{#if isEditMode}}
+              <input
+                type='number'
+                id='floatingListenPort'
+                class='form-control'
+                name='listenPort'
+                placeholder='...'
+                value='{{accountData.listenPort}}'
+                required
+              />
+            {{else}}
+              <input
+                type='number'
+                id='floatingListenPort'
+                class='form-control'
+                name='listenPort'
+                placeholder='...'
+                value='47584'
+                required
+              />
+            {{/if}}
+          </div>
+        </div>
+        <hr class='my-2' />
+        <div class='row'>
+          <label for='floatingSteamWebApiKey' class='col-6 col-form-label'>
+            <span
+              class='mdi mdi-information mdi-18px text-danger'
+              data-bs-toggle='tooltip'
+              title='example. TL0U8ANCN35WP0E1AHRKMVQCARA7D0UV'
+            ></span>
+            <span class='mdi mdi-key mdi-18px'></span>
+            <a
+              href='https://steamcommunity.com/dev/apikey'
+              target='_blank'
+              data-bs-toggle='tooltip'
+              title='For achievements, stats and items you need the Steam WebApi Key. Click me to create one, otherwise only the main information and the dlcs will be added to the game.'
+            >Steam WebAPI Key</a>
+          </label>
+          <div class='col-6'>
+            {{#if isEditMode}}
+              <input
+                type='text'
+                id='floatingSteamWebApiKey'
+                class='form-control'
+                name='steamWebApiKey'
+                placeholder='...'
+                value='{{accountData.steamWebApiKey}}'
+              />
+            {{else}}
+              <input
+                type='text'
+                id='floatingSteamWebApiKey'
+                class='form-control'
+                name='steamWebApiKey'
+                placeholder='...'
+              />
+            {{/if}}
+          </div>
         </div>
       </div>
       <div class='modal-footer'>

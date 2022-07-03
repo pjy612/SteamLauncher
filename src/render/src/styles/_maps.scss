@@ -1,6 +1,10 @@
 $custom-colors: (
   'st-primary': $st-primary,
   'st-secondary': $st-secondary,
+
+  'st-window': $st-window,
+  'st-menu': $st-menu,
+  'st-border': $st-border,
 );
 
 $theme-colors: map-merge($theme-colors, $custom-colors);

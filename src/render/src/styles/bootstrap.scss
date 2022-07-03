@@ -13,8 +13,8 @@
 // Layout & components
 @import 'bootstrap/scss/root';
 @import 'bootstrap/scss/reboot';
-@import 'bootstrap/scss/type';
-//@import 'bootstrap/scss/images';
+//@import 'bootstrap/scss/type';
+@import 'bootstrap/scss/images';
 @import 'bootstrap/scss/containers';
 @import 'bootstrap/scss/grid';
 //@import 'bootstrap/scss/tables';
@@ -24,7 +24,7 @@
 //@import 'bootstrap/scss/dropdown';
 @import 'bootstrap/scss/button-group';
 @import 'bootstrap/scss/nav';
-@import 'bootstrap/scss/navbar';
+//@import 'bootstrap/scss/navbar';
 @import 'bootstrap/scss/card';
 //@import 'bootstrap/scss/accordion';
 //@import 'bootstrap/scss/breadcrumb';
@@ -36,10 +36,10 @@
 @import 'bootstrap/scss/close';
 //@import 'bootstrap/scss/toasts';
 @import 'bootstrap/scss/modal';
-//@import 'bootstrap/scss/tooltip';
+@import 'bootstrap/scss/tooltip';
 //@import 'bootstrap/scss/popover';
 //@import 'bootstrap/scss/carousel';
-@import 'bootstrap/scss/spinners';
+//@import 'bootstrap/scss/spinners';
 //@import 'bootstrap/scss/offcanvas';
 //@import 'bootstrap/scss/placeholders';
 
@@ -50,15 +50,8 @@
 @import 'bootstrap/scss/utilities/api';
 
 @import './root';
-@import './img';
-@import './app_region_drag';
 @import './navbar';
-@import './main';
 @import './games';
 @import './scrollbar';
 @import './modal';
 @import './forms';
-@import './animations';
-@import './console';
-
-@import './plugins/file-drop';
