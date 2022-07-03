@@ -1,0 +1,11 @@
+.st-fadeOut {
+  @extend .invisible;
+  @extend .opacity-0;
+  transition: opacity 300ms;
+}
+
+.st-fadeIn {
+  @extend .visible;
+  @extend .opacity-100;
+  transition: opacity 300ms;
+}

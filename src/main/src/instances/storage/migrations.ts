@@ -61,17 +61,9 @@ const migration021 = {
   },
 };
 
-const migration024 = {
-  '0.2.4': (store: Conf<StoreType>) => {
-    store.set('settings.minimizeToTray', true);
-    store.set('settings.minimizeToTrayWhenLaunchGame', true);
-  },
-};
-
 export default {
   ...migration012,
   ...migration019,
   ...migration020,
   ...migration021,
-  ...migration024,
 };

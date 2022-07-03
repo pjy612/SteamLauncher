@@ -1,44 +1,8 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-import { BrowserWindow, Rectangle, Tray, Menu, app, nativeImage } from 'electron';
+import { BrowserWindow, Rectangle } from 'electron';
 import autoUpdater from '../instances/autoupdater';
 import storage from '../instances/storage';
 import paths from '../configs/paths';
 import { appIsInstalled } from '../app';
-
-const appCreateTray = (appWindow: BrowserWindow) => {
-  const appTrayName = app.getName();
-  const appTrayContextMenu = Menu.buildFromTemplate([
-    {
-      label: appTrayName,
-      icon: nativeImage.createFromPath(paths.files.iconFilePath).resize({ width: 16 }),
-      enabled: false,
-    },
-    {
-      type: 'separator',
-    },
-    {
-      label: 'Show',
-      click() {
-        appWindow.show();
-      },
-    },
-    {
-      label: 'Exit',
-      click() {
-        appWindow.close();
-      },
-    },
-  ]);
-
-  const appTray = new Tray(paths.files.iconFilePath);
-  appTray.on('click', () => {
-    appWindow.show();
-  });
-  appTray.setToolTip(appTrayName);
-  appTray.setContextMenu(appTrayContextMenu);
-
-  return appTray;
-};
 
 const windowStateChangeHandler = (appWindow: BrowserWindow) => {
   storage.set('window.bounds', appWindow.getBounds());
@@ -56,8 +20,6 @@ const appCreateWindow = async () => {
     minWidth: widthWindow,
     height: heightWindow,
     minHeight: heightWindow,
-    icon: paths.files.iconFilePath,
-    backgroundColor: '#161920',
     show: false,
     frame: import.meta.env.DEV,
     webPreferences: {
@@ -70,40 +32,21 @@ const appCreateWindow = async () => {
   });
 
   appWindow.on('ready-to-show', () => {
-    appWindow.show();
+    appWindow?.show();
 
     const windowIsMaximized = storage.get('window.isMaximized', false);
     if (windowIsMaximized) {
-      appWindow.maximize();
+      appWindow?.maximize();
     }
 
     const windowIsFullScreen = storage.get('window.isFullScreen', false);
     if (windowIsFullScreen) {
-      appWindow.setFullScreen(true);
+      appWindow?.setFullScreen(true);
     }
 
     const windowBounds = storage.get('window.bounds');
-    if (typeof windowBounds !== 'undefined' && appWindow.isNormal()) {
+    if (typeof windowBounds !== 'undefined' && appWindow?.isNormal()) {
       appWindow.setBounds(windowBounds as Partial<Rectangle>);
-    }
-  });
-
-  let appTray: Tray | undefined;
-  appWindow.on('minimize', () => {
-    const minimizeToTray = storage.get('settings.minimizeToTray', true);
-    if (minimizeToTray) {
-      appWindow.setSkipTaskbar(true);
-      appTray = appCreateTray(appWindow);
-    }
-  });
-
-  appWindow.on('restore', () => {
-    const minimizeToTray = storage.get('settings.minimizeToTray', true);
-    if (minimizeToTray) {
-      appWindow.setSkipTaskbar(false);
-      if (typeof appTray !== 'undefined') {
-        appTray.destroy();
-      }
     }
   });
 
@@ -123,16 +66,16 @@ const appCreateWindow = async () => {
 
   appWindow.on('maximize', () => {
     windowStateChangeHandler(appWindow);
-    appWindow.webContents.send(windowStateChangeName, true);
+    appWindow?.webContents.send(windowStateChangeName, true);
   });
 
   appWindow.on('unmaximize', () => {
     windowStateChangeHandler(appWindow);
-    appWindow.webContents.send(windowStateChangeName, false);
+    appWindow?.webContents.send(windowStateChangeName, false);
   });
 
   appWindow.webContents.on('did-finish-load', () => {
-    appWindow.webContents.send(windowStateChangeName, appWindow.isMaximized());
+    appWindow?.webContents.send(windowStateChangeName, appWindow.isMaximized());
   });
 
   if (import.meta.env.PROD) {

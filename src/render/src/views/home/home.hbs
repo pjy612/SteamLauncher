@@ -1,118 +1,18 @@
-<header>
-  <div id='st-nav-titlebar'>
-    <div class='st-nav-left'>
-      <img src='images/steamlauncher.svg' alt='Logo' class='img-logo' />
-      <span class='ms-1'>SteamLauncher</span>
+<div>
+  <div id='game-drop' class='card text-bg-st-primary mb-3'>
+    <div class='card-body'>
+      <div class='d-flex align-items-center justify-content-center'>
+        <span class='fs-4 me-1'>[</span>
+        <span>to add a game choose a file (*.exe;) and drop it here</span>
+        <span class='fs-4 ms-1'>]</span>
+      </div>
     </div>
-    <ul class='nav'>
-      <li class='nav-item'>
-        <button
-          type='button'
-          class='nav-link'
-          data-sk='set-network'
-          data-sk-isMode='{{networkStatus}}'
-          data-bs-toggle='tooltip'
-          title='Switch between Online / Offline mode.'
-        >
-          <span class='text-success'>
-            <span class='mdi mdi-server-network'></span>
-          </span>
-          <span class='text-danger'>
-            <span class='mdi mdi-server-network-off'></span>
-          </span>
-        </button>
-      </li>
-      <li class='nav-item'>
-        <button
-          type='button'
-          class='nav-link'
-          data-sk='titlebar'
-          data-sk-fn='minimize'
-          data-bs-toggle='tooltip'
-          title='Minimize window'
-        >
-          <span class='mdi mdi-window-minimize'></span>
-        </button>
-      </li>
-      <li class='nav-item'>
-        <button
-          type='button'
-          class='nav-link'
-          data-sk='titlebar'
-          data-sk-fn='maximize'
-          data-bs-toggle='tooltip'
-          title='Maximize window'
-        >
-          <span class='mdi mdi-window-maximize'></span>
-        </button>
-      </li>
-      <li class='nav-item'>
-        <button
-          type='button'
-          class='nav-link'
-          data-sk='titlebar'
-          data-sk-fn='restore'
-          data-bs-toggle='tooltip'
-          title='Restore window'
-        >
-          <span class='mdi mdi-window-restore'></span>
-        </button>
-      </li>
-      <li class='nav-item'>
-        <button
-          type='button'
-          class='nav-link'
-          data-sk='titlebar'
-          data-sk-fn='close'
-          data-bs-toggle='tooltip'
-          title='Close window'
-        >
-          <span class='mdi mdi-window-close'></span>
-        </button>
-      </li>
-    </ul>
   </div>
-  <div id='st-nav-menu'>
-    <div class='st-nav-left'>
-      <span class='mdi mdi-nintendo-game-boy'></span>
-      <span class='ms-1'>My Games</span>
+  <div id='games-list' class='card text-bg-st-primary'>
+    <div class='card-header text-center text-uppercase border-primary'>
+      <span class='mdi mdi-controller-classic mdi-18px'></span>
+      My games library
     </div>
-    <ul class='nav'>
-      <li class='nav-item'>
-        <button
-          type='button'
-          class='nav-link'
-          data-sk='add-game'
-          data-bs-toggle='tooltip'
-          title='To add a game choose the game executable and drag and drop it here or click on the box to open file dialog.'
-        >
-          <span class='mdi mdi-plus-circle'></span>
-          <span>Add Game</span>
-        </button>
-      </li>
-      <li class='nav-item'>
-        <a href='/account/edit' class='nav-link' data-navigare>
-          <span class='mdi mdi-account-circle'></span>
-          <span>{{accountName}}</span>
-        </a>
-      </li>
-      <li class='nav-item'>
-        <a href='/settings' class='nav-link' data-navigare>
-          <span class='mdi mdi-cog'></span>
-          <span>Settings</span>
-        </a>
-      </li>
-      <li class='nav-item'>
-        <a href='/about' class='nav-link' data-navigare>
-          <span class='mdi mdi-information'></span>
-          <span>About</span>
-        </a>
-      </li>
-    </ul>
+    <div class='card-body'></div>
   </div>
-</header>
-<main class='overflow-auto flex-grow-1'>
-  <div class='container py-3'>
-    <div id='games-list'></div>
-  </div>
-</main>
+</div>

@@ -163,16 +163,15 @@ class SteamRetriever {
   }
 
   private async downloadAppHeader() {
-    // const url = `https://cdn.akamai.steamstatic.com/steam/apps/${this.gameInputs.appId}/header.jpg?t=1581535048`;
-    const url = `https://cdn.cloudflare.steamstatic.com/steam/apps/${this.gameInputs.appId}/library_600x900.jpg?t=1647432985`;
+    const url = `https://cdn.akamai.steamstatic.com/steam/apps/${this.gameInputs.appId}/header.jpg?t=1581535048`;
 
-    // if (!(await pathExists(this.gameInputs.paths.headerFilePath))) {
-    await appDownload(url, this.gameInputs.paths.headerFilePath).then(() => {
-      this.console(`${url} was downloaded successfully!`);
-    });
-    /* } else {
+    if (!(await pathExists(this.gameInputs.paths.headerFilePath))) {
+      await appDownload(url, this.gameInputs.paths.headerFilePath).then(() => {
+        this.console(`${url} was downloaded successfully!`);
+      });
+    } else {
       this.console(`${this.gameInputs.paths.headerFilePath} already exists, skip...`);
-    }*/
+    }
   }
 
   // eslint-disable-next-line sonarjs/cognitive-complexity

@@ -7,7 +7,6 @@ import appNotify from '../functions/app-notify';
 import appExec from '../functions/app-exec';
 import paths from '../configs/paths';
 import { appCommandsLine } from '../app';
-import appGetWindow from '../functions/app-get-window';
 import SteamEmulator from './steam-emulator';
 import SteamCloud from './steam-cloud';
 import PCGamingWikiApi from './pcgamingwiki';
@@ -185,13 +184,6 @@ class SteamGame {
     // steam_settings/offline.txt
     if (!dataNetwork) {
       await writeFile(paths.emulator.steamSettingsOfflineFilePath, '');
-    }
-
-    if (storage.get('settings.minimizeToTray', true) && storage.get('settings.minimizeToTrayWhenLaunchGame', true)) {
-      const appWindow = appGetWindow();
-      if (typeof appWindow !== 'undefined') {
-        appWindow.minimize();
-      }
     }
 
     await SteamGame.clientLoader(dataGame);

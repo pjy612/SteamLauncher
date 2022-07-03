@@ -5,117 +5,65 @@ class HomeView {
   private dom = $('');
 
   public async show() {
+    await this.beforeHook();
     await this.setDom();
     await this.appendGamesList();
     this.setEvents();
-    this.setEventsIPC();
     this.appendDom();
-
-    await this.accountCheck();
   }
 
-  public async accountCheck() {
+  public async beforeHook() {
     if (!(await window.api.account.exist())) {
       router.navigate('/account/create');
     }
   }
 
   private async setDom() {
-    const accountData = await window.api.account.getData();
-    const accountName = typeof accountData !== 'undefined' ? accountData.name : 'Account';
-    const networkStatus = await window.api.settings.getNetworkStatus();
-
-    const contextTemplate = { accountName, networkStatus };
-    const generatedTemplate = await window.api.app.handlebarsGenerate(homeTemplate, contextTemplate);
+    const generatedTemplate = await window.api.app.handlebarsGenerate(homeTemplate);
 
     this.dom = $(generatedTemplate);
   }
 
   private async appendGamesList() {
     const gamesData = await window.api.games.getData();
-    const $gamesList = this.dom.find('#games-list').empty();
+    const $gamesList = this.dom.find('#games-list .card-body');
     if (typeof gamesData !== 'undefined' && Object.keys(gamesData).length > 0) {
       const $gamesGrid = $('<div class="games-grid"></div>');
       $.each(gamesData, (appId: string, { name, paths }) => {
         const headerFilePath = paths.headerFilePath;
-        const $gameContainer = $(`<div class="game-container">
-  <img
-    class="game-container-img"
-    src="${headerFilePath}"
-    alt="Game Header ${name}"
-    data-appId="${appId}"
-    data-bs-toggle="tooltip"
-    title="To open context menu of the game, use the right-click of the mouse."
-  />
-</div>`);
+        const $gameContainer = $(
+          `<div class="game-container" data-appId="${appId}" title="To open the context menu click on the right mouse button!">
+  <div class="card text-bg-st-secondary">
+    <img class="card-img-top" src="${headerFilePath}" alt="${name}" />
+    <div class="card-footer text-truncate text-center">${name}</div>
+  </div>
+<div>`
+        );
         $gamesGrid.append($gameContainer);
       });
-      $gamesList.append($gamesGrid);
+      $gamesList.html($gamesGrid[0]);
     } else {
-      $gamesList.html('<div class="text-center text-white">You have not added any games yet!</div>');
+      $gamesList.html('<div class="text-center">You have not added any games yet!</div>');
     }
   }
 
   private setEvents() {
-    this.dom.on('contextmenu', '.game-container-img', (event) => {
+    this.dom.on('contextmenu', '.game-container', (event) => {
       const appId = $(event.currentTarget).attr('data-appId')!;
       window.api.game.openContextMenu(appId);
     });
 
-    // ST NAV MENU - ADD GAME
-    this.dom.find('*[data-sk="add-game"]').fileDrop((file) => {
+    this.dom.find('#game-drop').fileDrop((file) => {
       router.navigate(`/game/add/${JSON.stringify(file)}`);
     });
 
-    // ST NAV MENU - SET NETWORK
-    this.dom.on('click', 'button[data-sk="set-network"]', (event) => {
-      event.preventDefault();
-
-      const dom = $(event.currentTarget);
-      const isMode = dom.attr('data-sk-isMode')!;
-      const toMode = isMode === 'online' ? 'offline' : 'online';
-
-      dom.attr('data-sk-isMode', toMode);
-
-      window.api.settings.setNetworkStatus(toMode);
-    });
-
-    // ST NAV TITLEBAR
-    window.api.on('window-state-change', (_event, isMaximized: boolean) => {
-      $(document.body).toggleClass('window-is-maximized', isMaximized);
-    });
-
-    this.dom.on('click', 'button[data-sk="titlebar"]', (event) => {
-      event.preventDefault();
-
-      const function_ = $(event.currentTarget).attr('data-sk-fn')!;
-      switch (function_) {
-        case 'minimize':
-          window.api.window.minimize();
-          break;
-        case 'maximize':
-          window.api.window.maximize();
-          break;
-        case 'restore':
-          window.api.window.restore();
-          break;
-        case 'close':
-          window.api.window.close();
-          break;
-        default:
-          break;
-      }
-    });
-  }
-
-  private setEventsIPC() {
     window.api.on('app-home-reload-games-list', async () => {
       await this.appendGamesList();
     });
   }
 
   private appendDom() {
-    $(document.body).empty().append(this.dom);
+    $('main').html(this.dom[0]);
   }
 }
 

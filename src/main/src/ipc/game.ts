@@ -8,7 +8,6 @@ import appNotify from '../functions/app-notify';
 import appPromptYesNo from '../functions/app-prompt-yes-no';
 import storage from '../instances/storage';
 import appNavigate from '../functions/app-navigate';
-import appOpenUrl from '../functions/app-open-url';
 
 const functionGameAddEdit = async (_event: IpcMainEvent, inputs: StoreGameDataType) => {
   const key = `games.${inputs.appId}`;
@@ -43,13 +42,6 @@ ipc.on('game-contextmenu', async (_event, appId: string) => {
   const dataGame = await SteamGame.getData(appId);
   if (typeof dataGame !== 'undefined') {
     const menu = Menu.buildFromTemplate([
-      {
-        label: dataGame.name,
-        enabled: false,
-      },
-      {
-        type: 'separator',
-      },
       {
         label: 'Launch',
         async click() {
@@ -96,27 +88,6 @@ ipc.on('game-contextmenu', async (_event, appId: string) => {
         label: 'Open data location',
         async click() {
           await SteamGame.openDataLocation(dataGame);
-        },
-      },
-      {
-        type: 'separator',
-      },
-      {
-        label: 'Open Steam Page',
-        click() {
-          appOpenUrl(`https://store.steampowered.com/app/${appId}/`);
-        },
-      },
-      {
-        label: 'Open PCGamingWiki Page',
-        click() {
-          appOpenUrl(`https://www.pcgamingwiki.com/api/appid.php?appid=${appId}`);
-        },
-      },
-      {
-        label: 'Open SteamDB Page',
-        click() {
-          appOpenUrl(`https://steamdb.info/app/${appId}/`);
         },
       },
       {

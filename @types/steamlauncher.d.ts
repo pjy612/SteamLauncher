@@ -187,8 +187,6 @@ declare global {
     network: boolean;
     httpsRejectUnauthorized: boolean;
     emulatorUpdater: boolean;
-    minimizeToTray: boolean;
-    minimizeToTrayWhenLaunchGame: boolean;
     emulatorLocalJobId?: string;
     ssePersist?: boolean;
     sseInjectDll?: boolean;

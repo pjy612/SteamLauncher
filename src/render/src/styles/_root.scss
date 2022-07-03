@@ -1,16 +1,15 @@
-.overflow-auto {
-  overflow: auto;
+:root {
+  --st-nav-link-hover-color: rgba(255, 255, 255, 0.2);
+  --st-scrollbar-hover-color: #5a16cf;
 }
 
-.app-region-no-drag {
-  -webkit-app-region: no-drag;
+html,
+body {
+  @extend .vh-100;
 }
 
-.app-region-drag {
-  -webkit-app-region: drag;
-}
-
-.img-logo {
-  width: 24px;
-  height: auto;
+body {
+  @extend .user-select-none;
+  @extend .d-flex;
+  @extend .flex-column;
 }

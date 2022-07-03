@@ -1,49 +1,26 @@
-// COMMON
-#st-nav-titlebar,
-#st-nav-menu {
-  @extend .d-flex;
-  @extend .justify-content-between;
+#nav {
+  @extend .py-0;
   @extend .border-bottom;
-  @extend .border-st-border;
+  @extend .border-1;
+  @extend .border-st-secondary;
 
-  .st-nav-left {
-    @extend .d-flex;
-    @extend .align-items-center;
-    @extend .mx-2;
-    @extend .text-white;
-  }
-
-  & .nav-item {
-    & button.nav-link {
-      @extend .bg-transparent;
-      @extend .border-0;
-    }
-
-    & .nav-link {
-      @extend .px-2;
-      @extend .py-1;
-      @extend .app-region-no-drag;
-      @extend .text-white;
-
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.2) !important;
-      }
-    }
-  }
-}
-
-// TITLEBAR
-#st-nav-titlebar {
-  @extend .bg-st-window;
-  @extend .app-region-drag;
-  @extend .position-relative;
   z-index: 1060;
 
+  & > .container-fluid {
+    @extend .pe-0;
+    @extend .app-region-drag;
+  }
+
   & .nav-item {
     & .nav-link {
+      @extend .app-region-no-drag;
+
+      &:hover {
+        background-color: var(--st-nav-link-hover-color) !important;
+      }
+
       // TITLEBAR
       &[data-sk='titlebar'] {
-        @extend .px-3;
         cursor: default;
       }
 
@@ -71,34 +48,31 @@
       }
     }
   }
-}
 
-.window-is-maximized {
-  & #st-nav-titlebar {
-    & .nav-link {
-      &[data-sk='titlebar'][data-sk-fn='maximize'] {
-        @extend .d-none;
-      }
-
-      &[data-sk='titlebar'][data-sk-fn='restore'] {
-        // NOTE: i don't know why
-        //@extend .d-block;
-        display: block !important;
-      }
-    }
+  & button.nav-link {
+    @extend .bg-transparent;
+    @extend .border-0;
   }
 }
 
-// MENU
-#st-nav-menu {
-  @extend .bg-st-menu;
+// MODAL NAVIGATION
+#nav .nav-link[data-navigare] {
+  @extend .st-fadeIn;
+}
 
-  & .nav-item {
-    & .nav-link {
-      // ADD GAME
-      &[data-sk='add-game'].drop-highlight {
-        @extend .bg-secondary;
-      }
-    }
+.modal-open #nav .nav-link[data-navigare] {
+  @extend .st-fadeOut;
+}
+
+// TITLEBAR
+.window-is-maximized #nav .nav-link {
+  &[data-sk='titlebar'][data-sk-fn='maximize'] {
+    @extend .d-none;
+  }
+
+  &[data-sk='titlebar'][data-sk-fn='restore'] {
+    // NOTE: i don't know why
+    //@extend .d-block;
+    display: block !important;
   }
 }

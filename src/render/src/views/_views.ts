@@ -4,16 +4,20 @@ import AccountView from './account/account';
 import GameView from './game/game';
 import HomeView from './home/home';
 import SettingsView from './settings/settings';
+import NavPartialView from './partials/nav/nav';
 import ConsolePartialView from './partials/console/console';
 
+const homeController = new HomeView();
+const navPartialController = new NavPartialView();
 const consolePartialController = new ConsolePartialView();
 $(async () => {
+  await navPartialController.show();
   await consolePartialController.show();
+  await homeController.show();
 });
 
-router.on('/', async () => {
-  const homeController = new HomeView();
-  await homeController.show();
+router.on('/', () => {
+  // it is useful for modals
 });
 
 router.on('/about', async () => {
