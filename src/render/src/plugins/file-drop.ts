@@ -7,6 +7,20 @@ $(() => {
     return this.each(() => {
       const dom = $(this);
 
+      dom.on('click', async (event) => {
+        event.preventDefault();
+        const { canceled, filePaths } = await window.api.app.choseFile();
+        if (!canceled) {
+          const selectedFilePath = filePaths[0];
+          const parsedFilePath = await window.api.app.filePathParse(selectedFilePath);
+          if (allowedExtensions.has(parsedFilePath.ext)) {
+            callback.call(this, parsedFilePath);
+          } else {
+            window.api.app.notify('The file extension is not allowed!');
+          }
+        }
+      });
+
       dom.on('dragenter dragend dragleave dragover dragstart drag', (event) => {
         event.preventDefault();
       });

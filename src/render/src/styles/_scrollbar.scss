@@ -4,10 +4,10 @@
 
 ::-webkit-scrollbar-thumb {
   @extend .mx-3;
-  @extend .bg-primary;
+  @extend .bg-secondary;
 
   &:hover {
-    background-color: var(--st-scrollbar-hover-color) !important;
+    background-color: $purple-600 !important;
   }
 }
 

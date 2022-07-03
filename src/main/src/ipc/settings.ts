@@ -7,6 +7,10 @@ ipc.on('settings-edit', (_event, inputs: StoreSettingsType) => {
   appNotify('Settings edited successfully!');
 
   storage.set('settings.httpsRejectUnauthorized', inputs.httpsRejectUnauthorized);
+
+  storage.set('settings.minimizeToTray', inputs.minimizeToTray);
+  storage.set('settings.minimizeToTrayWhenLaunchGame', inputs.minimizeToTrayWhenLaunchGame);
+
   storage.set('settings.emulatorUpdater', inputs.emulatorUpdater);
 
   storage.set('settings.ssePersist', inputs.ssePersist);
