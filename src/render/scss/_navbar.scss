@@ -1,0 +1,103 @@
+// COMMON
+#st-nav-titlebar,
+#st-nav-menu {
+  @extend .d-flex;
+  @extend .justify-content-between;
+  @extend .border-bottom;
+  @extend .border-st-border;
+
+  .st-nav-left {
+    @extend .d-flex;
+    @extend .align-items-center;
+    @extend .mx-2;
+    @extend .text-white;
+  }
+
+  & .nav-item {
+    & button.nav-link {
+      @extend .bg-transparent;
+      @extend .border-0;
+    }
+
+    & .nav-link {
+      @extend .px-2;
+      @extend .py-1;
+      @extend .app-region-no-drag;
+      @extend .text-white;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+      }
+    }
+  }
+}
+
+// TITLEBAR
+#st-nav-titlebar {
+  @extend .bg-st-window;
+  @extend .app-region-drag;
+  @extend .position-relative;
+  z-index: 1060;
+
+  & .nav-item {
+    & .nav-link {
+      // TITLEBAR
+      &[data-sk='titlebar'] {
+        @extend .px-3;
+        cursor: default;
+      }
+
+      &[data-sk='titlebar'][data-sk-fn='close'] {
+        &:hover {
+          background-color: red !important;
+        }
+      }
+
+      &[data-sk='titlebar'][data-sk-fn='restore'] {
+        @extend .d-none;
+      }
+
+      // SET NETWORK
+      &[data-sk='set-network'][data-sk-isMode='online'] {
+        & > *:last-child {
+          @extend .d-none;
+        }
+      }
+
+      &[data-sk='set-network'][data-sk-isMode='offline'] {
+        & > *:first-child {
+          @extend .d-none;
+        }
+      }
+    }
+  }
+}
+
+.window-is-maximized {
+  & #st-nav-titlebar {
+    & .nav-link {
+      &[data-sk='titlebar'][data-sk-fn='maximize'] {
+        @extend .d-none;
+      }
+
+      &[data-sk='titlebar'][data-sk-fn='restore'] {
+        //@extend .d-block;
+        display: block !important;
+      }
+    }
+  }
+}
+
+// MENU
+#st-nav-menu {
+  @extend .bg-st-menu;
+
+  & .nav-item {
+    & .nav-link {
+      // ADD GAME
+      &[data-sk='add-game'].drop-highlight {
+        @extend .bg-secondary;
+      }
+    }
+  }
+}

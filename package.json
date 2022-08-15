@@ -5,21 +5,13 @@
   "description": "SteamLauncher is a Windows application that optimizes the setup process of each game in a simple and automatic way.",
   "homepage": "https://github.com/Sak32009/SteamLauncher/",
   "bugs": "https://github.com/Sak32009/SteamLauncher/issues/",
+  "license": "MIT",
+  "copyright": "Copyright © 2016 - 2022 Sak32009",
   "author": "Sak32009 (https://sak32009.github.io/)",
   "funding": "https://www.paypal.me/sak32009a",
+  "main": "./build/dist/main/main.cjs",
   "repository": "github:Sak32009/SteamLauncher",
-  "main": "./src/main/dist/main.cjs.js",
-  "license": "MIT",
-  "engines": {
-    "node": ">=v16.15.1"
-  },
-  "os": [
-    "win32"
-  ],
-  "cpu": [
-    "x64"
-  ],
-  "private": true,
+  "type": "module",
   "scripts": {
     "start-app": "yarn electron .",
     "dev-server": "yarn concurrently 'yarn:dev-server:*'",
@@ -27,6 +19,7 @@
     "release": "yarn run-s 'release:*'",
     "portable": "yarn run-s 'portable:*'",
     "bundle": "yarn run-s 'bundle:*'",
+    "lint": "yarn tsc --noEmit && yarn eslint .",
     "dev-server:main": "yarn vite build --mode development -w -c ./src/main/vite.config.ts",
     "dev-server:preload": "yarn vite build --mode development -w -c ./src/preload/vite.config.ts",
     "dev-server:render": "yarn vite --mode development -c ./src/render/vite.config.ts",
@@ -40,53 +33,64 @@
     "release:build": "yarn electron-builder -w -p always --x64",
     "portable:bundle": "yarn run bundle",
     "portable:build": "yarn electron-builder -w --dir --x64",
-    "lint": "tsc --noEmit && eslint . --ext .js,.ts",
     "postinstall": "yarn electron-builder install-app-deps"
   },
+  "packageManager": "yarn@3.2.2",
+  "engines": {
+    "node": ">=v16.16.0"
+  },
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "private": true,
   "devDependencies": {
-    "@mdi/font": "^6.9.96",
+    "@mdi/font": "^7.0.96",
+    "@popperjs/core": "^2.11.6",
     "@types/adm-zip": "^0.5.0",
-    "@types/bootstrap": "^5.1.12",
+    "@types/bootstrap": "^5.2.1",
     "@types/ini": "^1.3.31",
     "@types/jquery": "^3.5.14",
     "@types/markdown-it": "^12.2.3",
-    "@types/node": "^16.11.42",
+    "@types/node": "^16.11.48",
     "@types/steamid": "^2.0.1",
-    "@types/yargs": "^17.0.10",
-    "autoprefixer": "^10.4.7",
-    "bootstrap": "5.2.0-beta1",
-    "concurrently": "^7.2.2",
-    "electron": "^19.0.7",
-    "electron-builder": "^23.2.0",
-    "eslint": "^8.19.0",
-    "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=46c7bde2bbda84333fea98c092694f73a463cac5",
+    "@types/yargs": "^17.0.11",
+    "autoprefixer": "^10.4.8",
+    "bootstrap": "5.2.0",
+    "concurrently": "^7.3.0",
+    "electron": "^20.0.2",
+    "electron-builder": "^23.4.0",
+    "eslint": "^8.22.0",
+    "eslint-config-sak32009": "https://github.com/Sak32009/eslint-config-sak32009.git#commit=de43a6b545d7f1ac531f060839aba2bd14f3cd04",
     "github-markdown-css": "^5.1.0",
     "jquery": "^3.6.0",
     "npm-run-all": "^4.1.5",
     "path-to-regexp": "^6.2.1",
-    "postcss": "^8.4.14",
+    "postcss": "^8.4.16",
     "prettier": "^2.7.1",
-    "sass": "^1.53.0",
+    "sass": "^1.54.4",
     "typescript": "^4.7.4",
-    "vite": "^2.9.13"
+    "vite": "^3.0.7",
+    "vite-tsconfig-paths": "^3.5.0"
   },
   "dependencies": {
     "adm-zip": "^0.5.9",
     "axios": "^0.27.2",
-    "axios-cache-interceptor": "^0.10.6",
-    "conf": "^10.1.2",
-    "electron-updater": "^5.0.6",
+    "axios-cache-interceptor": "^0.10.7",
+    "conf": "^10.2.0",
+    "electron-updater": "^5.2.2",
     "fast-glob": "^3.2.11",
     "fs-extra": "^10.1.0",
     "handlebars": "^4.7.7",
     "ini": "^3.0.0",
-    "just-handlebars-helpers": "^1.0.19",
+    "is-online": "^10.0.0",
     "markdown-it": "^13.0.1",
     "nanoid": "^4.0.0",
     "steamid": "^2.0.0",
     "winston": "^3.8.1",
     "winston-daily-rotate-file": "^4.7.1",
     "yargs": "^17.5.1"
-  },
-  "packageManager": "yarn@3.2.1"
+  }
 }

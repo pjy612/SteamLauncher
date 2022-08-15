@@ -94,4 +94,4 @@ The first item in the list has priority.
 
 ## License
 
-> _SteamLauncher_ is released under the following license: [MIT](https://github.com/Sak32009/SteamLauncher/blob/main/LICENSE)
+> **_SteamLauncher_** is released under the following license: [MIT](https://github.com/Sak32009/SteamLauncher/blob/main/LICENSE)

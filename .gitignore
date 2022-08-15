@@ -1,12 +1,10 @@
 # SteamLauncher
-/bin/win/ludusavi/config.yaml
-/bin/win/ludusavi/manifest.yaml
-/bin/win/SmartSteamLoader/SmartSteamEmu.ini
-/data
+/build/bin/ludusavi/config.yaml
+/build/bin/ludusavi/manifest.yaml
+/build/bin/SmartSteamLoader/SmartSteamEmu.ini
+/build/data
 /build/release
-/src/main/dist/
-/src/preload/dist/
-/src/render/dist/
+/build/dist
 
 # Yarn
 .pnp.*

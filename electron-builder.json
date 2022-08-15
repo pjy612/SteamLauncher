@@ -2,14 +2,14 @@
   "appId": "com.electron.steamlauncher",
   "copyright": "Copyright © 2022 Sak32009",
   "directories": {
-    "buildResources": "./build/resources/",
-    "output": "./build/release/${version}/"
+    "buildResources": "./build/resources",
+    "output": "./build/release/${version}"
   },
-  "files": ["./src/*/dist/**/*", "./build/resources/icon.ico"],
+  "files": ["./build/dist", "./build/resources/icon.ico"],
   "extraResources": [
     {
-      "from": "bin",
-      "to": "bin"
+      "from": "./build/bin",
+      "to": "./bin"
     }
   ],
   "win": {
