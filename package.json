@@ -6,7 +6,7 @@
   "homepage": "https://github.com/Sak32009/SteamLauncher/",
   "bugs": "https://github.com/Sak32009/SteamLauncher/issues/",
   "license": "MIT",
-  "copyright": "Copyright © 2016 - 2022 Sak32009",
+  "copyright": "Copyright © 2022 Sak32009",
   "author": "Sak32009 (https://sak32009.github.io/)",
   "funding": "https://www.paypal.me/sak32009a",
   "main": "./build/dist/main/main.cjs",
