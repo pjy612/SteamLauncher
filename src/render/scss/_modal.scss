@@ -1,0 +1,47 @@
+.modal {
+  --bs-modal-margin: 3rem;
+
+  & .modal-content {
+    .modal-footer,
+    .modal-header {
+      @extend .py-2;
+      @extend .px-3;
+      @extend .border-st-secondary;
+    }
+
+    .modal-body {
+      @extend .bg-st-secondary;
+    }
+
+    .modal-body-tabs {
+      @extend .d-flex;
+
+      & > .nav {
+        width: 35%;
+
+        & .nav-link {
+          @extend .w-100;
+          @extend .text-start;
+          @extend .rounded-0;
+          @extend .rounded-start;
+        }
+      }
+
+      & > .card {
+        @extend .rounded-0;
+        @extend .rounded-end;
+        @extend .text-bg-st-primary;
+        @extend .overflow-auto;
+        @extend .w-100;
+      }
+    }
+  }
+}
+
+#st-modal-console {
+  padding-top: 33px;
+
+  & textarea {
+    resize: none;
+  }
+}

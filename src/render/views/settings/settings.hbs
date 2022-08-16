@@ -1,0 +1,274 @@
+<div id='st-modal-settings' class='modal fade'>
+  <div class='modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg'>
+    <form class='modal-content text-bg-st-primary' action='' data-sk-channel='settings-edit'>
+      <div class='modal-header'>
+        <div class='modal-title'>
+          <span class='mdi mdi-cog mdi-18px'></span>
+          <span class='ms-1'>Settings</span>
+        </div>
+        <button type='button' class='btn-close btn-close-white' data-bs-dismiss='modal'></button>
+      </div>
+      <div class='modal-body modal-body-tabs'>
+        <ul class='nav nav-pills flex-column'>
+          <li class='nav-item'>
+            <button type='button' class='nav-link active' data-bs-toggle='tab' data-bs-target='#general'>
+              <span class='mdi mdi-hammer-screwdriver mdi-18px'></span>
+              <span>General</span>
+            </button>
+          </li>
+          <li class='nav-item'>
+            <button type='button' class='nav-link' data-bs-toggle='tab' data-bs-target='#steamEmulator'>
+              <span class='mdi mdi-skull mdi-18px'></span>
+              <span>SteamEmulator</span>
+            </button>
+          </li>
+          <li class='nav-item'>
+            <button type='button' class='nav-link' data-bs-toggle='tab' data-bs-target='#steamCloud'>
+              <span class='mdi mdi-cloud mdi-18px'></span>
+              <span>SteamCloud</span>
+            </button>
+          </li>
+        </ul>
+        <div class='card'>
+          <div class='card-body'>
+            <div class='tab-content'>
+              <div class='tab-pane fade show active' id='general'>
+                <div class='form-check form-check-reverse form-switch text-start'>
+                  <label class='form-check-label' for='switchMinimizeToTray'>
+                    <span class='mdi mdi-tray mdi-18px'></span>
+                    <span>Minimize to tray [default. Enabled]</span>
+                  </label>
+                  <input type='hidden' name='minimizeToTray' value='{{settingsData.minimizeToTray}}' />
+                  {{#if settingsData.minimizeToTray}}
+                    <input
+                      type='checkbox'
+                      id='switchMinimizeToTray'
+                      class='form-check-input'
+                      data-sk-to='minimizeToTray'
+                      checked
+                    />
+                  {{else}}
+                    <input
+                      type='checkbox'
+                      id='switchMinimizeToTray'
+                      class='form-check-input'
+                      data-sk-to='minimizeToTray'
+                    />
+                  {{/if}}
+                </div>
+                <hr class='my-2' />
+                <div class='form-check form-check-reverse form-switch text-start'>
+                  <label class='form-check-label' for='switchMinimizeToTrayWhenLaunchGame'>
+                    <span
+                      class='mdi mdi-help-circle mdi-18px text-info'
+                      data-bs-toggle='tooltip'
+                      title="If you don't activate 'Minimize to tray' it won't work."
+                    ></span>
+                    <span class='mdi mdi-tray mdi-18px'></span>
+                    <span>Minimize to tray when launch game [default. Enabled]</span>
+                  </label>
+                  <input
+                    type='hidden'
+                    name='minimizeToTrayWhenLaunchGame'
+                    value='{{settingsData.minimizeToTrayWhenLaunchGame}}'
+                  />
+                  {{#if settingsData.minimizeToTrayWhenLaunchGame}}
+                    <input
+                      type='checkbox'
+                      id='switchMinimizeToTrayWhenLaunchGame'
+                      class='form-check-input'
+                      data-sk-to='minimizeToTrayWhenLaunchGame'
+                      checked
+                    />
+                  {{else}}
+                    <input
+                      type='checkbox'
+                      id='switchMinimizeToTrayWhenLaunchGame'
+                      class='form-check-input'
+                      data-sk-to='minimizeToTrayWhenLaunchGame'
+                    />
+                  {{/if}}
+                </div>
+                <hr class='my-2' />
+                <div class='form-check form-check-reverse form-switch text-start'>
+                  <label class='form-check-label' for='switchHttpsRejectUnauthorized'>
+                    <span
+                      class='mdi mdi-help-circle mdi-18px text-info'
+                      data-bs-toggle='tooltip'
+                      title='If you encounter the "unable to verify the first
+                    certificate" error, try disabling the ssl certificate verification. If you change this value,
+                    restart the application.'
+                    ></span>
+                    <span class='mdi mdi-lock-check mdi-18px'></span>
+                    <span>SSL Certificate Verification [default. Enabled]</span>
+                  </label>
+                  <input
+                    type='hidden'
+                    name='httpsRejectUnauthorized'
+                    value='{{settingsData.httpsRejectUnauthorized}}'
+                  />
+                  {{#if settingsData.httpsRejectUnauthorized}}
+                    <input
+                      type='checkbox'
+                      id='switchHttpsRejectUnauthorized'
+                      class='form-check-input'
+                      data-sk-to='httpsRejectUnauthorized'
+                      checked
+                    />
+                  {{else}}
+                    <input
+                      type='checkbox'
+                      id='switchHttpsRejectUnauthorized'
+                      class='form-check-input'
+                      data-sk-to='httpsRejectUnauthorized'
+                    />
+                  {{/if}}
+                </div>
+              </div>
+              <div class='tab-pane fade' id='steamEmulator'>
+                <div class='form-check form-check-reverse form-switch text-start'>
+                  <label class='form-check-label' for='switchEmulatorUpdater'>
+                    <span
+                      class='mdi mdi-help-circle mdi-18px text-info'
+                      data-bs-toggle='tooltip'
+                      title='Automatically updates the steam emulator, if the function is disabled the
+                       emulator is no longer updated but downloaded only once if it is missing.'
+                    ></span>
+                    <span class='mdi mdi-update mdi-18px'></span>
+                    <span>Updater [default. Enabled]</span>
+                  </label>
+                  <input type='hidden' name='emulatorUpdater' value='{{settingsData.emulatorUpdater}}' />
+                  {{#if settingsData.emulatorUpdater}}
+                    <input
+                      type='checkbox'
+                      id='switchEmulatorUpdater'
+                      class='form-check-input'
+                      data-sk-to='emulatorUpdater'
+                      checked
+                    />
+                  {{else}}
+                    <input
+                      type='checkbox'
+                      id='switchEmulatorUpdater'
+                      class='form-check-input'
+                      data-sk-to='emulatorUpdater'
+                    />
+                  {{/if}}
+                </div>
+                <hr class='my-2' />
+                <h5 class='border-bottom pb-2'>SmartSteamLoader</h5>
+                <div class='form-check form-check-reverse form-switch text-start'>
+                  <label class='form-check-label' for='switchSsePersist'>
+                    <span
+                      class='mdi mdi-help-circle mdi-18px text-info'
+                      data-bs-toggle='tooltip'
+                      title="Don't exit the loader. Required for games that uses
+                    batch file (.bat) or which launch multiple executables."
+                    ></span>
+                    <span class='mdi mdi-rocket-launch mdi-18px'></span>
+                    <span>SSE Persist [default. Disabled]</span>
+                  </label>
+                  <input type='hidden' name='ssePersist' value='{{settingsData.ssePersist}}' />
+                  {{#if settingsData.ssePersist}}
+                    <input
+                      type='checkbox'
+                      id='switchSsePersist'
+                      class='form-check-input'
+                      data-sk-to='ssePersist'
+                      checked
+                    />
+                  {{else}}
+                    <input type='checkbox' id='switchSsePersist' class='form-check-input' data-sk-to='ssePersist' />
+                  {{/if}}
+                </div>
+                <hr class='my-2' />
+                <div class='form-check form-check-reverse form-switch text-start'>
+                  <label class='form-check-label' for='switchSseInjectDll'>
+                    <span
+                      class='mdi mdi-help-circle mdi-18px text-info'
+                      data-bs-toggle='tooltip'
+                      title='Inject steamclient(64).dll module into process instead
+                    of waiting for game to load it itself. If the game uses steam.dll you might need this to be turned
+                    on.'
+                    ></span>
+                    <span class='mdi mdi-rocket-launch mdi-18px'></span>
+                    <span>SSE Inject Dll [default. Disabled]</span>
+                  </label>
+                  <input type='hidden' name='sseInjectDll' value='{{settingsData.sseInjectDll}}' />
+                  {{#if settingsData.sseInjectDll}}
+                    <input
+                      type='checkbox'
+                      id='switchSseInjectDll'
+                      class='form-check-input'
+                      data-sk-to='sseInjectDll'
+                      checked
+                    />
+                  {{else}}
+                    <input type='checkbox' id='switchSseInjectDll' class='form-check-input' data-sk-to='sseInjectDll' />
+                  {{/if}}
+                </div>
+                <hr class='my-2' />
+                <div class='form-check form-check-reverse form-switch text-start'>
+                  <label class='form-check-label' for='switchSseParanoidMode'>
+                    <span
+                      class='mdi mdi-help-circle mdi-18px text-info'
+                      data-bs-toggle='tooltip'
+                      title='Warn you first if the steam client process is running
+                    before launching the game.'
+                    ></span>
+                    <span class='mdi mdi-rocket-launch mdi-18px'></span>
+                    <span>SSE Paranoid Mode [default. Disabled]</span>
+                  </label>
+                  <input type='hidden' name='sseParanoidMode' value='{{settingsData.sseParanoidMode}}' />
+                  {{#if settingsData.sseParanoidMode}}
+                    <input
+                      type='checkbox'
+                      id='switchSseParanoidMode'
+                      class='form-check-input'
+                      data-sk-to='sseParanoidMode'
+                      checked
+                    />
+                  {{else}}
+                    <input
+                      type='checkbox'
+                      id='switchSseParanoidMode'
+                      class='form-check-input'
+                      data-sk-to='sseParanoidMode'
+                    />
+                  {{/if}}
+                </div>
+              </div>
+              <div class='tab-pane fade' id='steamCloud'>
+                <div class='text-center mb-2'>
+                  Support for backup and restoring game saves is guaranteed through
+                  <a href='https://github.com/mtkennerly/ludusavi' target='_blank'>ludusavi</a>
+                  .<br />
+                  By opening ludusavi, you can change the settings, add new locations to search for saves and also add
+                  games that ludusavi does not support.<br />
+                  If you want to use the backup and restore directly from ludusavi, just in the backup mode insert in
+                  the input "Back up to:" the folder "steam_cloud" inside the SteamLauncher path in "data" folder, same
+                  thing for the restore mode in the input "Restore from:".
+                </div>
+                <div class='alert alert-danger text-center'>
+                  When you want to add a custom game, if you want to overwrite the data of ludusavi use the name that
+                  PCGamingWiki has, for a game that is not supported by ludusavi you can use either that of Steam or
+                  that of PCGamingWiki.<br />
+                  For example:<br />
+                  "Tomb Raider (2013)" (PCGamingWiki) if I want to overwrite the ludusavi data.<br />
+                  "Tomb Raider" (Steam) or "Tomb Raider (2013)" (PCGamingWiki) if the game is not supported by ludusavi.<br
+                  />
+                  This allows SteamLauncher to work properly with ludusavi.
+                </div>
+                <button type='button' class='btn btn-secondary btn-sm text-uppercase w-100' data-sk='open-ludusavi'>open
+                  ludusavi</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class='modal-footer'>
+        <button type='submit' class='btn btn-success w-100'>Save</button>
+      </div>
+    </form>
+  </div>
+</div>

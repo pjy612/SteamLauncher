@@ -4,47 +4,107 @@
 ## [Unreleased]
 
 
-<a name="v0.2.0.test-changelog3"></a>
-## [v0.2.0.test-changelog3] (2022-05-03)
+<a name="v0.2.3"></a>
+## [v0.2.3] (2022-06-17)
 
 #### _All_
-- ci: probably fixed
-#### _By type_
-### CI
-- probably fixed
-
-<a name="v0.2.0.test-changelog2"></a>
-## [v0.2.0.test-changelog2] (2022-05-03)
-
-#### _All_
-- ci: probably fixed
-- Merge branch 'main' of https://github.com/Sak32009/SteamLauncher
+- v0.2.3
+- refactor: steam-cloud
+- refactor: steam-cloud
+- mixed: the generation of the interface for the steam_api dlls is done through that of Mr. Goldberg; added yargs to manage the app command line; i improved the logic of ludusavi for backup and restore mode, in restore mode it has a bug that does not allow you to recover through the appid, now i hope everything works perfectly; i solved the cycle dependency problem; i solved the problem of displaying notifications; i solved the problem of starting applications via command line, there should be no more problems; now the autoupdater asks for confirmation before updating the application; added cache for http requests, data will refresh every 4 hours; added dialog error box for application errors, updated dependency; general improvements.
 - docs: updated CHANGELOG.md
 #### _By type_
+### Code Refactoring
+- steam-cloud
+- steam-cloud
+### Docs
+- updated CHANGELOG.md
+### Mixed
+- the generation of the interface for the steam_api dlls is done through that of Mr. Goldberg; added yargs to manage the app command line; i improved the logic of ludusavi for backup and restore mode, in restore mode it has a bug that does not allow you to recover through the appid, now i hope everything works perfectly; i solved the cycle dependency problem; i solved the problem of displaying notifications; i solved the problem of starting applications via command line, there should be no more problems; now the autoupdater asks for confirmation before updating the application; added cache for http requests, data will refresh every 4 hours; added dialog error box for application errors, updated dependency; general improvements.
+### BREAKING CHANGE
+The game shortcuts on the desktop need to be recreated.
+
+<a name="v0.2.2"></a>
+## [v0.2.2] (2022-06-14)
+
+#### _All_
+- v0.2.2
+- Merge branch 'main' of https://github.com/Sak32009/SteamLauncher
+- fix: oooops, fixed launch game from commands line
+- docs: updated CHANGELOG.md
+- ci: fixed
+#### _By type_
+### Bug Fixes
+- oooops, fixed launch game from commands line
 ### CI
-- probably fixed
+- fixed
 ### Docs
 - updated CHANGELOG.md
 
-<a name="v0.2.0.test-changelog1"></a>
-## [v0.2.0.test-changelog1] (2022-05-03)
+<a name="v0.2.1"></a>
+## [v0.2.1] (2022-06-14)
 
 #### _All_
+- v0.2.1
+- docs: updated readme and screenshots
+- refactor: added option to disable automatic steam emulator updates
+- ci: improvements
+- refactor: navigare
+- docs: spelling
+- chore: updated dep
+- mixed: updated dep, fixed an issue when settings were being saved, fixed minor issues, general optimizations, added rotary logs by day
+- mixed: fix [#169](https://github.com/Sak32009/SteamLauncher/issues/169) ("config.yaml" is not saved in "data" folder), fix [#168](https://github.com/Sak32009/SteamLauncher/issues/168) (Show "not successful" notification after success manually backup), removed unnecessary notifications and logs.
+- fix: console show
+- chore: updated dep
+- refactor: i forgot to edit my test
+- fix: [#166](https://github.com/Sak32009/SteamLauncher/issues/166) failed to save achievement icons
+- refactor: re-added console
+- perf: improvements
+- refactor: the reloading of the list of games in the home is now traced in one place, no longer in various places and manually as before.
+- refactor: updated browserslist to chrome 102
+- mixed: updated dep, updated yarn, updated package engine, removed tailwindcss in favor of bootstrap v5.2, fix [#170](https://github.com/Sak32009/SteamLauncher/issues/170) (data location is wrong if started in production mode without building the app), fix [#167](https://github.com/Sak32009/SteamLauncher/issues/167) (cannot move the window when scroll down), new ui and many bug fixes / improvements.
+- chore: updated dep
+- docs: updated CHANGELOG.md
+- ci: probably fixed
+- ci: probably fixed
+- Merge branch 'main' of https://github.com/Sak32009/SteamLauncher
+- ci: probably fixed
+- ci: probably fixed
+- docs: updated CHANGELOG.md
 - ci: probably fixed
 #### _By type_
+### Bug Fixes
+- console show
+- [#166](https://github.com/Sak32009/SteamLauncher/issues/166) failed to save achievement icons
 ### CI
-- probably fixed
-
-<a name="v0.2.0.test-changelog"></a>
-## [v0.2.0.test-changelog] (2022-05-03)
-
-#### _All_
-- ci: probably fixed
-- ci: probably fixed
-#### _By type_
-### CI
+- improvements
 - probably fixed
 - probably fixed
+- probably fixed
+- probably fixed
+- probably fixed
+### Chore
+- updated dep
+- updated dep
+- updated dep
+### Code Refactoring
+- added option to disable automatic steam emulator updates
+- navigare
+- i forgot to edit my test
+- re-added console
+- the reloading of the list of games in the home is now traced in one place, no longer in various places and manually as before.
+- updated browserslist to chrome 102
+### Docs
+- updated readme and screenshots
+- spelling
+- updated CHANGELOG.md
+- updated CHANGELOG.md
+### Mixed
+- updated dep, fixed an issue when settings were being saved, fixed minor issues, general optimizations, added rotary logs by day
+- fix [#169](https://github.com/Sak32009/SteamLauncher/issues/169) ("config.yaml" is not saved in "data" folder), fix [#168](https://github.com/Sak32009/SteamLauncher/issues/168) (Show "not successful" notification after success manually backup), removed unnecessary notifications and logs.
+- updated dep, updated yarn, updated package engine, removed tailwindcss in favor of bootstrap v5.2, fix [#170](https://github.com/Sak32009/SteamLauncher/issues/170) (data location is wrong if started in production mode without building the app), fix [#167](https://github.com/Sak32009/SteamLauncher/issues/167) (cannot move the window when scroll down), new ui and many bug fixes / improvements.
+### Performance Improvements
+- improvements
 
 <a name="v0.2.0"></a>
 ## [v0.2.0] (2022-05-03)
@@ -314,11 +374,10 @@
 - upload
 - Initial commit
 
-[Unreleased]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.0.test-changelog3...HEAD
-[v0.2.0.test-changelog3]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.0.test-changelog2...v0.2.0.test-changelog3
-[v0.2.0.test-changelog2]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.0.test-changelog1...v0.2.0.test-changelog2
-[v0.2.0.test-changelog1]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.0.test-changelog...v0.2.0.test-changelog1
-[v0.2.0.test-changelog]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.0...v0.2.0.test-changelog
+[Unreleased]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.3...HEAD
+[v0.2.3]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.2...v0.2.3
+[v0.2.2]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.1...v0.2.2
+[v0.2.1]: https://github.com/Sak32009/SteamLauncher/compare/v0.2.0...v0.2.1
 [v0.2.0]: https://github.com/Sak32009/SteamLauncher/compare/v0.1.9...v0.2.0
 [v0.1.9]: https://github.com/Sak32009/SteamLauncher/compare/v0.1.8...v0.1.9
 [v0.1.8]: https://github.com/Sak32009/SteamLauncher/compare/v0.1.7...v0.1.8

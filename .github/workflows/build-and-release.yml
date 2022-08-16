@@ -15,18 +15,19 @@ jobs:
 
     steps:
       - name: Action / Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.0.2
 
       - name: Action / Setup Node v16
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v3.4.1
         with:
-          node-version: '16'
-          cache: 'yarn'
+          node-version: 16
 
-      - name: Install Dependencies
-        run: yarn install
+      - name: Yarn / Install Dependencies
+        run: |
+          yarn install
 
-      - name: Build and Release
+      - name: Yarn / Build and Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: yarn run release
+        run: |
+          yarn run release

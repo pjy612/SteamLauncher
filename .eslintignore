@@ -1,9 +1,1 @@
-/.chglog
-/.github
-/.yarn
-/bin
 /build
-/data
-/node_modules
-/screenshots
-/src/**/dist
